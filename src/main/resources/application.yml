@@ -1,0 +1,37 @@
+spring:
+  datasource:
+  driver-class-name: ${SPRING_DATASOURCE_DRIVER_CLASS_NAME:org.h2.Driver}
+  url: ${SPRING_DATASOURCE_URL:jdbc:h2:tcp://0.0.0.0/C:/app/workspace/h2-2023-09-17/h2/data/jwt}
+  username: ${SPRING_DATASOURCE_USERNAME:sa}
+  password: ${SPRING_DATASOURCE_PASSWORD:sa}
+
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    show-sql: true
+    hibernate:
+      ddl-auto: create
+    naming:
+      implicit-strategy: org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy
+    generate-ddl: false
+    properties:
+      hibernate:
+        format_sql: true
+        default_batch_fetch_size: 100
+    open-in-view: false
+
+  security:
+    user:
+      name: test
+      password: test
+      roles: USER, ADMIN
+
+  logging:
+    level:
+      com.golapadeok.fluo: debug
+      org.hibernate.SQL: debug
+      org.hibernate.orm.jdbc.bind: trace
+---
+spring:
+  config:
+    activate:
+      on-profile: dev
