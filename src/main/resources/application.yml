@@ -1,9 +1,13 @@
 spring:
   datasource:
-  driver-class-name: ${SPRING_DATASOURCE_DRIVER_CLASS_NAME:org.h2.Driver}
-  url: ${SPRING_DATASOURCE_URL:jdbc:h2:tcp://0.0.0.0/C:/app/workspace/h2-2023-09-17/h2/data/jwt}
-  username: ${SPRING_DATASOURCE_USERNAME:sa}
-  password: ${SPRING_DATASOURCE_PASSWORD:sa}
+#  driver-class-name: ${SPRING_DATASOURCE_DRIVER_CLASS_NAME:org.h2.Driver}
+#  url: ${SPRING_DATASOURCE_URL:jdbc:h2:tcp://0.0.0.0/C:/app/workspace/h2-2023-09-17/h2/data/jwt}
+#  username: ${SPRING_DATASOURCE_USERNAME:sa}
+#  password: ${SPRING_DATASOURCE_PASSWORD:sa}
+  driver-class-name: org.h2.Driver
+  url: jdbc:h2:tcp://0.0.0.0/C:/app/workspace/h2-2023-09-17/h2/data/jwt
+  username: sa
+  password: sa
 
   jpa:
     database-platform: org.hibernate.dialect.H2Dialect
