@@ -4,7 +4,6 @@ spring:
     url: ${SPRING_DATASOURCE_URL:jdbc:h2:tcp://0.0.0.0/C:/app/workspace/h2-2023-09-17/h2/data/jwt}
     username: ${SPRING_DATASOURCE_USERNAME:sa}
     password: ${SPRING_DATASOURCE_PASSWORD:sa}
-
   jpa:
     database-platform: org.hibernate.dialect.H2Dialect
     show-sql: true
@@ -35,9 +34,8 @@ spring:
   config:
     activate:
       on-profile: dev
-
   jpa:
-    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
+    database-platform: org.hibernate.dialect.MySQLDialect
     show-sql: true
     hibernate:
       ddl-auto: create
@@ -49,5 +47,3 @@ spring:
         format_sql: true
         default_batch_fetch_size: 100
     open-in-view: false
-server:
-  port: 9999
