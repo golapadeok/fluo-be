@@ -17,9 +17,6 @@ public class WorkspaceMember extends BaseTimeEntity {
     @ManyToOne
     @JoinColumn(name = "WORKSPACE_ID")
     private Workspace workspace;
-
-    private String latestUrl;
-
-
+    private String latestUrl; // 마지막 접속 URL
 
 }
