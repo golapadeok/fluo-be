@@ -53,7 +53,7 @@ server:
 spring:
   config:
     activate:
-      on-profile: prod
+      on-profile: blue
   jpa:
     database-platform: org.hibernate.dialect.MySQLDialect
     show-sql: true
@@ -69,3 +69,23 @@ spring:
     open-in-view: false
 server:
   port: 8080
+---
+spring:
+  config:
+    activate:
+      on-profile: green
+  jpa:
+    database-platform: org.hibernate.dialect.MySQLDialect
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+      naming:
+        implicit-strategy: org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy
+    generate-ddl: false
+    properties:
+      hibernate:
+        format_sql: true
+        default_batch_fetch_size: 100
+    open-in-view: false
+server:
+  port: 8081
