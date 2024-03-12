@@ -1,7 +1,7 @@
 package com.golapadeok.fluo.domain.authority.domain;
 
 import com.golapadeok.fluo.common.domain.BaseTimeEntity;
-import com.golapadeok.fluo.domain.customer.domain.Customer;
+import com.golapadeok.fluo.domain.customer.domain.Member;
 import jakarta.persistence.*;
 
 @Entity
@@ -13,8 +13,8 @@ public class MemberAuthority extends BaseTimeEntity { // 회원그룹권한
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "CUSTOMER_ID")
-    private Customer customer;
+    @JoinColumn(name = "MEMBER_ID")
+    private Member member;
 
     @ManyToOne
     @JoinColumn(name = "AUTHORITY")

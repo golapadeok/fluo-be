@@ -1,18 +1,16 @@
 package com.golapadeok.fluo.domain.customer.domain;
 
 import com.golapadeok.fluo.common.domain.BaseTimeEntity;
-import com.golapadeok.fluo.domain.task.domain.ManagerTask;
-import com.golapadeok.fluo.domain.task.domain.Task;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-public class Customer extends BaseTimeEntity {
+public class Member extends BaseTimeEntity {
 
     @Id @GeneratedValue
-    @Column(name = "CUSTOMER_ID")
+    @Column(name = "MEMBER_ID")
     private Long id;
 
     private String email;

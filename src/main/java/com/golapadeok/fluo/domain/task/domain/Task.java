@@ -1,7 +1,7 @@
 package com.golapadeok.fluo.domain.task.domain;
 
 import com.golapadeok.fluo.common.domain.BaseTimeEntity;
-import com.golapadeok.fluo.domain.customer.domain.Customer;
+import com.golapadeok.fluo.domain.customer.domain.Member;
 import com.golapadeok.fluo.domain.workspace.domain.Workspace;
 import jakarta.persistence.*;
 import lombok.NoArgsConstructor;
@@ -27,8 +27,8 @@ public class Task extends BaseTimeEntity {
     private Workspace workspace;
 
     @ManyToOne
-    @JoinColumn(name = "CUSTOMER_ID")
-    private Customer customer;
+    @JoinColumn(name = "MEMBER_ID")
+    private Member member;
 
     @OneToMany(mappedBy = "task", fetch = FetchType.LAZY)
     private List<ManagerTask> managerTasks = new ArrayList<>();

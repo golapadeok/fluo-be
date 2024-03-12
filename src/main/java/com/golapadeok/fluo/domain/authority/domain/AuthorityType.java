@@ -9,6 +9,4 @@ public enum AuthorityType {
     ENTER,
     INVITE
 
-
-
 }

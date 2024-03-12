@@ -1,7 +1,7 @@
 package com.golapadeok.fluo.domain.task.domain;
 
 import com.golapadeok.fluo.common.domain.BaseTimeEntity;
-import com.golapadeok.fluo.domain.customer.domain.Customer;
+import com.golapadeok.fluo.domain.customer.domain.Member;
 import jakarta.persistence.*;
 
 @Entity
@@ -16,7 +16,7 @@ public class ManagerTask extends BaseTimeEntity {
     private Task task;
 
     @ManyToOne
-    @JoinColumn(name = "CUSTOMER_ID")
-    private Customer customer;
+    @JoinColumn(name = "MEMBER_ID")
+    private Member member;
 
 }

@@ -11,8 +11,8 @@ public class WorkspaceMember extends BaseTimeEntity {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "CUSTOMER_ID")
-    private Customer customer;
+    @JoinColumn(name = "MEMBER_ID")
+    private Member member;
 
     @ManyToOne
     @JoinColumn(name = "WORKSPACE_ID")

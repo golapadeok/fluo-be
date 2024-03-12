@@ -14,7 +14,7 @@ import com.querydsl.core.types.dsl.PathInits;
  * QCustomer is a Querydsl query type for Customer
  */
 @Generated("com.querydsl.codegen.DefaultEntitySerializer")
-public class QCustomer extends EntityPathBase<Customer> {
+public class QCustomer extends EntityPathBase<Member> {
 
     private static final long serialVersionUID = -2092486358L;
 
@@ -39,15 +39,15 @@ public class QCustomer extends EntityPathBase<Customer> {
     public final ListPath<WorkspaceMember, QWorkspaceMember> workspaceMembers = this.<WorkspaceMember, QWorkspaceMember>createList("workspaceMembers", WorkspaceMember.class, QWorkspaceMember.class, PathInits.DIRECT2);
 
     public QCustomer(String variable) {
-        super(Customer.class, forVariable(variable));
+        super(Member.class, forVariable(variable));
     }
 
-    public QCustomer(Path<? extends Customer> path) {
+    public QCustomer(Path<? extends Member> path) {
         super(path.getType(), path.getMetadata());
     }
 
     public QCustomer(PathMetadata metadata) {
-        super(Customer.class, metadata);
+        super(Member.class, metadata);
     }
 
 }
