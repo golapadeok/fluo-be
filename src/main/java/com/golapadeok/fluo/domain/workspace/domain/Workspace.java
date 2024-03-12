@@ -1,7 +1,7 @@
 package com.golapadeok.fluo.domain.workspace.domain;
 
 import com.golapadeok.fluo.common.domain.BaseTimeEntity;
-import com.golapadeok.fluo.domain.authority.domain.Authority;
+import com.golapadeok.fluo.domain.role.domain.Role;
 import com.golapadeok.fluo.domain.customer.domain.WorkspaceMember;
 import com.golapadeok.fluo.domain.task.domain.Task;
 import jakarta.persistence.*;
@@ -23,7 +23,7 @@ public class Workspace extends BaseTimeEntity {
     private List<WorkspaceMember> workspaceMembers = new ArrayList<>();
 
     @OneToMany(mappedBy = "workspace", fetch = FetchType.LAZY)
-    private List<Authority> authorities = new ArrayList<>();
+    private List<Role> roles = new ArrayList<>();
 
     @OneToMany(mappedBy = "workspace", fetch = FetchType.LAZY)
     private List<Task> tasks = new ArrayList<>();

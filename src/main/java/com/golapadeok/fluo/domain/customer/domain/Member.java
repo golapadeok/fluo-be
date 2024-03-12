@@ -17,7 +17,7 @@ public class Member extends BaseTimeEntity {
     private String name;
     private String profile;
 
-    @OneToMany(mappedBy = "customer", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
     private List<WorkspaceMember> workspaceMembers = new ArrayList<>(); // 그룹참여유저
 
 }

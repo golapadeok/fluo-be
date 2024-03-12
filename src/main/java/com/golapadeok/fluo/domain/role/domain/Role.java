@@ -1,4 +1,4 @@
-package com.golapadeok.fluo.domain.authority.domain;
+package com.golapadeok.fluo.domain.role.domain;
 
 import com.golapadeok.fluo.common.domain.BaseTimeEntity;
 import com.golapadeok.fluo.domain.workspace.domain.Workspace;
@@ -9,10 +9,10 @@ import java.util.Arrays;
 import java.util.List;
 
 @Entity
-public class Authority extends BaseTimeEntity { // 그룹역할종류
+public class Role extends BaseTimeEntity { // 그룹역할종류
 
     @Id @GeneratedValue
-    @Column(name = "AUTHORITY_ID")
+    @Column(name = "ROLE_ID")
     private Long id;
 
     private String name;

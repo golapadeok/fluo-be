@@ -1,4 +1,4 @@
-package com.golapadeok.fluo.domain.authority.api;
+package com.golapadeok.fluo.domain.role.api;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
