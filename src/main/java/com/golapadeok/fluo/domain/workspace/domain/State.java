@@ -1,5 +1,6 @@
 package com.golapadeok.fluo.domain.workspace.domain;
 
+
 import com.golapadeok.fluo.domain.workspace.dto.StateDto;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -12,6 +13,7 @@ import lombok.NoArgsConstructor;
 public class State {
     @Id
     @GeneratedValue
+
     @Column(name = "STATE_ID")
     private Long id;
     private String name;
@@ -33,4 +35,5 @@ public class State {
     public void updateState(StateDto stateDto) {
         this.name = stateDto.getName();
     }
+
 }

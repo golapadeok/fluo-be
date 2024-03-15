@@ -29,6 +29,8 @@ logging:
     com.golapadeok.fluo: debug
     org.hibernate.SQL: debug
     org.hibernate.orm.jdbc.bind: trace
+server:
+  port: 9999
 ---
 spring:
   config:
