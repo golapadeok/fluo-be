@@ -1,13 +1,9 @@
 package com.golapadeok.fluo.domain.task.domain;
 
 import com.golapadeok.fluo.common.domain.BaseTimeEntity;
-<<<<<<< HEAD
 import com.golapadeok.fluo.domain.member.domain.Member;
-=======
-import com.golapadeok.fluo.domain.customer.domain.Member;
 import com.golapadeok.fluo.domain.task.dto.request.TaskRequest;
 import com.golapadeok.fluo.domain.workspace.domain.State;
->>>>>>> origin/develop
 import com.golapadeok.fluo.domain.workspace.domain.Workspace;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
