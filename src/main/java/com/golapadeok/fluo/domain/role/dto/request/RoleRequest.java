@@ -4,8 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Getter
-@Setter
-public class AuthorityRequest {
+public class RoleRequest {
 
 
 

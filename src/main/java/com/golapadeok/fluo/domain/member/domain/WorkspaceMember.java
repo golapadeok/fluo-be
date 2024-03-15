@@ -1,4 +1,4 @@
-package com.golapadeok.fluo.domain.customer.domain;
+package com.golapadeok.fluo.domain.member.domain;
 
 import com.golapadeok.fluo.common.domain.BaseTimeEntity;
 import com.golapadeok.fluo.domain.workspace.domain.Workspace;

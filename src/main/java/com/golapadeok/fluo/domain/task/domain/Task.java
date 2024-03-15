@@ -1,7 +1,7 @@
 package com.golapadeok.fluo.domain.task.domain;
 
 import com.golapadeok.fluo.common.domain.BaseTimeEntity;
-import com.golapadeok.fluo.domain.customer.domain.Member;
+import com.golapadeok.fluo.domain.member.domain.Member;
 import com.golapadeok.fluo.domain.workspace.domain.Workspace;
 import jakarta.persistence.*;
 import lombok.NoArgsConstructor;
