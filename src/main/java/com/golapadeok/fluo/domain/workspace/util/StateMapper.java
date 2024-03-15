@@ -33,12 +33,4 @@ public class StateMapper {
 
         return Collections.unmodifiableList(results);
     }
-
-//    public List<WorkspaceDto> convertWorkspaceToDto(List<Workspace> workspaces) {
-
-//    }
-
-    public Workspace convertWorkspaceRequestToEntity(WorkspaceRequest request) {
-        return new Workspace(request.getTitle(), request.getDescription());
-    }
 }
