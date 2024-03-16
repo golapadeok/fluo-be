@@ -1,23 +1,16 @@
 package com.golapadeok.fluo.domain.social.api;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.golapadeok.fluo.domain.social.client.GoogleOAuthClient;
-import com.golapadeok.fluo.domain.social.client.SocialOauth;
 import com.golapadeok.fluo.domain.social.domain.SocialType;
 import com.golapadeok.fluo.domain.social.dto.response.SocialLoginResponse;
-import com.golapadeok.fluo.domain.social.record.GoogleOauthConfig;
 import com.golapadeok.fluo.domain.social.service.OAuthService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import jakarta.persistence.Column;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.tomcat.util.http.parser.Authorization;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -42,7 +35,7 @@ public class OAuthController {
         String redirectUrl = this.oAuthService.getRedirectUrl(socialType);
         response.sendRedirect(redirectUrl);
 
-        return new ResponseEntity<>(HttpStatus.OK);
+        return ResponseEntity.ok().build();
     }
 
     @Operation(summary = "소셜 로그인 진행", description = "소셜 로그인 진행, 만약 회원가입이 안되어 있다면 회원가입을 함.")
@@ -58,10 +51,10 @@ public class OAuthController {
         SocialLoginResponse socialLoginResponse = this.oAuthService.socialLogin(socialType, code);
 
         Cookie cookie = new Cookie("RefreshToken", socialLoginResponse.getRefreshToken());
-        response.addHeader("Authroization", "Bearer "+socialLoginResponse.getAccessToken());
+        response.addHeader("Authorization", "Bearer "+socialLoginResponse.getAccessToken());
         response.addCookie(cookie);
 
-        return new ResponseEntity<>(HttpStatus.OK);
+        return ResponseEntity.ok().build();
     }
 
 }

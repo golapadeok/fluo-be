@@ -49,7 +49,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
                 .filter(this.provider::isTokenValidate)
                 .orElse(null);
 
-        // refresh token이 만료되지 않았다면 새로운 access token 을 만들고,
+        // refresh token이 만료되지 않았다면 새로운 access token 을 만들고, header로 다시 전송한다.
         if(refreshToken != null) {
             this.memberRepository.findByRefreshToken(refreshToken)
                     .ifPresent(member -> {
