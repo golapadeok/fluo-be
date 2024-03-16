@@ -22,12 +22,18 @@ spring:
       name: test
       password: test
       roles: USER, ADMIN
-  oauth2:
-    google:
-      client_id: 485784788447-t3irsd8ig19i9i06g9q4s7g9kcej85uu.apps.googleusercontent.com
-      client_secret: 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
-      redirect_uri: http://localhost:8080/api/v1/auth/google/callback
-      scope: profile email
+
+oauth2:
+  google:
+    client_id: 485784788447-t3irsd8ig19i9i06g9q4s7g9kcej85uu.apps.googleusercontent.com
+    client_secret: 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
+    redirect_uri: http://localhost:9999/api/v1/auth/google/callback
+    scope: profile email
+  naver:
+    client_id: OUzv9kOasKTzle3Myc4P
+    client_secret: pNN1onHa59
+    redirect_uri: http://localhost:9999/api/v1/auth/naver/callback
+    scope: name email profile_image
 
 jwt:
   secretKey: secretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecret

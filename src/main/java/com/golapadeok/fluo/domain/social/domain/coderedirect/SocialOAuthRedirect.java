@@ -1,8 +1,10 @@
-package com.golapadeok.fluo.domain.social.client;
+package com.golapadeok.fluo.domain.social.domain.coderedirect;
 
-import org.springframework.http.ResponseEntity;
+import com.golapadeok.fluo.domain.social.domain.SocialType;
 
-public interface SocialOauth {
+public interface SocialOAuthRedirect {
+
+    public SocialType getSocialType();
 
     /**
      * 각 소셜 페이지로 redirect할 URL을 build한다.
@@ -10,8 +12,5 @@ public interface SocialOauth {
      * 차후 다양한 로그인을 구현할 수 있도록 인터페이스로 생성
      */
     public String getOAuthRedirectURL();
-
-    // 일회성 코드를 소셜로그인으로 보낸 후 access token이 담긴 객체를 반환
-    public ResponseEntity<String> requestAccessToken(String code);
 
 }
