@@ -6,7 +6,6 @@ import com.golapadeok.fluo.domain.workspace.domain.State;
 import com.golapadeok.fluo.domain.workspace.domain.Workspace;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -58,5 +57,21 @@ public class Task extends BaseTimeEntity {
 
     public void changeWorkspace(Workspace workspace) {
         this.workspace = workspace;
+    }
+
+    public void changeTaskConfiguration(TaskConfiguration configuration) {
+        this.configuration = configuration;
+    }
+
+    public void changeScheduleRange(ScheduleRange scheduleRange) {
+        this.scheduleRange = scheduleRange;
+    }
+
+    public void changeTitle(String title) {
+        this.title = title;
+    }
+
+    public void changeDescription(String description) {
+        this.description = description;
     }
 }
