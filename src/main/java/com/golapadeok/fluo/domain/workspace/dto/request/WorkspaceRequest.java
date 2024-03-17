@@ -1,14 +1,13 @@
 package com.golapadeok.fluo.domain.workspace.dto.request;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
+@AllArgsConstructor
+@NoArgsConstructor
 public class WorkspaceRequest {
-    private final String title;
-    private final String description;
-
-    public WorkspaceRequest(String title, String description) {
-        this.title = title;
-        this.description = description;
-    }
+    private String title;
+    private String description;
 }
