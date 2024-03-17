@@ -6,8 +6,10 @@ import com.golapadeok.fluo.domain.workspace.dto.request.WorkspaceCreateRequest;
 import com.golapadeok.fluo.domain.workspace.dto.request.WorkspaceRequest;
 import com.golapadeok.fluo.domain.workspace.dto.response.BaseResponse;
 import com.golapadeok.fluo.domain.workspace.dto.response.WorkspaceCreateResponse;
+import com.golapadeok.fluo.domain.workspace.dto.response.WorkspaceDeleteResponse;
 import com.golapadeok.fluo.domain.workspace.dto.response.WorkspaceSearchResponse;
 import com.golapadeok.fluo.domain.workspace.service.WorkspaceCreateService;
+import com.golapadeok.fluo.domain.workspace.service.WorkspaceDeleteService;
 import com.golapadeok.fluo.domain.workspace.service.WorkspaceSearchService;
 import com.golapadeok.fluo.domain.workspace.service.WorkspaceService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -27,6 +29,8 @@ public class WorkspaceController {
 
     private final WorkspaceCreateService workspaceCreateService;
     private final WorkspaceSearchService workspaceSearchService;
+    private final WorkspaceDeleteService workspaceDeleteService;
+
 
     @GetMapping
     @Operation(summary = "워크스페이스 전체조회 API", description = "워크스페이스 전체조회 API")
@@ -39,7 +43,7 @@ public class WorkspaceController {
     }
 
     @GetMapping("/{workspaceId}")
-    @Operation(summary = "워크스페이스 단일조회 API", description = "워크스페이스 단일조회 API")
+    @Operation(summary = "워크스페이스 단일조회 API", description = "해당 워크스페이스 조회 API")
     public ResponseEntity<WorkspaceSearchResponse> searchWorkspace(
             @PathVariable("workspaceId") Integer workspaceId
     ) {
@@ -56,7 +60,7 @@ public class WorkspaceController {
     }
 
     @PostMapping("/{workspaceId}/states")
-    @Operation(summary = "워크스페이스 상태 생성 API", description = "워크스페이스의 새로운 상태를 생성합니다.")
+    @Operation(summary = "워크스페이스 상태 생성 API", description = "해당 워크스페이스의 새로운 상태를 생성합니다.")
     public ResponseEntity<StateDto> createWorkspaceWithStates(
             @PathVariable("workspaceId") Integer workspaceId,
             @RequestBody StateRequest request
@@ -95,11 +99,10 @@ public class WorkspaceController {
     }
 
     @DeleteMapping("/{workspaceId}")
-    @Operation(summary = "워크스페이스 삭제 API", description = "워크스페이스를 삭제합니다.")
-    public ResponseEntity<WorkspaceIdDto> deleteWorkspace(
+    @Operation(summary = "워크스페이스 삭제 API", description = "해당 워크스페이스를 삭제합니다.")
+    public ResponseEntity<WorkspaceDeleteResponse> deleteWorkspace(
             @PathVariable("workspaceId") Integer workspaceId
     ) {
-        WorkspaceIdDto workspaceIdDto = workspaceService.deleteWorkspace(workspaceId);
-        return ResponseEntity.ok(workspaceIdDto);
+        return ResponseEntity.ok(workspaceDeleteService.delete(workspaceId));
     }
 }
