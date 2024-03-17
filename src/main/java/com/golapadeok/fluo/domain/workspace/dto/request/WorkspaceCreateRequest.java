@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class WorkspaceRequest {
+public class WorkspaceCreateRequest {
     @NotEmpty(message = "워크스페이스 제목은 필수값 입니다.")
     @Schema(description = "워크스페이스 제목", example = "title")
     private String title;

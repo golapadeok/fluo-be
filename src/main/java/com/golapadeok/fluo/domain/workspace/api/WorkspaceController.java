@@ -2,8 +2,11 @@ package com.golapadeok.fluo.domain.workspace.api;
 
 import com.golapadeok.fluo.domain.workspace.dto.*;
 import com.golapadeok.fluo.domain.workspace.dto.request.StateRequest;
+import com.golapadeok.fluo.domain.workspace.dto.request.WorkspaceCreateRequest;
 import com.golapadeok.fluo.domain.workspace.dto.request.WorkspaceRequest;
 import com.golapadeok.fluo.domain.workspace.dto.response.BaseResponse;
+import com.golapadeok.fluo.domain.workspace.dto.response.WorkspaceCreateResponse;
+import com.golapadeok.fluo.domain.workspace.service.WorkspaceCreateService;
 import com.golapadeok.fluo.domain.workspace.service.WorkspaceService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -19,6 +22,8 @@ import org.springframework.web.bind.annotation.*;
 @Tag(name = "워크스페이스 API", description = "워크스페이스 관련 API 목록입니다.")
 public class WorkspaceController {
     private final WorkspaceService workspaceService;
+
+    private final WorkspaceCreateService workspaceCreateService;
 
     @GetMapping
     @Operation(summary = "워크스페이스 전체조회 API", description = "워크스페이스 전체조회 API")
@@ -79,13 +84,12 @@ public class WorkspaceController {
 
     @PostMapping
     @Operation(summary = "워크스페이스 생성 API", description = "새로운 워크스페이스를 생성합니다.")
-    public ResponseEntity<WorkspaceDto> createWorkspace(
-            @Valid @RequestBody WorkspaceRequest request
+    public ResponseEntity<WorkspaceCreateResponse> createWorkspace(
+            @Valid @RequestBody WorkspaceCreateRequest request
     ) {
-        WorkspaceDto workspace = workspaceService.createWorkspace(request);
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(workspace);
+                .body(workspaceCreateService.create(request));
     }
 
     @DeleteMapping("/{workspaceId}")

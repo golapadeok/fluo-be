@@ -37,8 +37,13 @@ public class Workspace extends BaseTimeEntity {
     @OneToMany(mappedBy = "workspace", fetch = FetchType.LAZY)
     private List<Task> tasks = new ArrayList<>();
 
-    public Workspace(String title, String description) {
+    public Workspace(Long id, String title, String description) {
+        this.id = id;
         this.title = title;
         this.description = description;
+    }
+
+    public Workspace(String title, String description) {
+        this(null, title, description);
     }
 }
