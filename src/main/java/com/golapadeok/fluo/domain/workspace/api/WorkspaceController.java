@@ -1,13 +1,8 @@
 package com.golapadeok.fluo.domain.workspace.api;
 
-import com.golapadeok.fluo.domain.state.StateDto;
 import com.golapadeok.fluo.domain.workspace.dto.*;
-import com.golapadeok.fluo.domain.workspace.dto.request.StateRequest;
 import com.golapadeok.fluo.domain.workspace.dto.request.WorkspaceCreateRequest;
-import com.golapadeok.fluo.domain.workspace.dto.response.BaseResponse;
-import com.golapadeok.fluo.domain.workspace.dto.response.WorkspaceCreateResponse;
-import com.golapadeok.fluo.domain.workspace.dto.response.WorkspaceDeleteResponse;
-import com.golapadeok.fluo.domain.workspace.dto.response.WorkspaceSearchResponse;
+import com.golapadeok.fluo.domain.workspace.dto.response.*;
 import com.golapadeok.fluo.domain.workspace.service.WorkspaceCreateService;
 import com.golapadeok.fluo.domain.workspace.service.WorkspaceDeleteService;
 import com.golapadeok.fluo.domain.workspace.service.WorkspaceSearchService;
@@ -58,7 +53,7 @@ public class WorkspaceController {
         WorkspaceWithStatesDto workspaceWithStates = workspaceService.getWorkspaceWithStates(workspaceId);
         return ResponseEntity.ok(workspaceWithStates);
     }
-    
+
     @GetMapping("/{workspaceId}/members")
     @Operation(hidden = true)
     public void getWorkspaceWithMembers() {
@@ -66,9 +61,11 @@ public class WorkspaceController {
     }
 
     @GetMapping("/{workspaceId}/tasks")
-    @Operation(hidden = true)
-    public void getWorkspaceWithTasks() {
-
+    @Operation(summary = "워크스페이스와 업무목록 조회 API", description = "해당 워크스페이스와 포함된 업무목록을 조회합니다.")
+    public ResponseEntity<WorkspaceWithTaskSearchResponse> searchWorkspaceWithTasks(
+            @PathVariable(name = "workspaceId") Integer workspaceId
+    ) {
+        return ResponseEntity.ok(workspaceSearchService.searchWithTasks(workspaceId));
     }
 
     @GetMapping("/{workspaceId}/invitations")

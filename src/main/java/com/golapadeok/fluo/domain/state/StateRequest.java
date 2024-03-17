@@ -1,4 +1,4 @@
-package com.golapadeok.fluo.domain.workspace.dto.request;
+package com.golapadeok.fluo.domain.state;
 
 import lombok.Getter;
 
