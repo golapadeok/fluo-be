@@ -7,15 +7,14 @@ import com.golapadeok.fluo.domain.task.dto.request.TaskCreateRequest;
 import com.golapadeok.fluo.domain.task.dto.response.TaskCreateResponse;
 import com.golapadeok.fluo.domain.task.repository.TaskRepository;
 import com.golapadeok.fluo.domain.task.util.TaskMapper;
-import com.golapadeok.fluo.domain.workspace.domain.State;
+import com.golapadeok.fluo.domain.state.State;
 import com.golapadeok.fluo.domain.workspace.domain.Workspace;
-import com.golapadeok.fluo.domain.workspace.repository.StateRepository;
+import com.golapadeok.fluo.domain.state.StateRepository;
 import com.golapadeok.fluo.domain.workspace.repository.WorkspaceRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.BDDMockito;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -24,7 +23,6 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
 
 @ExtendWith(MockitoExtension.class)

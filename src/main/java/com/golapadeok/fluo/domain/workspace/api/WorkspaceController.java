@@ -1,9 +1,9 @@
 package com.golapadeok.fluo.domain.workspace.api;
 
+import com.golapadeok.fluo.domain.state.StateDto;
 import com.golapadeok.fluo.domain.workspace.dto.*;
 import com.golapadeok.fluo.domain.workspace.dto.request.StateRequest;
 import com.golapadeok.fluo.domain.workspace.dto.request.WorkspaceCreateRequest;
-import com.golapadeok.fluo.domain.workspace.dto.request.WorkspaceRequest;
 import com.golapadeok.fluo.domain.workspace.dto.response.BaseResponse;
 import com.golapadeok.fluo.domain.workspace.dto.response.WorkspaceCreateResponse;
 import com.golapadeok.fluo.domain.workspace.dto.response.WorkspaceDeleteResponse;
@@ -58,18 +58,7 @@ public class WorkspaceController {
         WorkspaceWithStatesDto workspaceWithStates = workspaceService.getWorkspaceWithStates(workspaceId);
         return ResponseEntity.ok(workspaceWithStates);
     }
-
-    @PostMapping("/{workspaceId}/states")
-    @Operation(summary = "워크스페이스 상태 생성 API", description = "해당 워크스페이스의 새로운 상태를 생성합니다.")
-    public ResponseEntity<StateDto> createWorkspaceWithStates(
-            @PathVariable("workspaceId") Integer workspaceId,
-            @RequestBody StateRequest request
-    ) {
-        StateDto state = workspaceService.createState(workspaceId, request);
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(state);
-    }
-
+    
     @GetMapping("/{workspaceId}/members")
     @Operation(hidden = true)
     public void getWorkspaceWithMembers() {

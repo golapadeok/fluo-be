@@ -3,6 +3,7 @@ package com.golapadeok.fluo.domain.workspace.domain;
 import com.golapadeok.fluo.common.domain.BaseTimeEntity;
 import com.golapadeok.fluo.domain.role.domain.Role;
 import com.golapadeok.fluo.domain.member.domain.WorkspaceMember;
+import com.golapadeok.fluo.domain.state.State;
 import com.golapadeok.fluo.domain.task.domain.Task;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
