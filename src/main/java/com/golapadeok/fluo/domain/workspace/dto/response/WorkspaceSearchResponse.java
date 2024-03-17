@@ -6,21 +6,22 @@ import lombok.Getter;
 import java.time.LocalDate;
 
 @Getter
-public class WorkspaceCreateResponse {
+//TODO KDY MEMBER 추가 필요
+public class WorkspaceSearchResponse {
     private final String workspaceId;
     private final String title;
     private final String description;
     private final LocalDate createDate;
 
-    private WorkspaceCreateResponse(String workspaceId, String title, String description, LocalDate createDate) {
+    private WorkspaceSearchResponse(String workspaceId, String title, String description, LocalDate createDate) {
         this.workspaceId = workspaceId;
         this.title = title;
         this.description = description;
         this.createDate = createDate;
     }
 
-    public static WorkspaceCreateResponse of(Workspace workspace) {
-        return new WorkspaceCreateResponse(
+    public static WorkspaceSearchResponse of(Workspace workspace) {
+        return new WorkspaceSearchResponse(
                 workspace.getId().toString(),
                 workspace.getTitle(),
                 workspace.getDescription(),

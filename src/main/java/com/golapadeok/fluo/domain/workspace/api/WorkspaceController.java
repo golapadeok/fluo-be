@@ -6,7 +6,9 @@ import com.golapadeok.fluo.domain.workspace.dto.request.WorkspaceCreateRequest;
 import com.golapadeok.fluo.domain.workspace.dto.request.WorkspaceRequest;
 import com.golapadeok.fluo.domain.workspace.dto.response.BaseResponse;
 import com.golapadeok.fluo.domain.workspace.dto.response.WorkspaceCreateResponse;
+import com.golapadeok.fluo.domain.workspace.dto.response.WorkspaceSearchResponse;
 import com.golapadeok.fluo.domain.workspace.service.WorkspaceCreateService;
+import com.golapadeok.fluo.domain.workspace.service.WorkspaceSearchService;
 import com.golapadeok.fluo.domain.workspace.service.WorkspaceService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -24,6 +26,7 @@ public class WorkspaceController {
     private final WorkspaceService workspaceService;
 
     private final WorkspaceCreateService workspaceCreateService;
+    private final WorkspaceSearchService workspaceSearchService;
 
     @GetMapping
     @Operation(summary = "워크스페이스 전체조회 API", description = "워크스페이스 전체조회 API")
@@ -37,11 +40,10 @@ public class WorkspaceController {
 
     @GetMapping("/{workspaceId}")
     @Operation(summary = "워크스페이스 단일조회 API", description = "워크스페이스 단일조회 API")
-    public ResponseEntity<WorkspaceDto> getWorkspace(
+    public ResponseEntity<WorkspaceSearchResponse> searchWorkspace(
             @PathVariable("workspaceId") Integer workspaceId
     ) {
-        WorkspaceDto workspace = workspaceService.getWorkspace(workspaceId);
-        return ResponseEntity.ok(workspace);
+        return ResponseEntity.ok(workspaceSearchService.search(workspaceId));
     }
 
     @GetMapping("/{workspaceId}/states")
