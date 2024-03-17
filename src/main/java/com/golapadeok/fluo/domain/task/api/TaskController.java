@@ -2,7 +2,9 @@ package com.golapadeok.fluo.domain.task.api;
 
 import com.golapadeok.fluo.domain.task.dto.request.TaskCreateRequest;
 import com.golapadeok.fluo.domain.task.service.TaskCreateService;
+import com.golapadeok.fluo.domain.task.service.TaskSearchService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -17,12 +19,14 @@ import org.springframework.web.bind.annotation.*;
 public class TaskController {
 
     private final TaskCreateService taskCreateService;
+    private final TaskSearchService taskSearchService;
 
     @GetMapping("/{taskId}")
+    @Operation(summary = "업무 단일 조회 API", description = "해당 업무를 조회합니다.")
     public ResponseEntity<Object> getTask(
-            @PathVariable("taskId") Integer taskId
+            @PathVariable("taskId") @Parameter(description = "조회할 업무 아이디") Integer taskId
     ) {
-        return ResponseEntity.ok(null);
+        return ResponseEntity.ok(taskSearchService.search(taskId));
     }
 
     @PostMapping
