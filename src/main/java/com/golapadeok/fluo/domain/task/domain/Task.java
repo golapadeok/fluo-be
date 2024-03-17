@@ -2,18 +2,12 @@ package com.golapadeok.fluo.domain.task.domain;
 
 import com.golapadeok.fluo.common.domain.BaseTimeEntity;
 import com.golapadeok.fluo.domain.member.domain.Member;
-import com.golapadeok.fluo.domain.task.dto.request.TaskRequest;
 import com.golapadeok.fluo.domain.workspace.domain.State;
 import com.golapadeok.fluo.domain.workspace.domain.Workspace;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 @Getter
 @Entity
@@ -26,12 +20,12 @@ public class Task extends BaseTimeEntity {
     private Long id;
     private String title;
     private String description;
-    private String creator;
-    private String manager;
-    private Boolean isPrivate;
-    private Integer priority;
-    private LocalDateTime startDate;
-    private LocalDateTime endDate;
+
+    @Embedded
+    private TaskConfiguration configuration;
+
+    @Embedded
+    private ScheduleRange scheduleRange;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "STATE_ID")
@@ -45,33 +39,39 @@ public class Task extends BaseTimeEntity {
     @JoinColumn(name = "MEMBER_ID")
     private Member member;
 
-    @OneToMany(mappedBy = "task", fetch = FetchType.LAZY)
-    private List<ManagerTask> managerTasks = new ArrayList<>();
-
-    @Builder
-    public Task(String title, String description, String creator, String manager, Boolean isPrivate, Integer priority, LocalDateTime startDate, LocalDateTime endDate) {
+    public Task(Long id, String title, String description, TaskConfiguration configuration, ScheduleRange scheduleRange) {
+        this.id = id;
         this.title = title;
         this.description = description;
-        this.creator = creator;
-        this.manager = manager;
-        this.isPrivate = isPrivate;
-        this.priority = priority;
-        this.startDate = startDate;
-        this.endDate = endDate;
+        this.configuration = configuration;
+        this.scheduleRange = scheduleRange;
+    }
+
+    public Task(String title, String description, TaskConfiguration configuration, ScheduleRange scheduleRange) {
+        this(null, title, description, configuration, scheduleRange);
     }
 
     public void changeState(State state) {
         this.state = state;
     }
 
-    public void updateTask(TaskRequest request) {
-        this.title = request.getTitle();
-        this.description = request.getDescription();
-        this.creator = request.getCreator();
-        this.manager = request.convertManager();
-        this.priority = request.getPriority();
-        this.isPrivate = request.getIsPrivate();
-        this.startDate = request.convertStringStartDateToLocalDateTime();
-        this.endDate = request.convertStringStartDateToLocalDateTime();
+    public void changeWorkspace(Workspace workspace) {
+        this.workspace = workspace;
+    }
+
+    public void changeTaskConfiguration(TaskConfiguration configuration) {
+        this.configuration = configuration;
+    }
+
+    public void changeScheduleRange(ScheduleRange scheduleRange) {
+        this.scheduleRange = scheduleRange;
+    }
+
+    public void changeTitle(String title) {
+        this.title = title;
+    }
+
+    public void changeDescription(String description) {
+        this.description = description;
     }
 }
