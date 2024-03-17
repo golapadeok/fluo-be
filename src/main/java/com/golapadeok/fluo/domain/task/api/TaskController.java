@@ -3,6 +3,7 @@ package com.golapadeok.fluo.domain.task.api;
 import com.golapadeok.fluo.domain.task.dto.request.TaskCreateRequest;
 import com.golapadeok.fluo.domain.task.dto.request.TaskUpdateRequest;
 import com.golapadeok.fluo.domain.task.service.TaskCreateService;
+import com.golapadeok.fluo.domain.task.service.TaskDeleteService;
 import com.golapadeok.fluo.domain.task.service.TaskSearchService;
 import com.golapadeok.fluo.domain.task.service.TaskUpdateService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -23,6 +24,7 @@ public class TaskController {
     private final TaskCreateService taskCreateService;
     private final TaskSearchService taskSearchService;
     private final TaskUpdateService taskUpdateService;
+    private final TaskDeleteService taskDeleteService;
 
     @GetMapping("/{taskId}")
     @Operation(summary = "업무 단일 조회 API", description = "해당 업무를 조회합니다.")
@@ -53,6 +55,6 @@ public class TaskController {
     @DeleteMapping("/{taskId}")
     public ResponseEntity<Object> deleteTask(
             @PathVariable("taskId") Integer taskId) {
-        return ResponseEntity.ok(null);
+        return ResponseEntity.ok(taskDeleteService.delete(taskId));
     }
 }
