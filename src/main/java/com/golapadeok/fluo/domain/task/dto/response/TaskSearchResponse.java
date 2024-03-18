@@ -3,6 +3,7 @@ package com.golapadeok.fluo.domain.task.dto.response;
 import com.golapadeok.fluo.domain.task.domain.ScheduleRange;
 import com.golapadeok.fluo.domain.task.domain.Task;
 import com.golapadeok.fluo.domain.task.domain.TaskConfiguration;
+import com.golapadeok.fluo.domain.task.dto.StateDto;
 import lombok.Getter;
 
 import java.time.LocalDate;
@@ -11,17 +12,18 @@ import java.util.List;
 
 @Getter
 public class TaskSearchResponse {
-    private String taskId;
-    private String title;
-    private String description;
-    private String creator;
-    private List<String> managers;
-    private Boolean isPrivate;
-    private Integer priority;
-    private LocalDate startDate;
-    private LocalDate endDate;
+    private final String taskId;
+    private final String title;
+    private final String description;
+    private final String creator;
+    private final StateDto state;
+    private final List<String> managers;
+    private final Boolean isPrivate;
+    private final Integer priority;
+    private final LocalDate startDate;
+    private final LocalDate endDate;
 
-    private TaskSearchResponse(String taskId, String title, String description, TaskConfiguration configuration, ScheduleRange scheduleRange) {
+    private TaskSearchResponse(String taskId, String title, String description, TaskConfiguration configuration, StateDto state, ScheduleRange scheduleRange) {
         this.taskId = taskId;
         this.title = title;
         this.description = description;
@@ -29,6 +31,7 @@ public class TaskSearchResponse {
         this.managers = Arrays.asList(configuration.getManager().split(","));
         this.isPrivate = configuration.getIsPrivate();
         this.priority = configuration.getPriority();
+        this.state = state;
         this.startDate = scheduleRange.getStartDate().toLocalDate();
         this.endDate = scheduleRange.getEndDate().toLocalDate();
     }
@@ -39,7 +42,7 @@ public class TaskSearchResponse {
                 task.getTitle(),
                 task.getDescription(),
                 task.getConfiguration(),
-                task.getScheduleRange()
-        );
+                StateDto.of(task.getState()),
+                task.getScheduleRange());
     }
 }
