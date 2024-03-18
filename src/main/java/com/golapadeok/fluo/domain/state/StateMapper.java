@@ -1,5 +1,6 @@
 package com.golapadeok.fluo.domain.state;
 
+import com.golapadeok.fluo.domain.state.domain.State;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
