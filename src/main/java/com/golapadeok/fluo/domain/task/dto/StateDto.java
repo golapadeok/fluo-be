@@ -3,6 +3,8 @@ package com.golapadeok.fluo.domain.task.dto;
 import com.golapadeok.fluo.domain.state.domain.State;
 import lombok.Getter;
 
+import java.util.List;
+
 @Getter
 public class StateDto {
     private final String stateId;
@@ -15,5 +17,11 @@ public class StateDto {
 
     public static StateDto of(State state) {
         return new StateDto(state.getId().toString(), state.getName());
+    }
+
+    public static List<StateDto> of(List<State> states) {
+        return states.stream()
+                .map(StateDto::of)
+                .toList();
     }
 }

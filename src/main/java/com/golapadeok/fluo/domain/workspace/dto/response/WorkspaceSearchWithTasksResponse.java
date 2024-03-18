@@ -27,13 +27,13 @@ public class WorkspaceSearchWithTasksResponse {
         this.tasks = tasks;
     }
 
-    public static WorkspaceSearchWithTasksResponse of(Workspace workspace, List<Task> task) {
+    public static WorkspaceSearchWithTasksResponse of(Workspace workspace, List<Task> tasks) {
         return new WorkspaceSearchWithTasksResponse(
                 workspace.getId().toString(),
                 workspace.getTitle(),
                 workspace.getDescription(),
                 workspace.getCreateDate().toLocalDate(),
-                TaskDto.of(task)
+                TaskDto.of(tasks)
         );
     }
 

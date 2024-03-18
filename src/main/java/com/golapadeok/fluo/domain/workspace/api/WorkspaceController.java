@@ -47,11 +47,10 @@ public class WorkspaceController {
 
     @GetMapping("/{workspaceId}/states")
     @Operation(summary = "워크스페이스 상태 전체조회 API", description = "해당 워크스페이스의 상태 목록을 조회합니다.")
-    public ResponseEntity<WorkspaceWithStatesDto> getWorkspaceWithStates(
+    public ResponseEntity<WorkspaceSearchWithStatesResponse> getWorkspaceWithStates(
             @PathVariable("workspaceId") Integer workspaceId
     ) {
-        WorkspaceWithStatesDto workspaceWithStates = workspaceService.getWorkspaceWithStates(workspaceId);
-        return ResponseEntity.ok(workspaceWithStates);
+        return ResponseEntity.ok(workspaceSearchService.searchWithStates(workspaceId));
     }
 
     @GetMapping("/{workspaceId}/members")
