@@ -65,7 +65,7 @@ public class NaverOAuthClient implements SocialOAuthClient {
     public Member requestUserInfo(SocialToken socialToken) throws JsonProcessingException {
         String requestUrl = "https://openapi.naver.com/v1/nid/me";
         HttpHeaders headers = new HttpHeaders();
-        headers.add("Authorization", "Bearer "+socialToken.getAccessToken());
+        headers.add(HttpHeaders.AUTHORIZATION, "Bearer "+socialToken.getAccessToken());
 
         HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(headers);
         ResponseEntity<String> response = this.restTemplate.exchange(requestUrl, HttpMethod.GET, request, String.class);

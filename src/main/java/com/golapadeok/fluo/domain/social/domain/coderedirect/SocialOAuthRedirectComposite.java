@@ -1,7 +1,8 @@
 package com.golapadeok.fluo.domain.social.domain.coderedirect;
 
 import com.golapadeok.fluo.domain.social.domain.SocialType;
-import lombok.extern.slf4j.Slf4j;
+import com.golapadeok.fluo.domain.social.exception.SocialErrorException;
+import com.golapadeok.fluo.domain.social.exception.SocialErrorStatus;
 import org.springframework.stereotype.Component;
 
 import java.util.Map;
@@ -35,7 +36,7 @@ public class SocialOAuthRedirectComposite{
 
     public String getOAuthRedirectURL(SocialType socialType) {
         return Optional.ofNullable(redirect.get(socialType))
-                .orElseThrow(() -> new IllegalArgumentException("지원하지 않는 소셜 로그인 입니다."))
+                .orElseThrow(() -> new SocialErrorException(SocialErrorStatus.NOT_FOUNT_SOCIAL_LOGIN))
                 .getOAuthRedirectURL();
     }
 }

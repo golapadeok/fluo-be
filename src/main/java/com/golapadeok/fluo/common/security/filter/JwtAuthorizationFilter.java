@@ -1,9 +1,15 @@
 package com.golapadeok.fluo.common.security.filter;
 
+import com.golapadeok.fluo.common.jwt.JwtErrorStatus;
 import com.golapadeok.fluo.common.jwt.JwtTokenProvider;
+import com.golapadeok.fluo.common.jwt.exception.JwtErrorException;
 import com.golapadeok.fluo.common.security.domain.PrincipalDetails;
 import com.golapadeok.fluo.domain.member.domain.Member;
 import com.golapadeok.fluo.domain.member.repository.MemberRepository;
+import com.golapadeok.fluo.domain.social.domain.BlackList;
+import com.golapadeok.fluo.domain.social.repository.BlackListRepository;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.MalformedJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -15,6 +21,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -22,6 +30,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
     private final JwtTokenProvider provider;
     private final MemberRepository memberRepository;
+    private final BlackListRepository blackListRepository;
 
     private final String authorization = "Authorization";
     private final String tokenPrefix = "Bearer ";
@@ -36,6 +45,16 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
             chain.doFilter(request, response);
             return;
         }
+
+//        try {
+//            this.blackListRepository.findByAccessToken(header)
+//                    .ifPresent(existingBlackList -> {
+//                        log.error("유저가 이미 로그아웃한 상태입니다.");
+//                        throw new JwtErrorException(JwtErrorStatus.USER_ALREADY_LOGGED_OUT);
+//                    });
+//        } catch (JwtErrorException e) {
+//            request.setAttribute("exception", JwtErrorStatus.USER_ALREADY_LOGGED_OUT.getStatus());
+//        }
 
         /**
          * header에 refresh token이 오는 경우는 access token이 만료되어 재 발행을 요청할 때 오는 경우이다.
@@ -59,13 +78,21 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         }
 
         // access token 유효성 검사 후 인증 로직
-        this.provider.extractAccessToken(request)
-                .filter(this.provider::isTokenValidate)
-                .flatMap(this.provider::extractEmail)
-                .flatMap(this.memberRepository::findByEmail)
-                .ifPresent(this::saveAuthentication);
+        try {
+            this.provider.extractAccessToken(request)
+                    .filter(this.provider::isTokenValidate)
+                    .flatMap(this.provider::extractEmail)
+                    .flatMap(this.memberRepository::findByEmail)
+                    .ifPresent(this::saveAuthentication);
 
-        chain.doFilter(request, response);
+            chain.doFilter(request, response);
+        } catch(SecurityException | MalformedJwtException e) {
+            log.error("MalformedJwtException 에러남");
+            throw new JwtErrorException(JwtErrorStatus.MALFORMED_JWT); // 잘못된 JWT 서명입니다.
+        } catch (ExpiredJwtException e) {
+            log.error("ExpiredJwtException 에러남");
+            throw new JwtErrorException(JwtErrorStatus.EXPIRED_JWT); // 만료된 JWT 토큰입니다.
+        }
     }
 
     private void saveAuthentication(Member member) {

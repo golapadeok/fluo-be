@@ -4,25 +4,28 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.golapadeok.fluo.common.jwt.JwtTokenProvider;
 import com.golapadeok.fluo.domain.member.domain.Member;
 import com.golapadeok.fluo.domain.member.repository.MemberRepository;
-import com.golapadeok.fluo.domain.social.domain.client.GoogleOAuthClient;
+import com.golapadeok.fluo.domain.social.domain.BlackList;
 import com.golapadeok.fluo.domain.social.domain.SocialType;
 import com.golapadeok.fluo.domain.social.domain.client.SocialOAuthClientComposite;
 import com.golapadeok.fluo.domain.social.domain.coderedirect.SocialOAuthRedirectComposite;
-import com.golapadeok.fluo.domain.social.dto.request.GoogleOAuthToken;
 import com.golapadeok.fluo.domain.social.dto.response.SocialLoginResponse;
+import com.golapadeok.fluo.domain.social.exception.SocialErrorException;
+import com.golapadeok.fluo.domain.social.exception.SocialErrorStatus;
+import com.golapadeok.fluo.domain.social.repository.BlackListRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
 @Slf4j
 @Service
-public class OAuthService {
+public class SocialService {
 
     private final SocialOAuthRedirectComposite socialOAuthRedirectComposite;
     private final SocialOAuthClientComposite socialOAuthClientComposite;
     private final MemberRepository memberRepository;
+    private final BlackListRepository blackListRepository;
     private final JwtTokenProvider provider;
 
     public String getRedirectUrl(SocialType socialType) {
@@ -50,6 +53,7 @@ public class OAuthService {
                 .build();
     }
 
+    @Transactional
     private Member socialSave(Member socialMember, String refreshToken) {
         // refresh token 생성
 
@@ -62,6 +66,28 @@ public class OAuthService {
                 .build();
 
         return this.memberRepository.save(saved);
+    }
+
+    @Transactional
+    public void logout(Member member, String accessToken) {
+
+        this.memberRepository.findById(member.getId())
+                .map(m -> {
+                    m.updateRefreshToken(null);
+                    return this.memberRepository.save(m);
+                })
+                .orElseThrow(() -> new SocialErrorException(SocialErrorStatus.NOT_FOUNT_USER));
+
+
+        // 블랙리스트에 access token 저장
+        this.blackListRepository.findByAccessToken(accessToken)
+                .ifPresent(existingBlackList -> {
+                    throw new SocialErrorException(SocialErrorStatus.USER_ALREADY_LOGGED_OUT);
+                });
+
+        BlackList blackList = new BlackList(accessToken);
+        this.blackListRepository.save(blackList);
+
     }
 
 }
