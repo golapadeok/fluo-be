@@ -1,6 +1,6 @@
 package com.golapadeok.fluo.domain.task.dto;
 
-import com.golapadeok.fluo.domain.workspace.domain.State;
+import com.golapadeok.fluo.domain.state.domain.State;
 import lombok.Getter;
 
 @Getter
