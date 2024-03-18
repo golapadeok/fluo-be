@@ -1,6 +1,6 @@
 package com.golapadeok.fluo.domain.workspace.dto.response;
 
-import com.golapadeok.fluo.domain.task.dto.StateDto;
+import com.golapadeok.fluo.domain.state.dto.StateDto;
 import com.golapadeok.fluo.domain.workspace.domain.Workspace;
 import lombok.Getter;
 

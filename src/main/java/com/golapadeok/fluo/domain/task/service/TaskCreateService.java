@@ -48,9 +48,7 @@ public class TaskCreateService {
 
     private State getState(long stateId) {
         return stateRepository.findById(stateId)
-                .orElseGet(() -> null);
-//         TODO 에러 클래스 생성하면 추가하기 KDY
-//                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 상태입니다."));
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 상태입니다."));
     }
 
     private Workspace getWorkspace(long workspaceId) {

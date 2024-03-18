@@ -1,17 +1,17 @@
-package com.golapadeok.fluo.domain.task.dto.response;
+package com.golapadeok.fluo.domain.task.dto;
 
+import com.golapadeok.fluo.domain.state.dto.StateDto;
 import com.golapadeok.fluo.domain.task.domain.ScheduleRange;
 import com.golapadeok.fluo.domain.task.domain.Task;
 import com.golapadeok.fluo.domain.task.domain.TaskConfiguration;
-import com.golapadeok.fluo.domain.state.dto.StateDto;
 import lombok.Getter;
+import org.springframework.util.Assert;
 
 import java.time.LocalDate;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 @Getter
-public class TaskSearchResponse {
+public class TaskDto {
     private final String taskId;
     private final String title;
     private final String description;
@@ -23,7 +23,7 @@ public class TaskSearchResponse {
     private final LocalDate startDate;
     private final LocalDate endDate;
 
-    private TaskSearchResponse(String taskId, String title, String description, TaskConfiguration configuration, StateDto state, ScheduleRange scheduleRange) {
+    private TaskDto(String taskId, String title, String description, TaskConfiguration configuration, StateDto state, ScheduleRange scheduleRange) {
         this.taskId = taskId;
         this.title = title;
         this.description = description;
@@ -36,13 +36,22 @@ public class TaskSearchResponse {
         this.endDate = scheduleRange.getEndDate().toLocalDate();
     }
 
-    public static TaskSearchResponse of(Task task) {
-        return new TaskSearchResponse(
-                task.getId().toString(),
-                task.getTitle(),
-                task.getDescription(),
-                task.getConfiguration(),
-                StateDto.of(task.getState()),
-                task.getScheduleRange());
+    private static TaskDto of(Task task) {
+        Assert.notNull(task, "task must not be null");
+        StateDto convertState = StateDto.of(task.getState());
+        return new TaskDto(task.getId().toString(), task.getTitle(), task.getDescription(), task.getConfiguration(), convertState, task.getScheduleRange());
+    }
+
+    public static List<TaskDto> of(List<Task> tasks) {
+        Assert.notNull(tasks, "tasks must not be null");
+        Iterator<Task> iterator = tasks.iterator();
+        List<TaskDto> results = new ArrayList<>();
+        while (iterator.hasNext()) {
+            Task task = iterator.next();
+            TaskDto taskDto = of(task);
+            results.add(taskDto);
+        }
+
+        return Collections.unmodifiableList(results);
     }
 }

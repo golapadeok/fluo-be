@@ -4,7 +4,6 @@ import com.golapadeok.fluo.domain.task.domain.Task;
 import com.golapadeok.fluo.domain.task.dto.response.TaskSearchResponse;
 import com.golapadeok.fluo.domain.task.exception.NotFoundTaskException;
 import com.golapadeok.fluo.domain.task.repository.TaskRepository;
-import com.golapadeok.fluo.domain.task.util.TaskMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
