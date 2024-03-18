@@ -34,7 +34,7 @@ class StateUpdateServiceTest {
         //given
         StateUpdateRequest request = new StateUpdateRequest("update");
         State state = new State(1L, "state");
-        
+
         //when
         given(stateRepository.findById(1L)).willReturn(Optional.of(state));
 
