@@ -18,7 +18,8 @@ public class JwtTokenProvider {
     @Value("${jwt.secretKey}")
     private String secretKey;
 
-    private final long accessTokenExpiredTime = 1000L * 60L * 60L * 24L; // 1일
+//    private final long accessTokenExpiredTime = 1000L * 60L * 60L * 24L; // 1일
+private final long accessTokenExpiredTime = 1000L;
     private final long refreshTokenExpiredTime = 1000L * 60L * 60L * 24L; // 1일
     private final String authorization = "Authorization";
     private final String tokenPrefix = "Bearer ";
@@ -66,18 +67,18 @@ public class JwtTokenProvider {
 
     // 토큰의 만료시간 검증
     public boolean isTokenValidate(String token) {
-        try {
+//        try {
             Jws<Claims> claimsJws = Jwts.parserBuilder()
                     .setSigningKey(this.secretKey)
                     .build()
                     .parseClaimsJws(token);
 
             return !claimsJws.getBody().getExpiration().before(new Date());
-        } catch(SecurityException | MalformedJwtException e) {
-            throw new JwtErrorException(JwtErrorStatus.MALFORMED_JWT);
-        } catch (ExpiredJwtException e) {
-            throw new JwtErrorException(JwtErrorStatus.EXPIRED_JWT);
-        }
+//        } catch(SecurityException | MalformedJwtException e) {
+//            throw new MalformedJwtException(JwtErrorStatus.MALFORMED_JWT.getMessage()); // 잘못된 JWT 서명입니다.
+//        } catch (ExpiredJwtException e) {
+//            throw new JwtErrorException(JwtErrorStatus.EXPIRED_JWT); // 만료된 JWT 토큰입니다.
+//        }
     }
 
     // 엑세스 토큰 헤더에서 추출

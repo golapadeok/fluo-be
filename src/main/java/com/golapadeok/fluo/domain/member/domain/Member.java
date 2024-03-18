@@ -5,11 +5,13 @@ import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import org.springframework.context.annotation.Bean;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@ToString(exclude = {"socialId", "workspaceMembers"})
 @Getter
 @NoArgsConstructor
 @Entity
@@ -31,7 +33,8 @@ public class Member extends BaseTimeEntity {
     private List<WorkspaceMember> workspaceMembers = new ArrayList<>(); // 그룹참여유저
 
     @Builder
-    public Member(String email, String name, String profile, String refreshToken, SocialId socialId, List<WorkspaceMember> workspaceMembers) {
+    public Member(Long id, String email, String name, String profile, String refreshToken, SocialId socialId, List<WorkspaceMember> workspaceMembers) {
+        this.id = id;
         this.email = email;
         this.name = name;
         this.profile = profile;
