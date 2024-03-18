@@ -1,12 +1,12 @@
 package com.golapadeok.fluo.domain.workspace.service;
 
-import com.golapadeok.fluo.domain.state.State;
+import com.golapadeok.fluo.domain.state.domain.State;
 import com.golapadeok.fluo.domain.state.StateDto;
 import com.golapadeok.fluo.domain.workspace.domain.Workspace;
 import com.golapadeok.fluo.domain.workspace.dto.*;
 import com.golapadeok.fluo.domain.state.StateRequest;
 import com.golapadeok.fluo.domain.workspace.dto.request.WorkspaceRequest;
-import com.golapadeok.fluo.domain.state.StateRepository;
+import com.golapadeok.fluo.domain.state.repository.StateRepository;
 import com.golapadeok.fluo.domain.workspace.repository.WorkspaceRepository;
 import com.golapadeok.fluo.domain.workspace.dto.response.BaseResponse;
 import com.golapadeok.fluo.domain.state.StateMapper;

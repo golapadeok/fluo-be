@@ -1,6 +1,8 @@
-package com.golapadeok.fluo.domain.state;
+package com.golapadeok.fluo.domain.state.domain;
 
 
+import com.golapadeok.fluo.domain.state.StateDto;
+import com.golapadeok.fluo.domain.state.dto.request.StateUpdateRequest;
 import com.golapadeok.fluo.domain.workspace.domain.Workspace;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -22,9 +24,13 @@ public class State {
     @JoinColumn(name = "states")
     private Workspace workspace;
 
+    public State(Long id, String name) {
+        this.id = id;
+        this.name = name;
+    }
 
     public State(String name) {
-        this.name = name;
+        this(null, name);
     }
 
     public void changeWorkspace(Workspace workspace) {
@@ -32,8 +38,8 @@ public class State {
         workspace.getStates().add(this);
     }
 
-    public void updateState(StateDto stateDto) {
-        this.name = stateDto.getName();
+    public void changeState(StateUpdateRequest request) {
+        this.name = request.getName();
     }
 
 }
