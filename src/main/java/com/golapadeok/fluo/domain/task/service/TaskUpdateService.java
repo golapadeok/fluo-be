@@ -1,5 +1,6 @@
 package com.golapadeok.fluo.domain.task.service;
 
+import com.golapadeok.fluo.domain.state.exception.NotFoundStateException;
 import com.golapadeok.fluo.domain.task.domain.ScheduleRange;
 import com.golapadeok.fluo.domain.task.domain.Task;
 import com.golapadeok.fluo.domain.task.domain.TaskConfiguration;
@@ -43,9 +44,7 @@ public class TaskUpdateService {
 
     private State getState(long stateId) {
         return stateRepository.findById(stateId)
-                .orElseGet(() -> null);
-//         TODO 에러 클래스 생성하면 추가하기 KDY
-//                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 상태입니다."));
+                .orElseThrow(NotFoundStateException::new);
     }
 
     private ScheduleRange getScheduleRange(TaskUpdateRequest request) {
