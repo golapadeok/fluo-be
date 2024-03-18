@@ -7,7 +7,6 @@ import com.golapadeok.fluo.domain.state.repository.StateRepository;
 import com.golapadeok.fluo.domain.workspace.domain.Workspace;
 import com.golapadeok.fluo.domain.workspace.exception.NotFoundWorkspaceException;
 import com.golapadeok.fluo.domain.workspace.repository.WorkspaceRepository;
-import com.golapadeok.fluo.domain.workspace.service.WorkspaceSearchService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

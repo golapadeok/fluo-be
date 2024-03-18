@@ -1,7 +1,5 @@
 package com.golapadeok.fluo.domain.state.domain;
 
-
-import com.golapadeok.fluo.domain.state.StateDto;
 import com.golapadeok.fluo.domain.state.dto.request.StateUpdateRequest;
 import com.golapadeok.fluo.domain.workspace.domain.Workspace;
 import jakarta.persistence.*;

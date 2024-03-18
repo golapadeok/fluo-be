@@ -1,27 +1,25 @@
 package com.golapadeok.fluo.domain.workspace.api;
 
-import com.golapadeok.fluo.domain.workspace.dto.*;
 import com.golapadeok.fluo.domain.workspace.dto.request.WorkspaceCreateRequest;
+import com.golapadeok.fluo.domain.workspace.dto.request.WorkspacePageRequest;
 import com.golapadeok.fluo.domain.workspace.dto.response.*;
-import com.golapadeok.fluo.domain.workspace.service.WorkspaceCreateService;
-import com.golapadeok.fluo.domain.workspace.service.WorkspaceDeleteService;
-import com.golapadeok.fluo.domain.workspace.service.WorkspaceSearchService;
-import com.golapadeok.fluo.domain.workspace.service.WorkspaceService;
+import com.golapadeok.fluo.domain.workspace.service.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/workspaces")
 @Tag(name = "워크스페이스 API", description = "워크스페이스 관련 API 목록입니다.")
 public class WorkspaceController {
-    private final WorkspaceService workspaceService;
-
     private final WorkspaceCreateService workspaceCreateService;
     private final WorkspaceSearchService workspaceSearchService;
     private final WorkspaceDeleteService workspaceDeleteService;
@@ -29,12 +27,13 @@ public class WorkspaceController {
 
     @GetMapping
     @Operation(summary = "워크스페이스 전체조회 API", description = "워크스페이스 전체조회 API")
-    public ResponseEntity<BaseResponse> getWorkspaces() {
+    public ResponseEntity<List<WorkspacePageResponse>> getWorkspaces(
+            @Valid @ParameterObject WorkspacePageRequest pageRequest) {
         //전체조회
         //페이징
         //초대코드
-        BaseResponse workspaces = workspaceService.getWorkspaces();
-        return ResponseEntity.ok(workspaces);
+        List<WorkspacePageResponse> searches = workspaceSearchService.searches(pageRequest);
+        return ResponseEntity.ok(searches);
     }
 
     @GetMapping("/{workspaceId}")
