@@ -2,16 +2,17 @@ package com.golapadeok.fluo.domain.state.api;
 
 
 import com.golapadeok.fluo.domain.state.dto.request.StateCreateRequest;
+import com.golapadeok.fluo.domain.state.dto.response.StateCreateResponse;
+import com.golapadeok.fluo.domain.state.dto.response.StateSearchResponse;
 import com.golapadeok.fluo.domain.state.service.StateCreateService;
+import com.golapadeok.fluo.domain.state.service.StateSearchService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 
@@ -21,10 +22,19 @@ import java.net.URI;
 @RequestMapping("/states")
 public class StateController {
     private final StateCreateService stateCreateService;
+    private final StateSearchService stateSearchService;
+
+    @GetMapping("/{stateId}")
+    @Operation(summary = "상태 단일조회 API", description = "해당 상태를 조회합니다.")
+    public ResponseEntity<StateSearchResponse> createState(
+            @PathVariable(name = "stateId") @Parameter(description = "조회할 상태 아이디") Integer stateId
+    ) {
+        return ResponseEntity.ok(stateSearchService.search(stateId));
+    }
 
     @PostMapping
     @Operation(summary = "상태 생성 API", description = "입력받은 워크스페이스에 상태를 추가합니다.")
-    public ResponseEntity<Object> createState(
+    public ResponseEntity<StateCreateResponse> createState(
             @Valid @RequestBody StateCreateRequest request
     ) {
         return ResponseEntity
