@@ -25,7 +25,6 @@ import java.io.IOException;
 @Slf4j
 @Tag(name = "소셜 로그인 API", description = "소셜 로그인 관련 API 목록")
 @RestController
-@RequestMapping("/api/v1")
 public class SocialController {
 
     private final SocialService oAuthService;
