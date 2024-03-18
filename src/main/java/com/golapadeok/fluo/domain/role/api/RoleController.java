@@ -1,18 +1,13 @@
 package com.golapadeok.fluo.domain.role.api;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.golapadeok.fluo.domain.role.dto.response.BaseResponse;
-import com.golapadeok.fluo.domain.role.dto.response.Item;
 import com.golapadeok.fluo.domain.role.service.RoleService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -30,14 +25,14 @@ public class RoleController {
 
     @Operation(summary = "워크스페이스 역할 추가", description = "워크스페이스ID에 해당하는 워크스페이스에 역할을 추가", hidden = true)
     @PostMapping("/workspaces/{workspaceId}/role")
-    public ResponseEntity includeRole(@PathVariable("workspaceId") Integer workspaceId) {
+    public ResponseEntity includeWorkspaceRole(@PathVariable("workspaceId") Integer workspaceId) {
         return null;
     }
 
     @Operation(summary = "워크스페이스의 역할 목록 조회", description = "워크스페이스ID에 해당하는 역할 목록을 조회", hidden = true)
     @GetMapping("/workspaces/{workspaceId}/role")
-    public ResponseEntity getWorkspaceRoleList(@PathVariable("workspaceId") Integer workspaceId) {
-        return null;
+    public ResponseEntity<BaseResponse> getWorkspaceRoleList(@PathVariable("workspaceId") Integer workspaceId) {
+        return ResponseEntity.ok(this.roleService.getWorkspaceRoleList(workspaceId));
     }
 
     @Operation(summary = "역할 삭제", description = "역할ID를 통해 역할을 삭제", hidden = true)

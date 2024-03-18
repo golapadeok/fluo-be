@@ -64,8 +64,7 @@ public class SocialController {
         Map<String, String> params = new HashMap<>();
         params.put("memberId", socialLoginResponse.getMemberId());
 
-        return ResponseEntity.ok()
-                .body(params);
+        return ResponseEntity.ok(params);
     }
 
     @Operation(summary = "로그아웃 진행", description = "엑세스 토큰을 받아 해당 엑세스 토큰을 DB에 저장시켜 다시 엑세스 토큰으로 인증 하지 못하도록 함.")
@@ -87,8 +86,7 @@ public class SocialController {
         Map<String, String> params = new HashMap<>();
         params.put("message", "로그아웃 되었습니다.");
 
-        return ResponseEntity.ok()
-                .body(params);
+        return ResponseEntity.ok(params);
     }
 
 
