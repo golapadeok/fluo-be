@@ -7,18 +7,15 @@ import com.golapadeok.fluo.domain.task.dto.request.TaskCreateRequest;
 import com.golapadeok.fluo.domain.task.dto.response.TaskCreateResponse;
 import com.golapadeok.fluo.domain.task.repository.TaskRepository;
 import com.golapadeok.fluo.domain.task.util.TaskMapper;
-import com.golapadeok.fluo.domain.workspace.domain.State;
+import com.golapadeok.fluo.domain.state.State;
 import com.golapadeok.fluo.domain.workspace.domain.Workspace;
-import com.golapadeok.fluo.domain.workspace.repository.StateRepository;
+import com.golapadeok.fluo.domain.state.StateRepository;
 import com.golapadeok.fluo.domain.workspace.repository.WorkspaceRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
 
 import java.time.LocalDate;
-import java.util.List;
-import java.util.StringJoiner;
 
 @Service
 @RequiredArgsConstructor

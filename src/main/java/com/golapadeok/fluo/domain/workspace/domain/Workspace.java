@@ -3,6 +3,7 @@ package com.golapadeok.fluo.domain.workspace.domain;
 import com.golapadeok.fluo.common.domain.BaseTimeEntity;
 import com.golapadeok.fluo.domain.role.domain.Role;
 import com.golapadeok.fluo.domain.member.domain.WorkspaceMember;
+import com.golapadeok.fluo.domain.state.State;
 import com.golapadeok.fluo.domain.task.domain.Task;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -37,8 +38,13 @@ public class Workspace extends BaseTimeEntity {
     @OneToMany(mappedBy = "workspace", fetch = FetchType.LAZY)
     private List<Task> tasks = new ArrayList<>();
 
-    public Workspace(String title, String description) {
+    public Workspace(Long id, String title, String description) {
+        this.id = id;
         this.title = title;
         this.description = description;
+    }
+
+    public Workspace(String title, String description) {
+        this(null, title, description);
     }
 }

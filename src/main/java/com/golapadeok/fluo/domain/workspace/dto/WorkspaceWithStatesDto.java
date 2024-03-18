@@ -1,5 +1,6 @@
 package com.golapadeok.fluo.domain.workspace.dto;
 
+import com.golapadeok.fluo.domain.state.StateDto;
 import lombok.Getter;
 
 import java.util.List;

@@ -1,9 +1,5 @@
-package com.golapadeok.fluo.domain.workspace.util;
+package com.golapadeok.fluo.domain.state;
 
-import com.golapadeok.fluo.domain.workspace.domain.State;
-import com.golapadeok.fluo.domain.workspace.domain.Workspace;
-import com.golapadeok.fluo.domain.workspace.dto.StateDto;
-import com.golapadeok.fluo.domain.workspace.dto.request.WorkspaceRequest;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;

@@ -1,7 +1,7 @@
-package com.golapadeok.fluo.domain.workspace.domain;
+package com.golapadeok.fluo.domain.state;
 
 
-import com.golapadeok.fluo.domain.workspace.dto.StateDto;
+import com.golapadeok.fluo.domain.workspace.domain.Workspace;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;

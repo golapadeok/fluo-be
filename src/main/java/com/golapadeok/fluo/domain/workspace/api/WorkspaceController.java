@@ -1,9 +1,11 @@
 package com.golapadeok.fluo.domain.workspace.api;
 
 import com.golapadeok.fluo.domain.workspace.dto.*;
-import com.golapadeok.fluo.domain.workspace.dto.request.StateRequest;
-import com.golapadeok.fluo.domain.workspace.dto.request.WorkspaceRequest;
-import com.golapadeok.fluo.domain.workspace.dto.response.BaseResponse;
+import com.golapadeok.fluo.domain.workspace.dto.request.WorkspaceCreateRequest;
+import com.golapadeok.fluo.domain.workspace.dto.response.*;
+import com.golapadeok.fluo.domain.workspace.service.WorkspaceCreateService;
+import com.golapadeok.fluo.domain.workspace.service.WorkspaceDeleteService;
+import com.golapadeok.fluo.domain.workspace.service.WorkspaceSearchService;
 import com.golapadeok.fluo.domain.workspace.service.WorkspaceService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -20,6 +22,11 @@ import org.springframework.web.bind.annotation.*;
 public class WorkspaceController {
     private final WorkspaceService workspaceService;
 
+    private final WorkspaceCreateService workspaceCreateService;
+    private final WorkspaceSearchService workspaceSearchService;
+    private final WorkspaceDeleteService workspaceDeleteService;
+
+
     @GetMapping
     @Operation(summary = "워크스페이스 전체조회 API", description = "워크스페이스 전체조회 API")
     public ResponseEntity<BaseResponse> getWorkspaces() {
@@ -31,12 +38,11 @@ public class WorkspaceController {
     }
 
     @GetMapping("/{workspaceId}")
-    @Operation(summary = "워크스페이스 단일조회 API", description = "워크스페이스 단일조회 API")
-    public ResponseEntity<WorkspaceDto> getWorkspace(
+    @Operation(summary = "워크스페이스 단일조회 API", description = "해당 워크스페이스 조회 API")
+    public ResponseEntity<WorkspaceSearchResponse> searchWorkspace(
             @PathVariable("workspaceId") Integer workspaceId
     ) {
-        WorkspaceDto workspace = workspaceService.getWorkspace(workspaceId);
-        return ResponseEntity.ok(workspace);
+        return ResponseEntity.ok(workspaceSearchService.search(workspaceId));
     }
 
     @GetMapping("/{workspaceId}/states")
@@ -48,17 +54,6 @@ public class WorkspaceController {
         return ResponseEntity.ok(workspaceWithStates);
     }
 
-    @PostMapping("/{workspaceId}/states")
-    @Operation(summary = "워크스페이스 상태 생성 API", description = "워크스페이스의 새로운 상태를 생성합니다.")
-    public ResponseEntity<StateDto> createWorkspaceWithStates(
-            @PathVariable("workspaceId") Integer workspaceId,
-            @RequestBody StateRequest request
-    ) {
-        StateDto state = workspaceService.createState(workspaceId, request);
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(state);
-    }
-
     @GetMapping("/{workspaceId}/members")
     @Operation(hidden = true)
     public void getWorkspaceWithMembers() {
@@ -66,9 +61,11 @@ public class WorkspaceController {
     }
 
     @GetMapping("/{workspaceId}/tasks")
-    @Operation(hidden = true)
-    public void getWorkspaceWithTasks() {
-
+    @Operation(summary = "워크스페이스와 업무목록 조회 API", description = "해당 워크스페이스와 포함된 업무목록을 조회합니다.")
+    public ResponseEntity<WorkspaceWithTaskSearchResponse> searchWorkspaceWithTasks(
+            @PathVariable(name = "workspaceId") Integer workspaceId
+    ) {
+        return ResponseEntity.ok(workspaceSearchService.searchWithTasks(workspaceId));
     }
 
     @GetMapping("/{workspaceId}/invitations")
@@ -79,21 +76,19 @@ public class WorkspaceController {
 
     @PostMapping
     @Operation(summary = "워크스페이스 생성 API", description = "새로운 워크스페이스를 생성합니다.")
-    public ResponseEntity<WorkspaceDto> createWorkspace(
-            @Valid @RequestBody WorkspaceRequest request
+    public ResponseEntity<WorkspaceCreateResponse> createWorkspace(
+            @Valid @RequestBody WorkspaceCreateRequest request
     ) {
-        WorkspaceDto workspace = workspaceService.createWorkspace(request);
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(workspace);
+                .body(workspaceCreateService.create(request));
     }
 
     @DeleteMapping("/{workspaceId}")
-    @Operation(summary = "워크스페이스 삭제 API", description = "워크스페이스를 삭제합니다.")
-    public ResponseEntity<WorkspaceIdDto> deleteWorkspace(
+    @Operation(summary = "워크스페이스 삭제 API", description = "해당 워크스페이스를 삭제합니다.")
+    public ResponseEntity<WorkspaceDeleteResponse> deleteWorkspace(
             @PathVariable("workspaceId") Integer workspaceId
     ) {
-        WorkspaceIdDto workspaceIdDto = workspaceService.deleteWorkspace(workspaceId);
-        return ResponseEntity.ok(workspaceIdDto);
+        return ResponseEntity.ok(workspaceDeleteService.delete(workspaceId));
     }
 }

@@ -1,4 +1,4 @@
-package com.golapadeok.fluo.domain.workspace.dto;
+package com.golapadeok.fluo.domain.task;
 
 import lombok.Getter;
 
