@@ -20,12 +20,13 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 @RequiredArgsConstructor
 @Slf4j
 @Tag(name = "소셜 로그인 API", description = "소셜 로그인 관련 API 목록")
 @RestController
-@RequestMapping("/api/v1")
 public class SocialController {
 
     private final SocialService oAuthService;
@@ -45,7 +46,7 @@ public class SocialController {
 
     @Operation(summary = "소셜 로그인 진행", description = "소셜 로그인 진행, 만약 회원가입이 안되어 있다면 회원가입을 함.")
     @GetMapping("/auth/{socialLoginType}/callback")
-    public ResponseEntity<Void> socialLogin(@Parameter(description = "소셜 타입", required = true)
+    public ResponseEntity<Map<String, String>> socialLogin(@Parameter(description = "소셜 타입", required = true)
                                             @PathVariable("socialLoginType") String socialLoginType,
                                             @Parameter(description = "로그인 진행 후 일회성 인증 코드", example = "sampleX", required = true)
                                             @RequestParam("code") String code,
@@ -60,13 +61,15 @@ public class SocialController {
         response.addHeader(HttpHeaders.AUTHORIZATION, "Bearer "+socialLoginResponse.getAccessToken());
         response.addCookie(cookie);
 
-        return ResponseEntity.ok()
-                .build();
+        Map<String, String> params = new HashMap<>();
+        params.put("memberId", socialLoginResponse.getMemberId());
+
+        return ResponseEntity.ok(params);
     }
 
     @Operation(summary = "로그아웃 진행", description = "엑세스 토큰을 받아 해당 엑세스 토큰을 DB에 저장시켜 다시 엑세스 토큰으로 인증 하지 못하도록 함.")
     @PostMapping("/auth/logout")
-    public ResponseEntity<Void> logout(@AuthenticationPrincipal PrincipalDetails principalDetails,
+    public ResponseEntity<Map<String, String>> logout(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                         @Parameter(description = "엑세스 토큰", required = true)
                                         HttpServletRequest request) {
         log.info("memberId : {}", principalDetails.toString());
@@ -80,9 +83,10 @@ public class SocialController {
 
         this.oAuthService.logout(principalDetails.getMember(), accessToken);
 
-        return ResponseEntity
-                .ok()
-                .build();
+        Map<String, String> params = new HashMap<>();
+        params.put("message", "로그아웃 되었습니다.");
+
+        return ResponseEntity.ok(params);
     }
 
 
