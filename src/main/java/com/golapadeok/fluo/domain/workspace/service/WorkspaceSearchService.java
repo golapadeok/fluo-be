@@ -3,10 +3,7 @@ package com.golapadeok.fluo.domain.workspace.service;
 import com.golapadeok.fluo.domain.task.domain.Task;
 import com.golapadeok.fluo.domain.workspace.domain.Workspace;
 import com.golapadeok.fluo.domain.workspace.dto.request.WorkspacePageRequest;
-import com.golapadeok.fluo.domain.workspace.dto.response.WorkspacePageResponse;
-import com.golapadeok.fluo.domain.workspace.dto.response.WorkspaceSearchResponse;
-import com.golapadeok.fluo.domain.workspace.dto.response.WorkspaceSearchWithStatesResponse;
-import com.golapadeok.fluo.domain.workspace.dto.response.WorkspaceSearchWithTasksResponse;
+import com.golapadeok.fluo.domain.workspace.dto.response.*;
 import com.golapadeok.fluo.domain.workspace.exception.NotFoundWorkspaceException;
 import com.golapadeok.fluo.domain.workspace.repository.WorkspaceRepository;
 import lombok.RequiredArgsConstructor;
@@ -46,7 +43,11 @@ public class WorkspaceSearchService {
     public WorkspaceSearchWithStatesResponse searchWithStates(Integer workspaceId) {
         Workspace workspace = getWorkspace(workspaceId);
         return WorkspaceSearchWithStatesResponse.of(workspace);
+    }
 
+    public WorkspaceSearchWithMembersResponse searchWithMembers(Integer workspaceId) {
+        Workspace workspace = getWorkspace(workspaceId);
+        return WorkspaceSearchWithMembersResponse.of(workspace);
     }
 
     private Workspace getWorkspace(int workspaceId) {
