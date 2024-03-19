@@ -3,11 +3,14 @@ package com.golapadeok.fluo.domain.member.domain;
 import com.golapadeok.fluo.common.domain.BaseTimeEntity;
 import com.golapadeok.fluo.domain.workspace.domain.Workspace;
 import jakarta.persistence.*;
+import lombok.Getter;
 
+@Getter
 @Entity
 public class WorkspaceMember extends BaseTimeEntity {
 
-    @Id @GeneratedValue
+    @Id
+    @GeneratedValue
     private Long id;
 
     @ManyToOne

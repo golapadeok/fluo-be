@@ -45,7 +45,7 @@ public class WorkspaceController {
     }
 
     @GetMapping("/{workspaceId}/states")
-    @Operation(summary = "워크스페이스 상태 전체조회 API", description = "해당 워크스페이스의 상태 목록을 조회합니다.")
+    @Operation(summary = "워크스페이스 상태목록 조회 API", description = "해당 워크스페이스의 상태 목록을 조회합니다.")
     public ResponseEntity<WorkspaceSearchWithStatesResponse> getWorkspaceWithStates(
             @PathVariable("workspaceId") Integer workspaceId
     ) {
@@ -53,9 +53,9 @@ public class WorkspaceController {
     }
 
     @GetMapping("/{workspaceId}/members")
-    @Operation(hidden = true)
-    public void getWorkspaceWithMembers() {
-
+    @Operation(summary = "워크스페이스의 회원목록 조회 API", description = "해당 워크스페이스의 회원목록을 조회합니다.")
+    public ResponseEntity<WorkspaceSearchWithMembersResponse> searchWorkspaceWithMembers(@PathVariable("workspaceId") Integer workspaceId) {
+        return ResponseEntity.ok(workspaceSearchService.searchWithMembers(workspaceId));
     }
 
     @GetMapping("/{workspaceId}/tasks")
