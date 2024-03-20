@@ -1,8 +1,10 @@
 package com.golapadeok.fluo.domain.role.domain;
 
 import com.golapadeok.fluo.common.domain.BaseTimeEntity;
+import com.golapadeok.fluo.domain.role.dto.request.RoleUpdateRequest;
 import com.golapadeok.fluo.domain.workspace.domain.Workspace;
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
@@ -28,6 +30,7 @@ public class Role extends BaseTimeEntity { // 그룹역할종류
     @JoinColumn(name = "WORKSPACE_ID")
     private Workspace workspace;
 
+    @Builder
     public Role(String name, String roles, Workspace workspace) {
         this.name = name;
         this.roles = roles;
@@ -39,6 +42,11 @@ public class Role extends BaseTimeEntity { // 그룹역할종류
             return Arrays.asList(this.roles.split(","));
         }
         return new ArrayList<>();
+    }
+
+    public void updateRole(RoleUpdateRequest request) {
+        this.name = request.getName();
+        this.roles = String.join(",", request.getCredentials());
     }
 
 }
