@@ -14,13 +14,15 @@ public class WorkspaceSearchWithMembersResponse {
     private final String workspaceId;
     private final String title;
     private final String description;
+    private final String imageUrl;
     private final LocalDate createDate;
     private final List<MemberDto> members;
 
-    private WorkspaceSearchWithMembersResponse(String workspaceId, String title, String description, LocalDate createDate, List<MemberDto> members) {
+    private WorkspaceSearchWithMembersResponse(String workspaceId, String title, String description, String imageUrl, LocalDate createDate, List<MemberDto> members) {
         this.workspaceId = workspaceId;
         this.title = title;
         this.description = description;
+        this.imageUrl = imageUrl;
         this.createDate = createDate;
         this.members = members;
     }
@@ -30,6 +32,7 @@ public class WorkspaceSearchWithMembersResponse {
                 workspace.getId().toString(),
                 workspace.getTitle(),
                 workspace.getDescription(),
+                workspace.getImageUrl(),
                 workspace.getCreateDate().toLocalDate(),
                 MemberDto.of(getMembers(workspace))
         );

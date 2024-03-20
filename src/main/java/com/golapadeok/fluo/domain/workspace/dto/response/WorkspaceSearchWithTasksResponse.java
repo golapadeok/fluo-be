@@ -13,13 +13,15 @@ public class WorkspaceSearchWithTasksResponse {
     private final String workspaceId;
     private final String title;
     private final String description;
+    private final String imageUrl;
     private final LocalDate createDate;
     private final List<TaskDto> tasks;
 
-    private WorkspaceSearchWithTasksResponse(String workspaceId, String title, String description, LocalDate createDate, List<TaskDto> tasks) {
+    private WorkspaceSearchWithTasksResponse(String workspaceId, String title, String description, String imageUrl, LocalDate createDate, List<TaskDto> tasks) {
         this.workspaceId = workspaceId;
         this.title = title;
         this.description = description;
+        this.imageUrl = imageUrl;
         this.createDate = createDate;
         this.tasks = tasks;
     }
@@ -29,6 +31,7 @@ public class WorkspaceSearchWithTasksResponse {
                 workspace.getId().toString(),
                 workspace.getTitle(),
                 workspace.getDescription(),
+                workspace.getImageUrl(),
                 workspace.getCreateDate().toLocalDate(),
                 TaskDto.of(tasks)
         );
