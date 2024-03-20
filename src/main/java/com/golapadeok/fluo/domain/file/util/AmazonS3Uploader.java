@@ -26,6 +26,8 @@ public class AmazonS3Uploader {
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
 
+
+
     private final AmazonS3 amazonS3Client;
 
     public String upload(MultipartFile multipartFile) {
@@ -80,5 +82,9 @@ public class AmazonS3Uploader {
 
 
         return Optional.empty();
+    }
+
+    public void removeFile(String fileName) {
+        amazonS3Client.deleteObject(bucket, fileName);
     }
 }

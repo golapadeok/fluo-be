@@ -32,4 +32,7 @@ public class DefaultImage {
     public void changeWorkspace(Workspace workspace) {
         this.workspace = workspace;
     }
+    public void changeUrl(String url){
+        this.url = url;
+    }
 }
