@@ -9,14 +9,14 @@ import java.util.stream.Stream;
 
 @AllArgsConstructor
 @Getter
-public class CredentialAllResponse {
+public class CredentialResponse {
 
     private String name;
     private String description;
 
-    public static List<CredentialAllResponse> toItemList() {
+    public static List<CredentialResponse> toItemList() {
         return Stream.of(Credential.values())
-                .map(credential -> new CredentialAllResponse(credential.getName(), credential.getDescription()))
+                .map(credential -> new CredentialResponse(credential.getName(), credential.getDescription()))
                 .toList();
     }
 }

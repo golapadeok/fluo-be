@@ -57,7 +57,11 @@ public class SocialController {
 
         SocialLoginResponse socialLoginResponse = this.oAuthService.socialLogin(socialType, code);
 
+        // 쿠키 세팅
         Cookie cookie = new Cookie("RefreshToken", socialLoginResponse.getRefreshToken());
+        cookie.setHttpOnly(true);
+        cookie.setPath("/");
+        
         response.addHeader(HttpHeaders.AUTHORIZATION, "Bearer "+socialLoginResponse.getAccessToken());
         response.addCookie(cookie);
 
@@ -71,7 +75,9 @@ public class SocialController {
     @PostMapping("/auth/logout")
     public ResponseEntity<Map<String, String>> logout(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                         @Parameter(description = "엑세스 토큰", required = true)
-                                        HttpServletRequest request) {
+                                        HttpServletRequest request,
+                                                      @CookieValue(value = "RefreshToken") Cookie cookie) {
+        log.info("cookie : {}", cookie.getValue());
         log.info("memberId : {}", principalDetails.toString());
         String accessToken = request.getHeader(HttpHeaders.AUTHORIZATION);
         log.info("accessToken : {}", accessToken);
