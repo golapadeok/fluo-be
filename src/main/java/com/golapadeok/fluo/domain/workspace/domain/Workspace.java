@@ -1,6 +1,7 @@
 package com.golapadeok.fluo.domain.workspace.domain;
 
 import com.golapadeok.fluo.common.domain.BaseTimeEntity;
+import com.golapadeok.fluo.domain.file.domain.DefaultImage;
 import com.golapadeok.fluo.domain.role.domain.Role;
 import com.golapadeok.fluo.domain.member.domain.WorkspaceMember;
 import com.golapadeok.fluo.domain.state.domain.State;
@@ -25,6 +26,7 @@ public class Workspace extends BaseTimeEntity {
 
     private String title;
     private String description;
+    private String imageUrl;
 
     @OneToMany(mappedBy = "workspace", fetch = FetchType.LAZY)
     private List<State> states = new ArrayList<>();
@@ -38,13 +40,15 @@ public class Workspace extends BaseTimeEntity {
     @OneToMany(mappedBy = "workspace", fetch = FetchType.LAZY)
     private List<Task> tasks = new ArrayList<>();
 
-    public Workspace(Long id, String title, String description) {
+
+    public Workspace(Long id, String title, String description, String imageUrl) {
         this.id = id;
         this.title = title;
         this.description = description;
+        this.imageUrl = imageUrl;
     }
 
-    public Workspace(String title, String description) {
-        this(null, title, description);
+    public Workspace(String title, String description, String imageUrl) {
+        this(null, title, description, imageUrl);
     }
 }

@@ -14,12 +14,13 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Optional;
+import java.util.UUID;
 
 @Slf4j
 @Component
 @RequiredArgsConstructor
 public class AmazonS3Uploader {
-    @Value("${file.image.path}")
+    @Value("${file.path.image}")
     private String defaultImagePath;
 
     @Value("${cloud.aws.s3.bucket}")
@@ -27,17 +28,22 @@ public class AmazonS3Uploader {
 
     private final AmazonS3 amazonS3Client;
 
-    public String localUpload(MultipartFile multipartFile) throws IOException {
-        File uploadFile = convert(multipartFile)
-                .orElseThrow(() -> new IllegalArgumentException("MultipartFile -> File 전환 실패"));
-        return s3Upload(uploadFile);
+    public String upload(MultipartFile multipartFile) {
+        final String fileName = defaultImagePath + "_" + UUID.randomUUID() + "_" + multipartFile.getOriginalFilename();
+        final File convertFile = localUpload(multipartFile);
+        final String s3Url = s3Upload(convertFile, fileName);
+
+        removeNewFile(convertFile);
+        return s3Url;
     }
 
-    private String s3Upload(File uploadFile) {
-        String fileName = defaultImagePath + "/" + uploadFile.getName();
-        String uploadImageUrl = putS3(uploadFile, fileName);
-        removeNewFile(uploadFile);
-        return uploadImageUrl;
+    private File localUpload(MultipartFile multipartFile) {
+        return convert(multipartFile)
+                .orElseThrow(() -> new IllegalArgumentException("MultipartFile -> File 전환 실패"));
+    }
+
+    private String s3Upload(File uploadFile, String fileName) {
+        return putS3(uploadFile, fileName);
     }
 
     private String putS3(File uploadFile, String fileName) {
@@ -56,17 +62,22 @@ public class AmazonS3Uploader {
         }
     }
 
-    private Optional<File> convert(MultipartFile file) throws IOException {
+    private Optional<File> convert(MultipartFile file) {
 
         Assert.notNull(file.getOriginalFilename(), "file original name must not null");
         File convertFile = new File(file.getOriginalFilename());
 
-        if (convertFile.createNewFile()) {
-            try (FileOutputStream fos = new FileOutputStream(convertFile)) {
-                fos.write(file.getBytes());
+        try {
+            if (convertFile.createNewFile()) {
+                try (FileOutputStream fos = new FileOutputStream(convertFile)) {
+                    fos.write(file.getBytes());
+                }
+                return Optional.of(convertFile);
             }
-            return Optional.of(convertFile);
+        } catch (IOException e) {
+            log.error("이미지 쓰기 작업에 실패했습니다.");
         }
+
 
         return Optional.empty();
     }

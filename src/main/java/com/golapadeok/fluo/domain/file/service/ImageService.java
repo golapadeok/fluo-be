@@ -12,7 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -23,19 +22,19 @@ public class ImageService {
     private final DefaultImageRepository repository;
     private final WorkspaceRepository workspaceRepository;
 
-
     @Transactional
-    public String createImage(MultipartFile multipartFile, Integer workspaceId) throws IOException {
+    public String createImage(MultipartFile multipartFile, Integer workspaceId) {
         final long id = workspaceId;
         Workspace workspace = workspaceRepository.findById(id)
                 .orElseThrow(NotFoundWorkspaceException::new);
 
-        String s3Path = amazonS3Uploader.localUpload(multipartFile);
-        DefaultImage defaultImage = new DefaultImage(s3Path);
+        String imageUrl = amazonS3Uploader.upload(multipartFile);
+
+        DefaultImage defaultImage = new DefaultImage(imageUrl);
         defaultImage.changeWorkspace(workspace);
         repository.save(defaultImage);
 
-        return s3Path;
+        return imageUrl;
     }
 
     @Transactional(readOnly = true)
