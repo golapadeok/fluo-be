@@ -9,19 +9,13 @@ import com.golapadeok.fluo.domain.role.exception.RoleErrorStatus;
 import com.golapadeok.fluo.domain.role.exception.RoleException;
 import com.golapadeok.fluo.domain.role.repository.RoleRepository;
 import com.golapadeok.fluo.domain.workspace.domain.Workspace;
-import com.golapadeok.fluo.domain.workspace.dto.WorkspaceDto;
-import com.golapadeok.fluo.domain.workspace.dto.request.WorkspaceRequest;
 import com.golapadeok.fluo.domain.workspace.repository.WorkspaceRepository;
-import com.golapadeok.fluo.domain.workspace.service.WorkspaceService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Slf4j
 @RequiredArgsConstructor
