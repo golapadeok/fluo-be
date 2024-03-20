@@ -15,9 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -87,17 +85,7 @@ public class RoleService {
 
         // 역할 업데이트
         role.updateRole(request);
-
-        // 역할에 해당하는 권한들을 보여줘야함.
-        /**
-         * roleId: string,
-         * 			name(역할 이름): string,
-         * 			credentials: {
-         * 				name: string,
-         * 				description: string,
-         * 			 },
-         * 	},
-         */
+        
         // 해당 역할의 권한들의 이름과 설명을 리스트에 담아준다.
         List<CredentialResponse> credentialResponses = role.getRoleList().stream()
                 .map(r -> CredentialResponse.builder()
@@ -105,8 +93,6 @@ public class RoleService {
                         .description(Credential.valueOf(r.trim()).getDescription())
                         .build())
                 .toList();
-//        role.getRoleList().stream()
-//                .map(r -> Collectors.toMap())
 
         // 해당 워크스페이스의 역할과 해당하는 권한들의 이름과 설명을 출력한다.
         WorkspaceRoleListResponse workspaceRoleListResponse = WorkspaceRoleListResponse.builder()
