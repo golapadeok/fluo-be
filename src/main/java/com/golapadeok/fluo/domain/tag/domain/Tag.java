@@ -15,8 +15,8 @@ public class Tag {
     @Column(name = "TAG_ID")
     private Long id;
 
-    public String tagName;
-    public String colorCode;
+    private String tagName;
+    private String colorCode;
 
     @JoinColumn(name = "WORKSPACE_ID")
     @ManyToOne(fetch = FetchType.LAZY)

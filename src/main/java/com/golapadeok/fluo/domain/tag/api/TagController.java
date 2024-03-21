@@ -1,9 +1,13 @@
 package com.golapadeok.fluo.domain.tag.api;
 
 import com.golapadeok.fluo.domain.tag.dto.request.TagCreateRequest;
+import com.golapadeok.fluo.domain.tag.dto.response.TagCreateResponse;
+import com.golapadeok.fluo.domain.tag.dto.response.TagDeleteResponse;
 import com.golapadeok.fluo.domain.tag.service.TagService;
+import io.swagger.v3.oas.annotations.Parameter;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,14 +23,18 @@ public class TagController {
     }
 
     @PostMapping
-    public ResponseEntity<Object> createTags(
+    public ResponseEntity<TagCreateResponse> createTags(
             @Valid @RequestBody TagCreateRequest request
     ) {
-        return ResponseEntity.ok(tagService.createTags(request));
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(tagService.createTags(request));
     }
 
-    @DeleteMapping
-    public ResponseEntity<Object> deleteTags() {
-        return ResponseEntity.ok(null);
+    @DeleteMapping("/{tagId}")
+    public ResponseEntity<TagDeleteResponse> deleteTags(
+            @PathVariable("tagId") @Parameter(description = "삭제할 태그 아이디") Integer tagId
+    ) {
+        return ResponseEntity.ok(tagService.deleteTags(tagId));
     }
 }

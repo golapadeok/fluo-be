@@ -3,6 +3,7 @@ package com.golapadeok.fluo.domain.tag.service;
 import com.golapadeok.fluo.domain.tag.domain.Tag;
 import com.golapadeok.fluo.domain.tag.dto.request.TagCreateRequest;
 import com.golapadeok.fluo.domain.tag.dto.response.TagCreateResponse;
+import com.golapadeok.fluo.domain.tag.dto.response.TagDeleteResponse;
 import com.golapadeok.fluo.domain.tag.repository.TagRepository;
 import com.golapadeok.fluo.domain.workspace.domain.Workspace;
 import com.golapadeok.fluo.domain.workspace.repository.WorkspaceRepository;
@@ -63,5 +64,16 @@ class TagServiceTest {
     @Test
     @DisplayName("태그 삭제 성공 케이스")
     void deleteTags() {
+        //given
+        Integer id = 1;
+
+        //when
+        given(tagRepository.findById(id.longValue())).willReturn(Optional.of(new Tag(1L, "tag1", "######")));
+
+        //then
+        TagDeleteResponse response = tagService.deleteTags(id);
+
+        assertThat(response).isNotNull();
+        assertThat(response.getMessage()).isEqualTo("태그 삭제에 성공했습니다.");
     }
 }

@@ -3,6 +3,8 @@ package com.golapadeok.fluo.domain.tag.service;
 import com.golapadeok.fluo.domain.tag.domain.Tag;
 import com.golapadeok.fluo.domain.tag.dto.request.TagCreateRequest;
 import com.golapadeok.fluo.domain.tag.dto.response.TagCreateResponse;
+import com.golapadeok.fluo.domain.tag.dto.response.TagDeleteResponse;
+import com.golapadeok.fluo.domain.tag.exception.NotFoundTagException;
 import com.golapadeok.fluo.domain.tag.repository.TagRepository;
 import com.golapadeok.fluo.domain.workspace.domain.Workspace;
 import com.golapadeok.fluo.domain.workspace.exception.NotFoundWorkspaceException;
@@ -11,9 +13,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 
 @Service
 @RequiredArgsConstructor
@@ -39,7 +38,11 @@ public class TagService {
         return TagCreateResponse.of(tag);
     }
 
-    public Object deleteTags() {
-        return ResponseEntity.ok(null);
+    public TagDeleteResponse deleteTags(Integer tagId) {
+        Tag tag = tagRepository.findById(tagId.longValue())
+                .orElseThrow(NotFoundTagException::new);
+
+        tagRepository.delete(tag);
+        return TagDeleteResponse.of("태그 삭제에 성공했습니다.");
     }
 }
