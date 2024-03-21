@@ -61,9 +61,10 @@ public class WorkspaceController {
     @GetMapping("/{workspaceId}/tasks")
     @Operation(summary = "워크스페이스와 업무목록 조회 API", description = "해당 워크스페이스와 포함된 업무목록을 조회합니다.")
     public ResponseEntity<WorkspaceSearchWithTasksResponse> searchWorkspaceWithTasks(
-            @PathVariable(name = "workspaceId") Integer workspaceId
+            @PathVariable(name = "workspaceId") Integer workspaceId,
+            @Valid @ParameterObject WorkspacePageRequest pageRequest
     ) {
-        return ResponseEntity.ok(workspaceSearchService.searchWithTasks(workspaceId));
+        return ResponseEntity.ok(workspaceSearchService.searchWithTasks(workspaceId, pageRequest));
     }
 
     @GetMapping("/{workspaceId}/invitations")

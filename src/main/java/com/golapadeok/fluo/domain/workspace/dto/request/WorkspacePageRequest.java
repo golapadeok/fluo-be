@@ -1,14 +1,11 @@
 package com.golapadeok.fluo.domain.workspace.dto.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.validator.constraints.Range;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-// TODO KDY 추후 offset -> cursorId로 변경해야함.
 public class WorkspacePageRequest {
     @Range(min = 10, max = 50, message = "한 페이지에 표시될 아이템는 10이상 50이하 입니다.")
     @Schema(description = "한 페이지에 표시될 아이템 개수", example = "10")

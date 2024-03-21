@@ -20,15 +20,15 @@ public class WorkspacePageResponse {
     private final String title;
     private final String description;
     private final List<StateDto> state;
-    private final List<TaskDto> taskDto;
+    private final List<TaskDto> tasks;
     private final LocalDate createDate;
 
-    private WorkspacePageResponse(String workspaceId, String title, String description, List<StateDto> state, List<TaskDto> taskDto, LocalDate createDate) {
+    private WorkspacePageResponse(String workspaceId, String title, String description, List<StateDto> state, List<TaskDto> tasks, LocalDate createDate) {
         this.workspaceId = workspaceId;
         this.title = title;
         this.description = description;
         this.state = state;
-        this.taskDto = taskDto;
+        this.tasks = tasks;
         this.createDate = createDate;
     }
 

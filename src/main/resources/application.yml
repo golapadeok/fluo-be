@@ -6,7 +6,6 @@ spring:
     password: ${SPRING_DATASOURCE_PASSWORD:sa}
   jpa:
     database-platform: org.hibernate.dialect.H2Dialect
-    show-sql: true
     hibernate:
       ddl-auto: create
       naming:
@@ -16,6 +15,7 @@ spring:
       hibernate:
         format_sql: true
         default_batch_fetch_size: 100
+        show_sql: true
     open-in-view: false
   security:
     user:
@@ -41,7 +41,6 @@ jwt:
 logging:
   level:
     com.golapadeok.fluo: debug
-    org.hibernate.SQL: debug
     org.hibernate.orm.jdbc.bind: trace
 server:
   port: 9999
