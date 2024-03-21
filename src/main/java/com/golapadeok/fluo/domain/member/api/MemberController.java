@@ -3,7 +3,8 @@ package com.golapadeok.fluo.domain.member.api;
 import com.golapadeok.fluo.common.security.domain.PrincipalDetails;
 import com.golapadeok.fluo.domain.member.domain.Member;
 import com.golapadeok.fluo.domain.member.dto.response.MemberInfoResponse;
-import com.golapadeok.fluo.domain.member.service.MemberService;
+import com.golapadeok.fluo.domain.member.dto.response.MemberWorkspaceListResponse;
+import com.golapadeok.fluo.domain.member.service.MemberWorkspaceListService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(name = "멤버 API 목록", description = "멤버 API 목록 입니다.")
 public class MemberController {
 
-    private final MemberService memberService;
+    private final MemberWorkspaceListService memberWorkspaceListService;
 
     @Operation(summary = "내 정보 조회", description = "내 정보 조회를 합니다.")
     @GetMapping("/members/self")
@@ -40,8 +41,11 @@ public class MemberController {
 
     @Operation(summary = "멤버가 소속된 워크스페이스 조회", description = "멤버가 소속된 워크스페이스를 조회합니다.")
     @GetMapping("/members/self/workspaces")
-    public void getMyWorkspace() {
+    public ResponseEntity<MemberWorkspaceListResponse> getMyWorkspace(@AuthenticationPrincipal PrincipalDetails principalDetails,
+                                                                      String cursorId,
+                                                                      String limit) {
 
+        return null;
     }
 
     @Operation(summary = "멤버가 받은 초대 목록", description = "멤버가 초대받은 워크스페이스의 초대 목록을 보여줍니다.")
