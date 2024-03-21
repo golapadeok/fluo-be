@@ -45,7 +45,7 @@ public class MemberController {
                                                                       String cursorId,
                                                                       String limit) {
 
-        return null;
+        return ResponseEntity.ok(this.memberWorkspaceListService.getWorkspaceList(principalDetails, cursorId, limit));
     }
 
     @Operation(summary = "멤버가 받은 초대 목록", description = "멤버가 초대받은 워크스페이스의 초대 목록을 보여줍니다.")
