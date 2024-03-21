@@ -41,9 +41,10 @@ public class WorkspaceSearchService {
 
     public WorkspaceSearchWithTasksResponse searchWithTasks(Integer workspaceId, WorkspacePageRequest pageRequest) {
         Workspace workspace = getWorkspace(workspaceId);
+
         Page<Task> tasks = workspaceRepositoryImpl.searchPage(workspaceId, pageRequest.getLimit(), pageRequest.getOffset(), pageRequest.getAscending());
         List<Task> content = tasks.getContent();
-//        List<Task> tasks = workspace.getTasks();
+        
         return WorkspaceSearchWithTasksResponse.of(workspace, content);
     }
 

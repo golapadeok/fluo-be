@@ -2,6 +2,8 @@ package com.golapadeok.fluo.domain.workspace.repository;
 
 import com.golapadeok.fluo.domain.task.domain.QTask;
 import com.golapadeok.fluo.domain.task.domain.Task;
+import com.golapadeok.fluo.domain.workspace.domain.QWorkspace;
+import com.golapadeok.fluo.domain.workspace.domain.Workspace;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import io.jsonwebtoken.lang.Assert;
 import jakarta.persistence.EntityManager;
@@ -23,11 +25,11 @@ public class WorkspaceRepositoryImpl implements WorkspaceRepositoryCustom {
         queryFactory = new JPAQueryFactory(em);
     }
 
-    // TODO KDY 업무 페이징 처리 수정 필요할듯..
     public Page<Task> searchPage(long workspaceId, int limit, int offset, boolean ascending) {
         QTask task = QTask.task;
         List<Task> content = queryFactory.selectFrom(task)
                 .where(task.workspace.id.eq(workspaceId))
+                .orderBy(ascending ? task.createDate.asc() : task.createDate.desc())
                 .offset((long) offset * limit)
                 .limit(limit)
                 .fetch();
