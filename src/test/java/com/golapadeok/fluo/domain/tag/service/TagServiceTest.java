@@ -4,6 +4,7 @@ import com.golapadeok.fluo.domain.tag.domain.Tag;
 import com.golapadeok.fluo.domain.tag.dto.request.TagCreateRequest;
 import com.golapadeok.fluo.domain.tag.dto.response.TagCreateResponse;
 import com.golapadeok.fluo.domain.tag.dto.response.TagDeleteResponse;
+import com.golapadeok.fluo.domain.tag.dto.response.TagSearchResponse;
 import com.golapadeok.fluo.domain.tag.repository.TagRepository;
 import com.golapadeok.fluo.domain.workspace.domain.Workspace;
 import com.golapadeok.fluo.domain.workspace.repository.WorkspaceRepository;
@@ -39,6 +40,19 @@ class TagServiceTest {
     @Test
     @DisplayName("태그 조회 성공 케이스")
     void searchTags() {
+        //given
+        Integer id = 1;
+
+        //when
+        given(tagRepository.findById(id.longValue()))
+                .willReturn(Optional.of(new Tag(1L, "tag1", "######")));
+        //then
+        TagSearchResponse response = tagService.searchTags(id);
+
+        assertThat(response).isNotNull();
+        assertThat(response.getTagId()).isEqualTo("1");
+        assertThat(response.getTagName()).isEqualTo("tag1");
+        assertThat(response.getColorCode()).isEqualTo("######");
     }
 
     @Test
@@ -68,7 +82,8 @@ class TagServiceTest {
         Integer id = 1;
 
         //when
-        given(tagRepository.findById(id.longValue())).willReturn(Optional.of(new Tag(1L, "tag1", "######")));
+        given(tagRepository.findById(id.longValue()))
+                .willReturn(Optional.of(new Tag(1L, "tag1", "######")));
 
         //then
         TagDeleteResponse response = tagService.deleteTags(id);

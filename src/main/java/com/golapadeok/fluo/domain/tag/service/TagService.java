@@ -4,6 +4,7 @@ import com.golapadeok.fluo.domain.tag.domain.Tag;
 import com.golapadeok.fluo.domain.tag.dto.request.TagCreateRequest;
 import com.golapadeok.fluo.domain.tag.dto.response.TagCreateResponse;
 import com.golapadeok.fluo.domain.tag.dto.response.TagDeleteResponse;
+import com.golapadeok.fluo.domain.tag.dto.response.TagSearchResponse;
 import com.golapadeok.fluo.domain.tag.exception.NotFoundTagException;
 import com.golapadeok.fluo.domain.tag.repository.TagRepository;
 import com.golapadeok.fluo.domain.workspace.domain.Workspace;
@@ -22,8 +23,11 @@ public class TagService {
     private final WorkspaceRepository workspaceRepository;
 
     @Transactional(readOnly = true)
-    public Object searchTags() {
-        return ResponseEntity.ok(null);
+    public TagSearchResponse searchTags(Integer tagId) {
+        Tag tag = tagRepository.findById(tagId.longValue())
+                .orElseThrow(NotFoundTagException::new);
+
+        return TagSearchResponse.of(tag);
     }
 
     public TagCreateResponse createTags(TagCreateRequest request) {

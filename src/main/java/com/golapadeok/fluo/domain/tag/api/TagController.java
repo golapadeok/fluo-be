@@ -3,6 +3,7 @@ package com.golapadeok.fluo.domain.tag.api;
 import com.golapadeok.fluo.domain.tag.dto.request.TagCreateRequest;
 import com.golapadeok.fluo.domain.tag.dto.response.TagCreateResponse;
 import com.golapadeok.fluo.domain.tag.dto.response.TagDeleteResponse;
+import com.golapadeok.fluo.domain.tag.dto.response.TagSearchResponse;
 import com.golapadeok.fluo.domain.tag.service.TagService;
 import io.swagger.v3.oas.annotations.Parameter;
 import jakarta.validation.Valid;
@@ -17,9 +18,11 @@ import org.springframework.web.bind.annotation.*;
 public class TagController {
     private final TagService tagService;
 
-    @GetMapping
-    public ResponseEntity<Object> searchTags() {
-        return ResponseEntity.ok(null);
+    @GetMapping("/{tagId}")
+    public ResponseEntity<TagSearchResponse> searchTags(
+            @PathVariable("tagId") @Parameter(description = "조회할 태그 아이디") Integer tagId
+    ) {
+        return ResponseEntity.ok(tagService.searchTags(tagId));
     }
 
     @PostMapping
