@@ -54,7 +54,7 @@ class TaskCreateServiceTest {
 
         //when
         given(workspaceRepository.findById(request.getWorkspaceId().longValue()))
-                .willReturn(Optional.of(new Workspace("workspace1", "workspace")));
+                .willReturn(Optional.of(new Workspace("workspace1", "workspace", "url")));
 
         given(stateRepository.findById(request.getStateId().longValue()))
                 .willReturn(Optional.of(new State("state")));
