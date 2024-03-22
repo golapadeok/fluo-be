@@ -3,7 +3,11 @@ package com.golapadeok.fluo.domain.role.domain;
 import com.golapadeok.fluo.common.domain.BaseTimeEntity;
 import com.golapadeok.fluo.domain.member.domain.Member;
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
+@Getter
+@NoArgsConstructor
 @Entity
 public class MemberRole extends BaseTimeEntity { // 회원그룹권한
 

@@ -27,17 +27,36 @@ oauth2:
   google:
     client_id: 485784788447-t3irsd8ig19i9i06g9q4s7g9kcej85uu.apps.googleusercontent.com
     client_secret: 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
-    redirect_uri: http://localhost:9999/api/v1/auth/google/callback
+    redirect_uri: http://localhost:9999/auth/google/callback
     scope: profile email
   naver:
     client_id: OUzv9kOasKTzle3Myc4P
     client_secret: pNN1onHa59
-    redirect_uri: http://localhost:9999/api/v1/auth/naver/callback
+    redirect_uri: http://localhost:9999/auth/naver/callback
     scope: name email profile_image
 
 jwt:
   secretKey: secretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecret
 
+cloud:
+  aws:
+    s3:
+      bucket: fluo-bucket
+      path: ${SPRING_S3_PATH}
+    credentials:
+      access-key: ${SPRING_S3_ACCESS_KEY}
+      secret-key: ${SPRING_S3_SECRET_KEY}
+    region:
+      static: ap-northeast-2
+      auto: false
+    stack:
+      auto: false
+
+
+file:
+  path:
+    image: ${FILE_PATH_IMAGE:/}
+    
 logging:
   level:
     com.golapadeok.fluo: debug
