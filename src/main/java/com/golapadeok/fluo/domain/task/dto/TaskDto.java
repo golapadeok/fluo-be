@@ -36,7 +36,7 @@ public class TaskDto {
         this.endDate = scheduleRange.getEndDate().toLocalDate();
     }
 
-    private static TaskDto of(Task task) {
+    public static TaskDto of(Task task) {
         Assert.notNull(task, "task must not be null");
         StateDto convertState = StateDto.of(task.getState());
         return new TaskDto(task.getId().toString(), task.getTitle(), task.getDescription(), task.getConfiguration(), convertState, task.getScheduleRange());
