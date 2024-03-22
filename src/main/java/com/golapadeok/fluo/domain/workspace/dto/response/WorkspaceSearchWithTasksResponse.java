@@ -3,34 +3,34 @@ package com.golapadeok.fluo.domain.workspace.dto.response;
 import com.golapadeok.fluo.domain.task.domain.Task;
 import com.golapadeok.fluo.domain.task.dto.TaskDto;
 import com.golapadeok.fluo.domain.workspace.domain.Workspace;
+import com.golapadeok.fluo.domain.workspace.dto.CustomPageImpl;
 import lombok.Getter;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.time.LocalDate;
 import java.util.List;
 
 @Getter
 public class WorkspaceSearchWithTasksResponse {
-    private final String workspaceId;
-    private final String title;
-    private final String description;
-    private final LocalDate createDate;
+    private final Integer total;
+    private final Integer limit;
+    private final Integer cursorId;
     private final List<TaskDto> tasks;
 
-    private WorkspaceSearchWithTasksResponse(String workspaceId, String title, String description, LocalDate createDate, List<TaskDto> tasks) {
-        this.workspaceId = workspaceId;
-        this.title = title;
-        this.description = description;
-        this.createDate = createDate;
+    public WorkspaceSearchWithTasksResponse(Integer total, Integer limit, Integer cursorId, List<TaskDto> tasks) {
+        this.total = total;
+        this.limit = limit;
+        this.cursorId = cursorId;
         this.tasks = tasks;
     }
 
-    public static WorkspaceSearchWithTasksResponse of(Workspace workspace, List<Task> tasks) {
+    public static WorkspaceSearchWithTasksResponse of(CustomPageImpl<Task> tasks) {
         return new WorkspaceSearchWithTasksResponse(
-                workspace.getId().toString(),
-                workspace.getTitle(),
-                workspace.getDescription(),
-                workspace.getCreateDate().toLocalDate(),
-                TaskDto.of(tasks)
+                (int) tasks.getTotalElements(),
+                tasks.getSize(),
+                (int) tasks.getNextCursor(),
+                TaskDto.of(tasks.getContent())
         );
     }
 }

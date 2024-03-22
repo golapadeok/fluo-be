@@ -2,19 +2,17 @@ package com.golapadeok.fluo.domain.workspace.repository;
 
 import com.golapadeok.fluo.domain.task.domain.QTask;
 import com.golapadeok.fluo.domain.task.domain.Task;
-import com.golapadeok.fluo.domain.workspace.domain.QWorkspace;
-import com.golapadeok.fluo.domain.workspace.domain.Workspace;
+import com.golapadeok.fluo.domain.workspace.dto.CustomPageImpl;
+import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import io.jsonwebtoken.lang.Assert;
 import jakarta.persistence.EntityManager;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.function.Function;
 
 @Repository
 public class WorkspaceRepositoryImpl implements WorkspaceRepositoryCustom {
@@ -25,21 +23,35 @@ public class WorkspaceRepositoryImpl implements WorkspaceRepositoryCustom {
         queryFactory = new JPAQueryFactory(em);
     }
 
-    public Page<Task> searchPage(long workspaceId, int limit, int offset, boolean ascending) {
+    public CustomPageImpl<Task> searchPageTasks(long workspaceId, int limit, int cursorId, boolean ascending) {
         QTask task = QTask.task;
-        List<Task> content = queryFactory.selectFrom(task)
-                .where(task.workspace.id.eq(workspaceId))
+        List<Task> content;
+
+        JPAQuery<Task> defaultQuery = queryFactory.selectFrom(task)
+                .where(task.workspace.id.eq(workspaceId));
+
+        if (cursorId != 0) {
+            defaultQuery = defaultQuery.where(ascending ? task.id.gt(cursorId) : task.id.lt(cursorId));
+        }
+
+        content = defaultQuery
                 .orderBy(ascending ? task.createDate.asc() : task.createDate.desc())
-                .offset((long) offset * limit)
-                .limit(limit)
+                .orderBy(ascending ? task.id.asc() : task.id.desc())
+                .limit(limit + 1L)
                 .fetch();
 
         Long totalCount = queryFactory.select(task.count())
                 .from(task)
                 .where(task.workspace.id.eq(workspaceId))
                 .fetchOne();
-
         Assert.notNull(totalCount, "Total Count must not null");
-        return new PageImpl<>(content, PageRequest.of(offset * limit, limit), totalCount);
+
+        long nextCursorId = -1L;
+        if (content.size() > limit) {
+            content = content.subList(0, content.size() - 1);
+            nextCursorId = content.get(content.size() - 1).getId();
+        }
+
+        return new CustomPageImpl<>(content, PageRequest.of(0, limit), totalCount, nextCursorId);
     }
 }
