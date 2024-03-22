@@ -15,8 +15,4 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 
     Optional<Member> findByRefreshToken(String refreshToken);
 
-    @Query(value = "select *" +
-            "from member join workspace", nativeQuery = true)
-    Optional<Member> findByWorkspace(Long memberId);
-
 }

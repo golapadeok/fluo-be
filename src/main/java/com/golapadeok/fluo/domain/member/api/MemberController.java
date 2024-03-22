@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -42,10 +43,9 @@ public class MemberController {
     @Operation(summary = "멤버가 소속된 워크스페이스 조회", description = "멤버가 소속된 워크스페이스를 조회합니다.")
     @GetMapping("/members/self/workspaces")
     public ResponseEntity<MemberWorkspaceListResponse> getMyWorkspace(@AuthenticationPrincipal PrincipalDetails principalDetails,
-                                                                      String cursorId,
-                                                                      String limit) {
+                                                                      Long cursorId) {
 
-        return ResponseEntity.ok(this.memberWorkspaceListService.getWorkspaceList(principalDetails, cursorId, limit));
+        return ResponseEntity.ok(this.memberWorkspaceListService.getWorkspaceList(principalDetails, cursorId));
     }
 
     @Operation(summary = "멤버가 받은 초대 목록", description = "멤버가 초대받은 워크스페이스의 초대 목록을 보여줍니다.")
