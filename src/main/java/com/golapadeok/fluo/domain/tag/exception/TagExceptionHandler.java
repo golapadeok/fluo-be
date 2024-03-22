@@ -1,4 +1,4 @@
-package com.golapadeok.fluo.domain.workspace.exception;
+package com.golapadeok.fluo.domain.tag.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -7,13 +7,13 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
-public class WorkspaceExceptionHandler {
+public class TagExceptionHandler {
 
-    @ExceptionHandler(NotFoundWorkspaceException.class)
+    @ExceptionHandler(NotFoundTagException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ResponseEntity<ErrorResponse> handlerNotFoundWorkspaceException(NotFoundWorkspaceException e) {
+    public ResponseEntity<ErrorResponse> handlerNotFoundTagException(NotFoundTagException e) {
         return ResponseEntity.badRequest().body(
-                new ErrorResponse(e.getWorkspaceStatus().getMessage())
+                new ErrorResponse(e.getTagStatus().getMessage())
         );
     }
 
