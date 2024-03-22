@@ -30,7 +30,7 @@ public class WorkspacePageResponse {
         this.description = description;
         this.imageUrl = imageUrl;
         this.state = state;
-        this.tasks = taskDto;
+        this.tasks = tasks;
         this.createDate = createDate;
     }
 
