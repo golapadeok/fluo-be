@@ -55,6 +55,11 @@ public class RoleService {
         Workspace workspace = this.workspaceRepository.findById(Long.valueOf(workspaceId))
                 .orElseThrow(() -> new RoleException(RoleErrorStatus.NOT_FOUND_WORKSPACE));
 
+        // 1을 더하는 이유는 이번에 생성할 역할을 의미
+        if(workspace.getRoles().size() + 1 > 5) {
+            throw new RoleException(RoleErrorStatus.LIMIT_EXCEEDED_FOR_CREATION);
+        }
+
         // 해당 워크스페이스에 같은 역할이름이 있는지를 검증
         roleRepository.findByNameAndWorkspaceId(request.getName(), workspace.getId())
                 .ifPresent(role -> {
