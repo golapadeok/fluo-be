@@ -4,12 +4,10 @@ import com.golapadeok.fluo.domain.role.domain.Credential;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.ToString;
 
 import java.util.List;
 import java.util.stream.Stream;
 
-@ToString
 @Builder
 @AllArgsConstructor
 @Getter
