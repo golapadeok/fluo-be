@@ -51,25 +51,13 @@ public class RoleController {
         return ResponseEntity.ok(this.roleService.deleteWorkspaceRole(roleId));
     }
 
-
-//    @Operation(summary = "워크스페이스의 역할 정보 수정", description = "워크스페이스 ID와 역할 ID를 통해 역할의 정보 수정")
-//    @PutMapping("/workspaces/{workspaceId}/roles/{roleId}")
-//    public ResponseEntity<UpdateRoleResponse> updateWorkspaceRole(@PathVariable("workspaceId") Integer workspaceId,
-//                                                                  @PathVariable("roleId") Integer roleId,
-//                                                                  @RequestBody RoleUpdateRequest request) {
-//        return ResponseEntity.ok(this.roleService.updateWorkspaceRole(workspaceId, roleId ,request));
-//    }
-//
-//    @Operation(summary = "워크스페이스의 역할 정보 수정", description = "워크스페이스 ID와 역할 ID를 통해 역할의 정보 수정", hidden = true)
-//    @PutMapping("/workspaces/{workspaceId}/roles/{roleId}")
-//    public ResponseEntity updateWorkspaceRole(@PathVariable("workspaceId") Integer workspaceId,
-//                                              @PathVariable("roleId") Integer roleId,
-//                                              @RequestBody RoleUpdateRequest request) {
-//        return null;
-
-//    }
-
-
+    @Operation(summary = "워크스페이스의 역할 정보 수정", description = "워크스페이스 ID와 역할 ID를 통해 역할의 정보 수정")
+    @PutMapping("/workspaces/{workspaceId}/roles/{roleId}")
+    public ResponseEntity<UpdateRoleResponse> updateWorkspaceRole(@PathVariable("workspaceId") Integer workspaceId,
+                                                                  @PathVariable("roleId") Integer roleId,
+                                                                  @RequestBody RoleUpdateRequest request) {
+        return ResponseEntity.ok(this.roleService.updateWorkspaceRole(workspaceId, roleId ,request));
+    }
 
 
 }

@@ -5,7 +5,7 @@ spring:
     username: ${SPRING_DATASOURCE_USERNAME:sa}
     password: ${SPRING_DATASOURCE_PASSWORD:sa}
   jpa:
-    database-platform: org.hibernate.dialect.H2Dialect
+    database-platform: ${SPRING_DATASOURCE_DIALECT:org.hibernate.dialect.H2Dialect}
     hibernate:
       ddl-auto: create
       naming:
