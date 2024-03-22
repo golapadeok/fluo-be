@@ -4,6 +4,7 @@ import com.golapadeok.fluo.domain.task.domain.Task;
 import com.golapadeok.fluo.domain.workspace.domain.Workspace;
 import com.golapadeok.fluo.domain.workspace.dto.CustomPageImpl;
 import com.golapadeok.fluo.domain.workspace.dto.request.CursorPageRequest;
+import com.golapadeok.fluo.domain.workspace.dto.request.FilterRequest;
 import com.golapadeok.fluo.domain.workspace.dto.response.*;
 import com.golapadeok.fluo.domain.workspace.exception.NotFoundWorkspaceException;
 import com.golapadeok.fluo.domain.workspace.repository.WorkspaceRepository;
@@ -35,8 +36,10 @@ public class WorkspaceSearchService {
         return WorkspaceSearchResponse.of(workspace);
     }
 
-    public WorkspaceSearchWithTasksResponse searchWithTasks(Integer workspaceId, CursorPageRequest pageRequest) {
-        CustomPageImpl<Task> tasks = workspaceRepositoryImpl.searchPageTasks(workspaceId, pageRequest.getLimit(), pageRequest.getCursorId(), pageRequest.getAscending());
+
+    public WorkspaceSearchWithTasksResponse searchWithTasks(Integer workspaceId, CursorPageRequest pageRequest, FilterRequest filterRequest) {
+//        CustomPageImpl<Task> tasks = workspaceRepositoryImpl.searchPageTasks(workspaceId, pageRequest.getLimit(), pageRequest.getCursorId(), pageRequest.getAscending());
+        CustomPageImpl<Task> tasks = workspaceRepositoryImpl.searchPageTasks(workspaceId, pageRequest, filterRequest);
         return WorkspaceSearchWithTasksResponse.of(tasks);
     }
 
