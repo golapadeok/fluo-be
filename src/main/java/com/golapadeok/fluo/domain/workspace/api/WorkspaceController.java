@@ -1,7 +1,7 @@
 package com.golapadeok.fluo.domain.workspace.api;
 
 import com.golapadeok.fluo.domain.workspace.dto.request.WorkspaceCreateRequest;
-import com.golapadeok.fluo.domain.workspace.dto.request.WorkspacePageRequest;
+import com.golapadeok.fluo.domain.workspace.dto.request.CursorPageRequest;
 import com.golapadeok.fluo.domain.workspace.dto.response.*;
 import com.golapadeok.fluo.domain.workspace.service.*;
 import io.swagger.v3.oas.annotations.Operation;
@@ -28,7 +28,7 @@ public class WorkspaceController {
     @GetMapping
     @Operation(summary = "워크스페이스 전체조회 API", description = "워크스페이스 전체조회 API")
     public ResponseEntity<List<WorkspacePageResponse>> getWorkspaces(
-            @Valid @ParameterObject WorkspacePageRequest pageRequest) {
+            @Valid @ParameterObject CursorPageRequest pageRequest) {
         //전체조회
         //페이징
         //초대코드
@@ -59,11 +59,12 @@ public class WorkspaceController {
     }
 
     @GetMapping("/{workspaceId}/tasks")
-    @Operation(summary = "워크스페이스와 업무목록 조회 API", description = "해당 워크스페이스와 포함된 업무목록을 조회합니다.")
+    @Operation(summary = "워크스페이스에 포함된 업무목록 조회 API", description = "해당 워크스페이스와 포함된 업무목록을 조회합니다.")
     public ResponseEntity<WorkspaceSearchWithTasksResponse> searchWorkspaceWithTasks(
-            @PathVariable(name = "workspaceId") Integer workspaceId
+            @PathVariable(name = "workspaceId") Integer workspaceId,
+            @Valid @ParameterObject CursorPageRequest pageRequest
     ) {
-        return ResponseEntity.ok(workspaceSearchService.searchWithTasks(workspaceId));
+        return ResponseEntity.ok(workspaceSearchService.searchWithTasks(workspaceId, pageRequest));
     }
 
     @GetMapping("/{workspaceId}/invitations")
