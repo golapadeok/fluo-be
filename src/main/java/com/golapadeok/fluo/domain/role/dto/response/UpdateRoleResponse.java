@@ -12,6 +12,6 @@ import java.util.List;
 public class UpdateRoleResponse {
 
     private String workspaceId;
-    private List<WorkspaceRoleListResponse> items;
+    private WorkspaceRoleListResponse items;
 
 }

@@ -2,10 +2,7 @@ package com.golapadeok.fluo.domain.member.domain;
 
 import com.golapadeok.fluo.common.domain.BaseTimeEntity;
 import jakarta.persistence.*;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 import org.springframework.context.annotation.Bean;
 
 import java.util.ArrayList;
@@ -13,7 +10,7 @@ import java.util.List;
 
 @ToString(exclude = {"socialId", "workspaceMembers"})
 @Getter
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 public class Member extends BaseTimeEntity {
 

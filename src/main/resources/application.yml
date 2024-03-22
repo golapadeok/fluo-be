@@ -52,10 +52,11 @@ cloud:
     stack:
       auto: false
 
+
 file:
   path:
     image: ${FILE_PATH_IMAGE:/}
-
+    
 logging:
   level:
     com.golapadeok.fluo: debug

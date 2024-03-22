@@ -81,14 +81,29 @@ public class RoleService {
         Role role = this.roleRepository.findById(Long.valueOf(roleId))
                 .orElseThrow(() -> new RoleException(RoleErrorStatus.NOT_FOUND_ROLE));
 
+        log.info("role : {}", role.toString());
+
         // 역할 업데이트
         role.updateRole(request);
+        
+        // 해당 역할의 권한들의 이름과 설명을 리스트에 담아준다.
+        List<CredentialResponse> credentialResponses = role.getRoleList().stream()
+                .map(r -> CredentialResponse.builder()
+                        .name(Credential.valueOf(r.trim()).getName())
+                        .description(Credential.valueOf(r.trim()).getDescription())
+                        .build())
+                .toList();
 
-
+        // 해당 워크스페이스의 역할과 해당하는 권한들의 이름과 설명을 출력한다.
+        WorkspaceRoleListResponse workspaceRoleListResponse = WorkspaceRoleListResponse.builder()
+                .roleId(String.valueOf(role.getId()))
+                .name(role.getName())
+                .credentials(credentialResponses)
+                .build();
 
         return UpdateRoleResponse.builder()
                 .workspaceId(String.valueOf(workspaceId))
-                .items(null)
+                .items(workspaceRoleListResponse)
                 .build();
     }
 }
