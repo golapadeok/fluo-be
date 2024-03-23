@@ -10,6 +10,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Getter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -72,21 +74,5 @@ public class Task extends BaseTimeEntity {
 
     public void changeWorkspace(Workspace workspace) {
         this.workspace = workspace;
-    }
-
-    public void changeTaskConfiguration(TaskConfiguration configuration) {
-        this.configuration = configuration;
-    }
-
-    public void changeScheduleRange(ScheduleRange scheduleRange) {
-        this.scheduleRange = scheduleRange;
-    }
-
-    public void changeTitle(String title) {
-        this.title = title;
-    }
-
-    public void changeDescription(String description) {
-        this.description = description;
     }
 }

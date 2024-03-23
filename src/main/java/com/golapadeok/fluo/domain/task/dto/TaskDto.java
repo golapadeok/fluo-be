@@ -16,19 +16,19 @@ public class TaskDto {
     private final String title;
     private final String description;
     private final String creator;
-    private final List<String> managers;
+    private final List<MemberDto> managers;
     private final StateDto state;
     private final Boolean isPrivate;
     private final Integer priority;
     private final LocalDate startDate;
     private final LocalDate endDate;
 
-    private TaskDto(String taskId, String title, String description, String creator, String manager, TaskConfiguration configuration, StateDto state, ScheduleRange scheduleRange) {
+    private TaskDto(String taskId, String title, String description, String creator, List<MemberDto> managers, TaskConfiguration configuration, StateDto state, ScheduleRange scheduleRange) {
         this.taskId = taskId;
         this.title = title;
         this.description = description;
         this.creator = creator;
-        this.managers = Arrays.asList(manager.split(","));
+        this.managers = managers;
         this.isPrivate = configuration.getIsPrivate();
         this.priority = configuration.getPriority();
         this.state = state;
@@ -36,10 +36,10 @@ public class TaskDto {
         this.endDate = scheduleRange.getEndDate().toLocalDate();
     }
 
-    public static TaskDto of(Task task) {
+    public static TaskDto of(Task task, List<MemberDto> members) {
         Assert.notNull(task, "task must not be null");
         StateDto convertState = StateDto.of(task.getState());
-        return new TaskDto(task.getId().toString(), task.getTitle(), task.getDescription(), task.getCreator(), task.getManager(), task.getConfiguration(), convertState, task.getScheduleRange());
+        return new TaskDto(task.getId().toString(), task.getTitle(), task.getDescription(), task.getCreator(), members, task.getConfiguration(), convertState, task.getScheduleRange());
     }
 
     public static List<TaskDto> of(List<Task> tasks) {
@@ -48,7 +48,7 @@ public class TaskDto {
         List<TaskDto> results = new ArrayList<>();
         while (iterator.hasNext()) {
             Task task = iterator.next();
-            TaskDto taskDto = of(task);
+            TaskDto taskDto = of(task, null);
             results.add(taskDto);
         }
 

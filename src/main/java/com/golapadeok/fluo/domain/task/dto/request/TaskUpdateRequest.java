@@ -3,7 +3,10 @@ package com.golapadeok.fluo.domain.task.dto.request;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Range;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -11,6 +14,8 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Getter
+@AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class TaskUpdateRequest {
     @NotNull(message = "상태 아이디는 필수 입력입니다.")
     @Schema(description = "업무의 상태 아이디", example = "1")
@@ -28,8 +33,8 @@ public class TaskUpdateRequest {
     private String creator;
 
     @NotNull(message = "관리자는 최소 한명 이상입니다.")
-    @Schema(description = "업무 관리자 이름 리스트", example = "[1, 2, 3]")
-    private List<String> managers;
+    @Schema(description = "업무 관리자 아이디 리스트", example = "[1, 2, 3]")
+    private List<Integer> managers;
 
     @NotNull(message = "공개 여부는 필수값 입니다.")
     @Schema(description = "업무 공개 여부")
