@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Bean;
 import java.util.ArrayList;
 import java.util.List;
 
-@ToString(exclude = {"socialId", "workspaceMembers"})
+@ToString(exclude = {"socialId", "workspaceMembers", "invitations"})
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
@@ -28,6 +28,9 @@ public class Member extends BaseTimeEntity {
 
     @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
     private List<WorkspaceMember> workspaceMembers = new ArrayList<>(); // 그룹참여유저
+
+    @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
+    private List<Invitation> invitations = new ArrayList<>(); // 그룹참여유저
 
     @Builder
     public Member(Long id, String email, String name, String profile, String refreshToken, SocialId socialId, List<WorkspaceMember> workspaceMembers) {

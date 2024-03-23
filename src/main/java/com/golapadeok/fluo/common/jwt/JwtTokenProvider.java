@@ -3,10 +3,12 @@ package com.golapadeok.fluo.common.jwt;
 import com.golapadeok.fluo.common.jwt.exception.JwtErrorException;
 import io.jsonwebtoken.*;
 import jakarta.annotation.PostConstruct;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
@@ -18,9 +20,10 @@ public class JwtTokenProvider {
     @Value("${jwt.secretKey}")
     private String secretKey;
 
-    private final long accessTokenExpiredTime = 1000L * 60L * 60L * 24L; // 1일
-//private final long accessTokenExpiredTime = 1000L;
-    private final long refreshTokenExpiredTime = 1000L * 60L * 60L * 24L; // 1일
+//    private final long accessTokenExpiredTime = 1000L * 60L * 60L * 24L; // 1일
+    private final long accessTokenExpiredTime = 1000L;
+//    private final long refreshTokenExpiredTime = 1000L * 60L * 60L * 24L; // 1일
+    private final long refreshTokenExpiredTime = 1000L; // 1일
     private final String authorization = "Authorization";
     private final String tokenPrefix = "Bearer ";
     private final String refreshToken = "RefreshToken";
@@ -59,6 +62,7 @@ public class JwtTokenProvider {
 
         return Jwts.builder()
                 .setHeader(this.getHeader())
+                .setClaims(claims)
                 .setIssuedAt(now)
                 .setExpiration(new Date(System.currentTimeMillis() + refreshTokenExpiredTime))
                 .signWith(SignatureAlgorithm.HS256, secretKey)
@@ -67,18 +71,16 @@ public class JwtTokenProvider {
 
     // 토큰의 만료시간 검증
     public boolean isTokenValidate(String token) {
-//        try {
+        try {
             Jws<Claims> claimsJws = Jwts.parserBuilder()
                     .setSigningKey(this.secretKey)
                     .build()
                     .parseClaimsJws(token);
 
             return !claimsJws.getBody().getExpiration().before(new Date());
-//        } catch(SecurityException | MalformedJwtException e) {
-//            throw new MalformedJwtException(JwtErrorStatus.MALFORMED_JWT.getMessage()); // 잘못된 JWT 서명입니다.
-//        } catch (ExpiredJwtException e) {
-//            throw new JwtErrorException(JwtErrorStatus.EXPIRED_JWT); // 만료된 JWT 토큰입니다.
-//        }
+        } catch (ExpiredJwtException e) {
+            return false;
+        }
     }
 
     // 엑세스 토큰 헤더에서 추출
@@ -86,10 +88,10 @@ public class JwtTokenProvider {
         return Optional.ofNullable(request.getHeader(this.authorization).replace(this.tokenPrefix, ""));
     }
 
-    // 리프레시 토큰 헤더에서 추출
-    public Optional<String> extractRefreshToken(HttpServletRequest request) {
-        return Optional.ofNullable(request.getHeader(this.refreshToken));
-    }
+//    // 리프레시 토큰 헤더에서 추출
+//    public Optional<String> extractRefreshToken(HttpServletRequest request) {
+//        return Optional.ofNullable(request.getHeader(this.refreshToken));
+//    }
 
     // 엑세스 토큰에서 email 뽑기
     public Optional<String> extractEmail(String accessToken) {
@@ -104,7 +106,20 @@ public class JwtTokenProvider {
     // header로 새로 발급된 엑세스 토큰 전송
     public void sendAccessToken(HttpServletResponse response, String updateAccessToken) {
         response.setStatus(HttpServletResponse.SC_OK);
-        response.setHeader(this.authorization, this.tokenPrefix+updateAccessToken);
+        response.setHeader(HttpHeaders.AUTHORIZATION, this.tokenPrefix+updateAccessToken);
+    }
+
+    // 쿠키에서 refreshToken 찾기
+    public Optional<String> extractRefreshTokenFromCookies(HttpServletRequest request) {
+        Cookie[] cookies = request.getCookies();
+        if(cookies != null) {
+            for (Cookie cookie : cookies) {
+                if(cookie.getName().equals("refreshToken")) {
+                    return Optional.ofNullable(cookie.getValue());
+                }
+            }
+        }
+        return Optional.empty();
     }
     
 }

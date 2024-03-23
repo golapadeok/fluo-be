@@ -12,10 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -50,8 +47,9 @@ public class MemberController {
 
     @Operation(summary = "멤버가 받은 초대 목록", description = "멤버가 초대받은 워크스페이스의 초대 목록을 보여줍니다.")
     @GetMapping("/invitations/self")
-    public void getMyInvitations() {
-
+    public void getMyInvitations(@AuthenticationPrincipal PrincipalDetails principalDetails, @CookieValue(name = "refreshToken") String refreshToken) {
+        log.info("member : {}", principalDetails.getMember());
+        log.info("refresh Token : {}", refreshToken);
     }
 
     @Operation(summary = "초대코드로 워크스페이스 조회", description = "초대 코드 입력시 워크스페이스의 정보가 조회됩니다.")
