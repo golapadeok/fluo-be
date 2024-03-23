@@ -6,6 +6,7 @@ import com.golapadeok.fluo.domain.state.domain.State;
 import com.golapadeok.fluo.domain.workspace.domain.Workspace;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -20,6 +21,8 @@ public class Task extends BaseTimeEntity {
     private Long id;
     private String title;
     private String description;
+    private String creator;
+    private String manager;
 
     @Embedded
     private TaskConfiguration configuration;
@@ -39,20 +42,32 @@ public class Task extends BaseTimeEntity {
     @JoinColumn(name = "MEMBER_ID")
     private Member member;
 
-    public Task(Long id, String title, String description, TaskConfiguration configuration, ScheduleRange scheduleRange) {
+    public Task(Long id, String title, String description, String creator, String manager, TaskConfiguration configuration, ScheduleRange scheduleRange) {
         this.id = id;
         this.title = title;
+        this.creator = creator;
+        this.manager = manager;
         this.description = description;
         this.configuration = configuration;
         this.scheduleRange = scheduleRange;
     }
 
-    public Task(String title, String description, TaskConfiguration configuration, ScheduleRange scheduleRange) {
-        this(null, title, description, configuration, scheduleRange);
+    @Builder(toBuilder = true)
+    public Task(String title, String description, String creator, String manager, TaskConfiguration configuration, ScheduleRange scheduleRange) {
+        this(null, title, description, creator, manager, configuration, scheduleRange);
     }
 
     public void changeState(State state) {
         this.state = state;
+    }
+
+    public void changeTask(Task task) {
+        this.title = task.getTitle();
+        this.creator = task.getCreator();
+        this.manager = task.getManager();
+        this.description = task.getDescription();
+        this.configuration = task.getConfiguration();
+        this.scheduleRange = task.getScheduleRange();
     }
 
     public void changeWorkspace(Workspace workspace) {

@@ -24,12 +24,12 @@ public class TaskCreateResponse {
     private LocalDate startDate;
     private LocalDate endDate;
 
-    private TaskCreateResponse(String taskId, String title, String description, TaskConfiguration configuration, ScheduleRange scheduleRange) {
+    private TaskCreateResponse(String taskId, String title, String description, String creator, String manager, TaskConfiguration configuration, ScheduleRange scheduleRange) {
         this.taskId = taskId;
         this.title = title;
         this.description = description;
-        this.creator = configuration.getCreator();
-        this.managers = Arrays.asList(configuration.getManager().split(","));
+        this.creator = creator;
+        this.managers = Arrays.asList(manager.split(","));
         this.isPrivate = configuration.getIsPrivate();
         this.priority = configuration.getPriority();
         this.startDate = scheduleRange.getStartDate().toLocalDate();
@@ -41,6 +41,8 @@ public class TaskCreateResponse {
                 task.getId().toString(),
                 task.getTitle(),
                 task.getDescription(),
+                task.getCreator(),
+                task.getManager(),
                 task.getConfiguration(),
                 task.getScheduleRange()
         );

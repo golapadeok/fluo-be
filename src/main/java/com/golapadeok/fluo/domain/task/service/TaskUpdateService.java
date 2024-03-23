@@ -1,6 +1,8 @@
 package com.golapadeok.fluo.domain.task.service;
 
+import com.golapadeok.fluo.domain.state.domain.State;
 import com.golapadeok.fluo.domain.state.exception.NotFoundStateException;
+import com.golapadeok.fluo.domain.state.repository.StateRepository;
 import com.golapadeok.fluo.domain.task.domain.ScheduleRange;
 import com.golapadeok.fluo.domain.task.domain.Task;
 import com.golapadeok.fluo.domain.task.domain.TaskConfiguration;
@@ -8,13 +10,9 @@ import com.golapadeok.fluo.domain.task.dto.request.TaskUpdateRequest;
 import com.golapadeok.fluo.domain.task.dto.response.TaskUpdateResponse;
 import com.golapadeok.fluo.domain.task.exception.NotFoundTaskException;
 import com.golapadeok.fluo.domain.task.repository.TaskRepository;
-import com.golapadeok.fluo.domain.state.domain.State;
-import com.golapadeok.fluo.domain.state.repository.StateRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.time.LocalDate;
 
 @Service
 @RequiredArgsConstructor
@@ -24,44 +22,48 @@ public class TaskUpdateService {
 
     @Transactional
     public TaskUpdateResponse update(Integer taskId, TaskUpdateRequest request) {
-        final long id = taskId.longValue();
-        Task task = taskRepository.findById(id)
-                .orElseThrow(NotFoundTaskException::new);
+        Task task = findTaskById(taskId);
+        Task updateTask = updateTask(task, request);
 
-        final TaskConfiguration configuration = getTasConfiguration(request);
-        final ScheduleRange scheduleRange = getScheduleRange(request);
-        final State state = getState(request.getStateId());
-
-        task.changeState(state);
-        task.changeTaskConfiguration(configuration);
-        task.changeScheduleRange(scheduleRange);
-        task.changeTitle(request.getTitle());
-        task.changeDescription(request.getDescription());
+        task.changeTask(updateTask);
+        task.changeState(findStateById(request.getStateId()));
 
         taskRepository.flush();
         return TaskUpdateResponse.of(task);
     }
 
-    private State getState(long stateId) {
+    private Task updateTask(Task task, TaskUpdateRequest request) {
+        return task.toBuilder()
+                .title(request.getTitle())
+                .description(request.getDescription())
+                .creator(request.getCreator())
+                .manager(String.join(",", request.getManagers()))
+                .configuration(extractTaskConfigure(request))
+                .scheduleRange(extractScheduleRange(request))
+                .build();
+    }
+
+    private State findStateById(long stateId) {
         return stateRepository.findById(stateId)
                 .orElseThrow(NotFoundStateException::new);
     }
 
-    private ScheduleRange getScheduleRange(TaskUpdateRequest request) {
-        LocalDate startDate = request.getStartDate();
-        LocalDate endDate = request.getEndDate();
-        return new ScheduleRange(startDate, endDate);
+    private Task findTaskById(long taskId) {
+        return taskRepository.findById(taskId)
+                .orElseThrow(NotFoundTaskException::new);
     }
 
-    private TaskConfiguration getTasConfiguration(TaskUpdateRequest request) {
-        String creator = request.getCreator();
-        String managers = String.join(",", request.getManagers());
+    private ScheduleRange extractScheduleRange(TaskUpdateRequest request) {
+        return new ScheduleRange(
+                request.getStartDate(),
+                request.getEndDate()
+        );
+    }
+
+    private TaskConfiguration extractTaskConfigure(TaskUpdateRequest request) {
         return new TaskConfiguration(
-                creator,
-                managers,
                 request.getIsPrivate(),
                 request.getPriority()
         );
     }
-
 }

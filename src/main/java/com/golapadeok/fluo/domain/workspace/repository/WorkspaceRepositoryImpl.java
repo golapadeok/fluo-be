@@ -76,10 +76,10 @@ public class WorkspaceRepositoryImpl implements WorkspaceRepositoryCustom {
             defaultQuery = defaultQuery.where(task.state.id.eq(filterRequest.getStateId().longValue()));
         }
 
-        if (filterRequest.getManager() != null) {
-            // TODO KDY like 사용에 대해 고민해봐야할 듯
-            defaultQuery = defaultQuery.where(task.configuration.manager.like("%" + filterRequest.getManager() + "%"));
-        }
+//        if (filterRequest.getManager() != null) {
+//            // TODO KDY like 사용에 대해 고민해봐야할 듯
+//            defaultQuery = defaultQuery.where(task.configuration.manager.like("%" + filterRequest.getManager() + "%"));
+//        }
 
         // TODO KDY 날짜는 조건이 어떻게 들어올지 모르겠다
 //        if (filterRequest.getEndDate() != null) {
