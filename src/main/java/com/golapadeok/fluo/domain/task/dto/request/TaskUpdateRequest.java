@@ -32,6 +32,10 @@ public class TaskUpdateRequest {
     @Schema(description = "업무 작성자 이름", example = "creator")
     private String creator;
 
+    @NotNull(message = "태그 아이디는 필수 입력입니다.")
+    @Schema(description = "업무에 설정할 태그 아이디 리스트", example = "[1, 2, 3]")
+    private List<Integer> tags;
+
     @NotNull(message = "관리자는 최소 한명 이상입니다.")
     @Schema(description = "업무 관리자 아이디 리스트", example = "[1, 2, 3]")
     private List<Integer> managers;
