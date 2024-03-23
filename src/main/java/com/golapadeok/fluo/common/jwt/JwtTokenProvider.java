@@ -20,10 +20,10 @@ public class JwtTokenProvider {
     @Value("${jwt.secretKey}")
     private String secretKey;
 
-//    private final long accessTokenExpiredTime = 1000L * 60L * 60L * 24L; // 1일
-    private final long accessTokenExpiredTime = 1000L;
-//    private final long refreshTokenExpiredTime = 1000L * 60L * 60L * 24L; // 1일
-    private final long refreshTokenExpiredTime = 1000L; // 1일
+    private final long accessTokenExpiredTime = 1000L * 60L * 60L * 24L; // 1일
+    private final long refreshTokenExpiredTime = 1000L * 60L * 60L * 24L * 14L; // 2주
+//    private final long accessTokenExpiredTime = 1000L;
+//    private final long refreshTokenExpiredTime = 1000L; // 1일
     private final String authorization = "Authorization";
     private final String tokenPrefix = "Bearer ";
     private final String refreshToken = "RefreshToken";
