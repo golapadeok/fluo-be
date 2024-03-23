@@ -5,6 +5,9 @@ import com.golapadeok.fluo.domain.member.repository.MemberRepository;
 import com.golapadeok.fluo.domain.state.domain.State;
 import com.golapadeok.fluo.domain.state.exception.NotFoundStateException;
 import com.golapadeok.fluo.domain.state.repository.StateRepository;
+import com.golapadeok.fluo.domain.tag.domain.Tag;
+import com.golapadeok.fluo.domain.tag.exception.NotFoundTagException;
+import com.golapadeok.fluo.domain.tag.repository.TagRepository;
 import com.golapadeok.fluo.domain.task.domain.ScheduleRange;
 import com.golapadeok.fluo.domain.task.domain.Task;
 import com.golapadeok.fluo.domain.task.domain.TaskConfiguration;
@@ -22,6 +25,7 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class TaskUpdateService {
+    private final TagRepository tagRepository;
     private final MemberRepository memberRepository;
     private final TaskRepository taskRepository;
     private final StateRepository stateRepository;
@@ -30,23 +34,24 @@ public class TaskUpdateService {
     public TaskUpdateResponse update(Integer taskId, TaskUpdateRequest request) {
         Task task = findTaskById(taskId);
 
+        List<Tag> tags = tagRepository.findByIdInAndWorkspaceId(request.getTags(), task.getWorkspace().getId());
         List<Member> members = memberRepository.findByIdIn(request.getManagers());
-        Task updateTask = updateTask(task, members, request);
+        Task updateTask = updateTask(task, members, tags, request);
 
         task.changeTask(updateTask);
         task.changeState(findStateById(request.getStateId(), task.getWorkspace().getId()));
 
         taskRepository.flush();
-        return TaskUpdateResponse.of(task, members);
+        return TaskUpdateResponse.of(task, members, tags);
     }
 
-    private Task updateTask(Task task, List<Member> members, TaskUpdateRequest request) {
-
+    private Task updateTask(Task task, List<Member> members, List<Tag> tags, TaskUpdateRequest request) {
         return task.toBuilder()
                 .title(request.getTitle())
                 .description(request.getDescription())
                 .creator(request.getCreator())
                 .manager(joiningManagerId(members))
+                .tag(joiningTagId(tags))
                 .configuration(extractTaskConfigure(request))
                 .scheduleRange(extractScheduleRange(request))
                 .build();
@@ -83,6 +88,15 @@ public class TaskUpdateService {
 
         return members.stream()
                 .map(member -> member.getId().toString())
+                .collect(Collectors.joining(","));
+    }
+
+    private String joiningTagId(List<Tag> tags) {
+        if (tags.isEmpty())
+            throw new NotFoundTagException();
+
+        return tags.stream()
+                .map(tag -> tag.getId().toString())
                 .collect(Collectors.joining(","));
     }
 }

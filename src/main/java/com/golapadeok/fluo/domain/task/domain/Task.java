@@ -25,7 +25,7 @@ public class Task extends BaseTimeEntity {
     private String description;
     private String creator;
     private String manager;
-
+    private String tag;
     @Embedded
     private TaskConfiguration configuration;
 
@@ -44,19 +44,20 @@ public class Task extends BaseTimeEntity {
     @JoinColumn(name = "MEMBER_ID")
     private Member member;
 
-    public Task(Long id, String title, String description, String creator, String manager, TaskConfiguration configuration, ScheduleRange scheduleRange) {
+    public Task(Long id, String title, String description, String creator, String manager, String tag, TaskConfiguration configuration, ScheduleRange scheduleRange) {
         this.id = id;
         this.title = title;
         this.creator = creator;
         this.manager = manager;
+        this.tag = tag;
         this.description = description;
         this.configuration = configuration;
         this.scheduleRange = scheduleRange;
     }
 
     @Builder(toBuilder = true)
-    public Task(String title, String description, String creator, String manager, TaskConfiguration configuration, ScheduleRange scheduleRange) {
-        this(null, title, description, creator, manager, configuration, scheduleRange);
+    public Task(String title, String description, String creator, String manager, String tag, TaskConfiguration configuration, ScheduleRange scheduleRange) {
+        this(null, title, description, creator, manager, tag, configuration, scheduleRange);
     }
 
     public void changeState(State state) {
@@ -67,6 +68,7 @@ public class Task extends BaseTimeEntity {
         this.title = task.getTitle();
         this.creator = task.getCreator();
         this.manager = task.getManager();
+        this.tag = task.getTag();
         this.description = task.getDescription();
         this.configuration = task.getConfiguration();
         this.scheduleRange = task.getScheduleRange();
