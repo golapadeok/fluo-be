@@ -1,13 +1,15 @@
 package com.golapadeok.fluo.domain.task.dto.response;
 
+import com.golapadeok.fluo.domain.member.domain.Member;
+import com.golapadeok.fluo.domain.state.dto.StateDto;
 import com.golapadeok.fluo.domain.task.domain.ScheduleRange;
 import com.golapadeok.fluo.domain.task.domain.Task;
 import com.golapadeok.fluo.domain.task.domain.TaskConfiguration;
-import com.golapadeok.fluo.domain.state.dto.StateDto;
+import com.golapadeok.fluo.domain.task.dto.MemberDto;
+import lombok.Builder;
 import lombok.Getter;
 
 import java.time.LocalDate;
-import java.util.Arrays;
 import java.util.List;
 
 @Getter
@@ -16,33 +18,37 @@ public class TaskSearchResponse {
     private final String title;
     private final String description;
     private final String creator;
+    private final List<MemberDto> managers;
     private final StateDto state;
-    private final List<String> managers;
     private final Boolean isPrivate;
     private final Integer priority;
     private final LocalDate startDate;
     private final LocalDate endDate;
 
-    private TaskSearchResponse(String taskId, String title, String description, TaskConfiguration configuration, StateDto state, ScheduleRange scheduleRange) {
+    @Builder
+    private TaskSearchResponse(String taskId, String title, String description, String creator, List<MemberDto> managers, TaskConfiguration configuration, ScheduleRange scheduleRange, StateDto state) {
         this.taskId = taskId;
         this.title = title;
         this.description = description;
-        this.creator = configuration.getCreator();
-        this.managers = Arrays.asList(configuration.getManager().split(","));
+        this.creator = creator;
+        this.managers = managers;
         this.isPrivate = configuration.getIsPrivate();
         this.priority = configuration.getPriority();
-        this.state = state;
         this.startDate = scheduleRange.getStartDate().toLocalDate();
         this.endDate = scheduleRange.getEndDate().toLocalDate();
+        this.state = state;
     }
 
-    public static TaskSearchResponse of(Task task) {
-        return new TaskSearchResponse(
-                task.getId().toString(),
-                task.getTitle(),
-                task.getDescription(),
-                task.getConfiguration(),
-                StateDto.of(task.getState()),
-                task.getScheduleRange());
+    public static TaskSearchResponse of(Task task, List<Member> members) {
+        return TaskSearchResponse.builder()
+                .taskId(task.getId().toString())
+                .title(task.getTitle())
+                .description(task.getDescription())
+                .creator(task.getCreator())
+                .managers(MemberDto.of(members))
+                .state(StateDto.of(task.getState()))
+                .configuration(task.getConfiguration())
+                .scheduleRange(task.getScheduleRange())
+                .build();
     }
 }

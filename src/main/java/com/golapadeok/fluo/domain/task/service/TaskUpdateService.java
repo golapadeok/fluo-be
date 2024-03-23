@@ -1,6 +1,10 @@
 package com.golapadeok.fluo.domain.task.service;
 
+import com.golapadeok.fluo.domain.member.domain.Member;
+import com.golapadeok.fluo.domain.member.repository.MemberRepository;
+import com.golapadeok.fluo.domain.state.domain.State;
 import com.golapadeok.fluo.domain.state.exception.NotFoundStateException;
+import com.golapadeok.fluo.domain.state.repository.StateRepository;
 import com.golapadeok.fluo.domain.task.domain.ScheduleRange;
 import com.golapadeok.fluo.domain.task.domain.Task;
 import com.golapadeok.fluo.domain.task.domain.TaskConfiguration;
@@ -8,60 +12,77 @@ import com.golapadeok.fluo.domain.task.dto.request.TaskUpdateRequest;
 import com.golapadeok.fluo.domain.task.dto.response.TaskUpdateResponse;
 import com.golapadeok.fluo.domain.task.exception.NotFoundTaskException;
 import com.golapadeok.fluo.domain.task.repository.TaskRepository;
-import com.golapadeok.fluo.domain.state.domain.State;
-import com.golapadeok.fluo.domain.state.repository.StateRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class TaskUpdateService {
+    private final MemberRepository memberRepository;
     private final TaskRepository taskRepository;
     private final StateRepository stateRepository;
 
     @Transactional
     public TaskUpdateResponse update(Integer taskId, TaskUpdateRequest request) {
-        final long id = taskId.longValue();
-        Task task = taskRepository.findById(id)
-                .orElseThrow(NotFoundTaskException::new);
+        Task task = findTaskById(taskId);
 
-        final TaskConfiguration configuration = getTasConfiguration(request);
-        final ScheduleRange scheduleRange = getScheduleRange(request);
-        final State state = getState(request.getStateId());
+        List<Member> members = memberRepository.findByIdIn(request.getManagers());
+        Task updateTask = updateTask(task, members, request);
 
-        task.changeState(state);
-        task.changeTaskConfiguration(configuration);
-        task.changeScheduleRange(scheduleRange);
-        task.changeTitle(request.getTitle());
-        task.changeDescription(request.getDescription());
+        task.changeTask(updateTask);
+        task.changeState(findStateById(request.getStateId(), task.getWorkspace().getId()));
 
         taskRepository.flush();
-        return TaskUpdateResponse.of(task);
+        return TaskUpdateResponse.of(task, members);
     }
 
-    private State getState(long stateId) {
-        return stateRepository.findById(stateId)
+    private Task updateTask(Task task, List<Member> members, TaskUpdateRequest request) {
+
+        return task.toBuilder()
+                .title(request.getTitle())
+                .description(request.getDescription())
+                .creator(request.getCreator())
+                .manager(joiningManagerId(members))
+                .configuration(extractTaskConfigure(request))
+                .scheduleRange(extractScheduleRange(request))
+                .build();
+    }
+
+    private State findStateById(long stateId, long workspaceId) {
+        return stateRepository.findByIdAndWorkspaceId(stateId, workspaceId)
                 .orElseThrow(NotFoundStateException::new);
     }
 
-    private ScheduleRange getScheduleRange(TaskUpdateRequest request) {
-        LocalDate startDate = request.getStartDate();
-        LocalDate endDate = request.getEndDate();
-        return new ScheduleRange(startDate, endDate);
+    private Task findTaskById(long taskId) {
+        return taskRepository.findById(taskId)
+                .orElseThrow(NotFoundTaskException::new);
     }
 
-    private TaskConfiguration getTasConfiguration(TaskUpdateRequest request) {
-        String creator = request.getCreator();
-        String managers = String.join(",", request.getManagers());
+    private ScheduleRange extractScheduleRange(TaskUpdateRequest request) {
+        return new ScheduleRange(
+                request.getStartDate(),
+                request.getEndDate()
+        );
+    }
+
+    private TaskConfiguration extractTaskConfigure(TaskUpdateRequest request) {
         return new TaskConfiguration(
-                creator,
-                managers,
                 request.getIsPrivate(),
                 request.getPriority()
         );
     }
 
+    private String joiningManagerId(List<Member> members) {
+        // TODO KDY 회원 적용하면 주석 제거
+//        if (members.isEmpty())
+//            throw new IllegalArgumentException("관리자가 존재하지 않습니다.");
+
+        return members.stream()
+                .map(member -> member.getId().toString())
+                .collect(Collectors.joining(","));
+    }
 }

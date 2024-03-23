@@ -10,13 +10,12 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
 @AllArgsConstructor
 @Schema(description = "업무 추가 요청 데이터")
 public class TaskCreateRequest {
-
-
     @NotNull(message = "워크스페이스 아이디는 필수 입력입니다.")
     @Schema(description = "업무가 소속되는 워크스페이스 아이디", example = "1")
     private Integer workspaceId;
@@ -37,8 +36,8 @@ public class TaskCreateRequest {
     private String creator;
 
     @NotNull(message = "관리자는 최소 한명 이상입니다.")
-    @Schema(description = "업무 관리자 이름 리스트", example = "[1, 2, 3]")
-    private List<String> managers;
+    @Schema(description = "업무 관리자 아이디 리스트", example = "[1, 2, 3]")
+    private List<Integer> managers;
 
     @NotNull(message = "공개 여부는 필수값 입니다.")
     @Schema(description = "업무 공개 여부")
