@@ -3,12 +3,12 @@ package com.golapadeok.fluo.domain.member.service;
 import com.golapadeok.fluo.common.security.domain.PrincipalDetails;
 import com.golapadeok.fluo.domain.member.domain.Member;
 import com.golapadeok.fluo.domain.member.domain.WorkspaceMember;
+import com.golapadeok.fluo.domain.member.dto.request.CursorPageRequest;
 import com.golapadeok.fluo.domain.member.dto.response.MemberWorkspaceListResponse;
 import com.golapadeok.fluo.domain.member.dto.response.WorkspaceInfoResponse;
 import com.golapadeok.fluo.domain.member.dto.response.WorkspaceWithMemberInfoResponse;
 import com.golapadeok.fluo.domain.member.repository.MemberRepository;
 import com.golapadeok.fluo.domain.member.repository.WorkspaceMemberRepository;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -16,6 +16,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -28,16 +29,17 @@ public class MemberWorkspaceListService {
     private Long lastWorkspaceId;
     private final MemberRepository memberRepository;
     private final WorkspaceMemberRepository workspaceMemberRepository;
-    @Transactional
-    public MemberWorkspaceListResponse getWorkspaceList(PrincipalDetails principalDetails, Long cursorId) {
-        Pageable pageable = PageRequest.of(0, PAGE_DEFAULT_SIZE);
+    @Transactional(readOnly = true)
+    public MemberWorkspaceListResponse getWorkspaceList(PrincipalDetails principalDetails, CursorPageRequest cursorPageRequest) {
+        Pageable pageable = PageRequest.of(cursorPageRequest.getCursorId(), cursorPageRequest.getLimit());
         
         Member member = principalDetails.getMember();
 
         Member findMember = this.memberRepository.findById(member.getId())
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
 
-        Page<WorkspaceMember> workspaceMembers = getWorkspaceMembersList(findMember, cursorId, pageable);
+        Page<WorkspaceMember> workspaceMembers =
+                getWorkspaceMembersList(findMember, Long.valueOf(cursorPageRequest.getCursorId()), pageable);
 
         List<WorkspaceInfoResponse> items = getWorkspaceInfo(workspaceMembers);
         items.forEach(i -> log.info("item : {}", i));
@@ -51,7 +53,7 @@ public class MemberWorkspaceListService {
     // 커서 기반 페이징 처리
     private Page<WorkspaceMember> getWorkspaceMembersList(Member findMember, Long cursorId, Pageable pageable) {
         Page<WorkspaceMember> slice;
-        if(cursorId == null) {
+        if(cursorId == 0) {
             slice = this.workspaceMemberRepository.findByMemberIdOrderByIdDesc(findMember.getId(), pageable);
             setLastWorkspaceId(slice);
         }else{

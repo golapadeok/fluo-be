@@ -3,6 +3,7 @@ package com.golapadeok.fluo.domain.member.service;
 import com.golapadeok.fluo.common.security.domain.PrincipalDetails;
 import com.golapadeok.fluo.domain.member.domain.Member;
 import com.golapadeok.fluo.domain.member.domain.WorkspaceMember;
+import com.golapadeok.fluo.domain.member.dto.request.CursorPageRequest;
 import com.golapadeok.fluo.domain.member.dto.response.MemberWorkspaceListResponse;
 import com.golapadeok.fluo.domain.member.repository.MemberRepository;
 import com.golapadeok.fluo.domain.member.repository.WorkspaceMemberRepository;
@@ -98,11 +99,10 @@ class MemberWorkspaceListServiceTest {
                 .build();
         // given
         PrincipalDetails principalDetails = new PrincipalDetails(member);
-        Long cursorId = null;
-        Integer limit = null;
+        CursorPageRequest cursorPageRequest = new CursorPageRequest(0, 5);
 
         // when
-        MemberWorkspaceListResponse workspaceList = this.memberWorkspaceListService.getWorkspaceList(principalDetails, cursorId);
+        MemberWorkspaceListResponse workspaceList = this.memberWorkspaceListService.getWorkspaceList(principalDetails, cursorPageRequest);
 
         // then
         log.info(workspaceList.toString());
