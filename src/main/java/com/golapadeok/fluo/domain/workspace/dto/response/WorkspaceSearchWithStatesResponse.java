@@ -11,13 +11,7 @@ import java.util.List;
 public class WorkspaceSearchWithStatesResponse {
     private final List<StateDto> states;
 
-    private WorkspaceSearchWithStatesResponse(List<StateDto> states) {
+    public WorkspaceSearchWithStatesResponse(List<StateDto> states) {
         this.states = states;
-    }
-
-    public static WorkspaceSearchWithStatesResponse of(Workspace workspace) {
-        return new WorkspaceSearchWithStatesResponse(
-                StateDto.of(workspace.getStates())
-        );
     }
 }

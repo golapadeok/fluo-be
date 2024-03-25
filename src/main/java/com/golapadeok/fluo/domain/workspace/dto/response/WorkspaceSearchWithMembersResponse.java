@@ -13,20 +13,7 @@ import java.util.List;
 public class WorkspaceSearchWithMembersResponse {
     private final List<MemberDto> members;
 
-    private WorkspaceSearchWithMembersResponse(List<MemberDto> members) {
+    public WorkspaceSearchWithMembersResponse(List<MemberDto> members) {
         this.members = members;
-    }
-
-    public static WorkspaceSearchWithMembersResponse of(Workspace workspace) {
-        return new WorkspaceSearchWithMembersResponse(
-                MemberDto.of(getMembers(workspace))
-        );
-    }
-
-    private static List<Member> getMembers(Workspace workspace) {
-        List<WorkspaceMember> workspaceMembers = workspace.getWorkspaceMembers();
-        return workspaceMembers.stream()
-                .map(WorkspaceMember::getMember)
-                .toList();
     }
 }
