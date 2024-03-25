@@ -51,7 +51,9 @@ public class WorkspaceController {
 
     @GetMapping("/{workspaceId}/members")
     @Operation(summary = "워크스페이스의 회원목록 조회 API", description = "해당 워크스페이스의 회원목록을 조회합니다.")
-    public ResponseEntity<WorkspaceSearchWithMembersResponse> searchWorkspaceWithMembers(@PathVariable("workspaceId") Integer workspaceId) {
+    public ResponseEntity<WorkspaceSearchWithMembersResponse> searchWorkspaceWithMembers(
+            @PathVariable("workspaceId") Integer workspaceId
+    ) {
         return ResponseEntity.ok(workspaceSearchService.searchWithMembers(workspaceId));
     }
 
@@ -63,6 +65,14 @@ public class WorkspaceController {
             @Valid @ParameterObject FilterRequest filterRequest
     ) {
         return ResponseEntity.ok(workspaceSearchService.searchWithTasks(workspaceId, pageRequest, filterRequest));
+    }
+
+    @GetMapping("/{workspaceId}/tags")
+    @Operation(summary = "워크스페이스에 포함된 태그목록 조회 API", description = "해당 워크스페이스에 포함된 태그목록을 조회합니다.")
+    public ResponseEntity<WorkspaceSearchWithTagsResponse> searchWorkspaceWithTags(
+            @PathVariable(name = "workspaceId") Integer workspaceId
+    ) {
+        return ResponseEntity.ok(workspaceSearchService.searchWithTags(workspaceId));
     }
 
     @GetMapping("/{workspaceId}/invitations")

@@ -2,6 +2,7 @@ package com.golapadeok.fluo.domain.workspace.service;
 
 import com.golapadeok.fluo.domain.member.domain.Member;
 import com.golapadeok.fluo.domain.member.repository.MemberRepository;
+import com.golapadeok.fluo.domain.tag.domain.Tag;
 import com.golapadeok.fluo.domain.task.domain.Task;
 import com.golapadeok.fluo.domain.task.dto.MemberDto;
 import com.golapadeok.fluo.domain.task.dto.TaskDto;
@@ -70,9 +71,15 @@ public class WorkspaceSearchService {
         return WorkspaceSearchWithMembersResponse.of(workspace);
     }
 
+    public WorkspaceSearchWithTagsResponse searchWithTags(Integer workspaceId) {
+        Workspace workspace = getWorkspace(workspaceId);
+        return WorkspaceSearchWithTagsResponse.of(workspace.getTags());
+    }
+
     private Workspace getWorkspace(int workspaceId) {
         return workspaceRepository.findById((long) workspaceId)
                 .orElseThrow(NotFoundWorkspaceException::new);
     }
+
 
 }
