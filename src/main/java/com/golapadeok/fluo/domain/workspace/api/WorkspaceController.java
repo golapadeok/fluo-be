@@ -28,12 +28,8 @@ public class WorkspaceController {
 
     @GetMapping
     @Operation(summary = "워크스페이스 전체조회 API", description = "워크스페이스 전체조회 API")
-    public ResponseEntity<List<WorkspacePageResponse>> getWorkspaces(
-            @Valid @ParameterObject CursorPageRequest pageRequest) {
-        //전체조회
-        //페이징
-        //초대코드
-        List<WorkspacePageResponse> searches = workspaceSearchService.searches(pageRequest);
+    public ResponseEntity<BaseResponse> getWorkspaces() {
+        BaseResponse searches = workspaceSearchService.searches();
         return ResponseEntity.ok(searches);
     }
 

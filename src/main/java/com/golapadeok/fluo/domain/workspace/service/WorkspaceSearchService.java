@@ -31,11 +31,9 @@ public class WorkspaceSearchService {
     private final WorkspaceRepository workspaceRepository;
     private final WorkspaceRepositoryImpl workspaceRepositoryImpl;
 
-    public List<WorkspacePageResponse> searches(CursorPageRequest request) {
-        PageRequest pageRequest = PageRequest.of(request.getCursorId(), request.getLimit());
-        Page<Workspace> pages = workspaceRepository.findAll(pageRequest);
-        List<Workspace> contents = pages.getContent();
-        return WorkspacePageResponse.of(contents);
+    public BaseResponse searches() {
+        List<Workspace> workspaces = workspaceRepository.findAll();
+        return new BaseResponse(workspaces);
     }
 
     public WorkspaceSearchResponse search(Integer workspaceId) {
