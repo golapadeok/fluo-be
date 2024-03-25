@@ -10,11 +10,7 @@ import java.util.List;
 public class WorkspaceSearchWithTagsResponse {
     private final List<TagDto> tags;
 
-    private WorkspaceSearchWithTagsResponse(List<TagDto> tags) {
+    public WorkspaceSearchWithTagsResponse(List<TagDto> tags) {
         this.tags = tags;
-    }
-
-    public static WorkspaceSearchWithTagsResponse of(List<Tag> tags) {
-        return new WorkspaceSearchWithTagsResponse(TagDto.of(tags));
     }
 }

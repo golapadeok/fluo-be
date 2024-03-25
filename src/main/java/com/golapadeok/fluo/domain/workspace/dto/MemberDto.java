@@ -15,7 +15,14 @@ public class MemberDto {
     private final String email;
     private final String profileUrl;
 
-    private MemberDto(String memberId, String name, String email, String profileUrl) {
+    public MemberDto(Long memberId, String name, String email, String profileUrl) {
+        this.memberId = memberId.toString();
+        this.name = name;
+        this.email = email;
+        this.profileUrl = profileUrl;
+    }
+
+    public MemberDto(String memberId, String name, String email, String profileUrl) {
         this.memberId = memberId;
         this.name = name;
         this.email = email;

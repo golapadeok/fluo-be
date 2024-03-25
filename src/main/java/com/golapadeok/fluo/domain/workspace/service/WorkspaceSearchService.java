@@ -83,18 +83,15 @@ public class WorkspaceSearchService {
     }
 
     public WorkspaceSearchWithStatesResponse searchWithStates(Integer workspaceId) {
-        Workspace workspace = getWorkspace(workspaceId);
-        return WorkspaceSearchWithStatesResponse.of(workspace);
+        return workspaceRepositoryImpl.findWorkspaceWithStages(workspaceId);
     }
 
     public WorkspaceSearchWithMembersResponse searchWithMembers(Integer workspaceId) {
-        Workspace workspace = getWorkspace(workspaceId);
-        return WorkspaceSearchWithMembersResponse.of(workspace);
+        return workspaceRepositoryImpl.findWorkspaceWithMembers(workspaceId);
     }
 
     public WorkspaceSearchWithTagsResponse searchWithTags(Integer workspaceId) {
-        Workspace workspace = getWorkspace(workspaceId);
-        return WorkspaceSearchWithTagsResponse.of(workspace.getTags());
+        return workspaceRepositoryImpl.findWorkspaceWithTags(workspaceId);
     }
 
     private Workspace getWorkspace(int workspaceId) {
