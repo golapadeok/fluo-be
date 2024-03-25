@@ -9,29 +9,14 @@ import java.util.List;
 
 @Getter
 public class WorkspaceSearchWithStatesResponse {
-    private final String workspaceId;
-    private final String title;
-    private final String description;
-    private final String imageUrl;
-    private final LocalDate createDate;
     private final List<StateDto> states;
 
-    private WorkspaceSearchWithStatesResponse(String workspaceId, String title, String description, String imageUrl, LocalDate createDate, List<StateDto> states) {
-        this.workspaceId = workspaceId;
-        this.title = title;
-        this.description = description;
-        this.imageUrl = imageUrl;
-        this.createDate = createDate;
+    private WorkspaceSearchWithStatesResponse(List<StateDto> states) {
         this.states = states;
     }
 
     public static WorkspaceSearchWithStatesResponse of(Workspace workspace) {
         return new WorkspaceSearchWithStatesResponse(
-                workspace.getId().toString(),
-                workspace.getTitle(),
-                workspace.getDescription(),
-                workspace.getImageUrl(),
-                workspace.getCreateDate().toLocalDate(),
                 StateDto.of(workspace.getStates())
         );
     }
