@@ -1,13 +1,16 @@
 package com.golapadeok.fluo.domain.task.domain;
 
 import com.golapadeok.fluo.common.domain.BaseTimeEntity;
-import com.golapadeok.fluo.domain.customer.domain.Customer;
+import com.golapadeok.fluo.domain.member.domain.Member;
 import jakarta.persistence.*;
+import lombok.Getter;
 
 @Entity
+@Getter
 public class ManagerTask extends BaseTimeEntity {
 
-    @Id @GeneratedValue
+    @Id
+    @GeneratedValue
     @Column(name = "MANAGER_TASK_ID")
     private Long id;
 
@@ -16,7 +19,14 @@ public class ManagerTask extends BaseTimeEntity {
     private Task task;
 
     @ManyToOne
-    @JoinColumn(name = "CUSTOMER_ID")
-    private Customer customer;
+    @JoinColumn(name = "MEMBER_ID")
+    private Member member;
 
+    public void changeTask(Task task) {
+        this.task = task;
+    }
+
+    public void changeMember(Member member) {
+        this.member = member;
+    }
 }

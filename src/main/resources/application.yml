@@ -5,8 +5,7 @@ spring:
     username: ${SPRING_DATASOURCE_USERNAME:sa}
     password: ${SPRING_DATASOURCE_PASSWORD:sa}
   jpa:
-    database-platform: org.hibernate.dialect.H2Dialect
-    show-sql: true
+    database-platform: ${SPRING_DATASOURCE_DIALECT:org.hibernate.dialect.H2Dialect}
     hibernate:
       ddl-auto: create
       naming:
@@ -16,19 +15,54 @@ spring:
       hibernate:
         format_sql: true
         default_batch_fetch_size: 100
+        show_sql: true
     open-in-view: false
-
   security:
     user:
       name: test
       password: test
       roles: USER, ADMIN
 
+oauth2:
+  google:
+    client_id: 485784788447-t3irsd8ig19i9i06g9q4s7g9kcej85uu.apps.googleusercontent.com
+    client_secret: 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
+    redirect_uri: http://localhost:9999/auth/google/callback
+    scope: profile email
+  naver:
+    client_id: OUzv9kOasKTzle3Myc4P
+    client_secret: pNN1onHa59
+    redirect_uri: http://localhost:9999/auth/naver/callback
+    scope: name email profile_image
+
+jwt:
+  secretKey: secretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecret
+
+cloud:
+  aws:
+    s3:
+      bucket: fluo-bucket
+      path: ${SPRING_S3_PATH}
+    credentials:
+      access-key: ${SPRING_S3_ACCESS_KEY}
+      secret-key: ${SPRING_S3_SECRET_KEY}
+    region:
+      static: ap-northeast-2
+      auto: false
+    stack:
+      auto: false
+
+
+file:
+  path:
+    image: ${FILE_PATH_IMAGE:/}
+
 logging:
   level:
     com.golapadeok.fluo: debug
-    org.hibernate.SQL: debug
     org.hibernate.orm.jdbc.bind: trace
+server:
+  port: 9999
 ---
 spring:
   config:
