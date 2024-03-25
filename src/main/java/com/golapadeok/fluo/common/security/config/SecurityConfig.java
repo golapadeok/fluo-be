@@ -65,7 +65,7 @@ public class SecurityConfig {
     }
 
     @Bean
-    @Profile({"dev", "prod"})
+    @Profile({"dev", "blue", "green"})
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests((authorization) -> authorization
