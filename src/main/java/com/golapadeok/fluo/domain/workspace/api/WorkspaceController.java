@@ -25,7 +25,6 @@ public class WorkspaceController {
     private final WorkspaceSearchService workspaceSearchService;
     private final WorkspaceDeleteService workspaceDeleteService;
 
-
     @GetMapping
     @Operation(summary = "워크스페이스 전체조회 API", description = "워크스페이스 전체조회 API")
     public ResponseEntity<BaseResponse> getWorkspaces() {

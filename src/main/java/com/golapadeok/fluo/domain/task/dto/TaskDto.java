@@ -1,6 +1,8 @@
 package com.golapadeok.fluo.domain.task.dto;
 
 import com.golapadeok.fluo.domain.state.dto.StateDto;
+import com.golapadeok.fluo.domain.tag.domain.Tag;
+import com.golapadeok.fluo.domain.tag.dto.TagDto;
 import com.golapadeok.fluo.domain.task.domain.ScheduleRange;
 import com.golapadeok.fluo.domain.task.domain.Task;
 import com.golapadeok.fluo.domain.task.domain.TaskConfiguration;
@@ -18,12 +20,13 @@ public class TaskDto {
     private final String creator;
     private final List<MemberDto> managers;
     private final StateDto state;
+    private final List<TagDto> tags;
     private final Boolean isPrivate;
     private final Integer priority;
     private final LocalDate startDate;
     private final LocalDate endDate;
 
-    private TaskDto(String taskId, String title, String description, String creator, List<MemberDto> managers, TaskConfiguration configuration, StateDto state, ScheduleRange scheduleRange) {
+    private TaskDto(String taskId, String title, String description, String creator, List<MemberDto> managers, TaskConfiguration configuration, StateDto state, List<TagDto> tags, ScheduleRange scheduleRange) {
         this.taskId = taskId;
         this.title = title;
         this.description = description;
@@ -32,26 +35,14 @@ public class TaskDto {
         this.isPrivate = configuration.getIsPrivate();
         this.priority = configuration.getPriority();
         this.state = state;
+        this.tags = tags;
         this.startDate = scheduleRange.getStartDate().toLocalDate();
         this.endDate = scheduleRange.getEndDate().toLocalDate();
     }
 
-    public static TaskDto of(Task task, List<MemberDto> members) {
+    public static TaskDto of(Task task, List<MemberDto> members, List<TagDto> tags) {
         Assert.notNull(task, "task must not be null");
         StateDto convertState = StateDto.of(task.getState());
-        return new TaskDto(task.getId().toString(), task.getTitle(), task.getDescription(), task.getCreator(), members, task.getConfiguration(), convertState, task.getScheduleRange());
-    }
-
-    public static List<TaskDto> of(List<Task> tasks) {
-        Assert.notNull(tasks, "tasks must not be null");
-        Iterator<Task> iterator = tasks.iterator();
-        List<TaskDto> results = new ArrayList<>();
-        while (iterator.hasNext()) {
-            Task task = iterator.next();
-            TaskDto taskDto = of(task, null);
-            results.add(taskDto);
-        }
-
-        return Collections.unmodifiableList(results);
+        return new TaskDto(task.getId().toString(), task.getTitle(), task.getDescription(), task.getCreator(), members, task.getConfiguration(), convertState, tags, task.getScheduleRange());
     }
 }
