@@ -11,10 +11,12 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@ToString(exclude = {"states", "workspaceMembers", "roles", "tasks", "tags"})
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -28,6 +30,7 @@ public class Workspace extends BaseTimeEntity {
     private String title;
     private String description;
     private String imageUrl;
+    private String invitationCode;
 
     @OneToMany(mappedBy = "workspace", fetch = FetchType.LAZY)
     private List<State> states = new ArrayList<>();
