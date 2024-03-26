@@ -1,13 +1,13 @@
 package com.golapadeok.fluo.domain.member.service;
 
 import com.golapadeok.fluo.common.security.domain.PrincipalDetails;
-import com.golapadeok.fluo.domain.member.domain.Invitation;
+import com.golapadeok.fluo.domain.invitation.domain.Invitation;
+import com.golapadeok.fluo.domain.invitation.dto.request.CursorPageRequest;
+import com.golapadeok.fluo.domain.invitation.dto.response.MemberInvitationListResponse;
+import com.golapadeok.fluo.domain.invitation.repository.InvitationRepository;
+import com.golapadeok.fluo.domain.invitation.service.MemberInvitationListService;
 import com.golapadeok.fluo.domain.member.domain.Member;
-import com.golapadeok.fluo.domain.member.dto.request.CursorPageRequest;
-import com.golapadeok.fluo.domain.member.dto.response.MemberInvitationListResponse;
-import com.golapadeok.fluo.domain.member.repository.InvitationRepository;
 import com.golapadeok.fluo.domain.member.repository.MemberRepository;
-import com.golapadeok.fluo.domain.role.domain.Credential;
 import com.golapadeok.fluo.domain.workspace.domain.Workspace;
 import com.golapadeok.fluo.domain.workspace.repository.WorkspaceRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -20,8 +20,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @Slf4j
 @SpringBootTest
