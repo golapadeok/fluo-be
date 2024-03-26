@@ -5,7 +5,9 @@ import com.golapadeok.fluo.domain.member.domain.Member;
 import com.golapadeok.fluo.domain.member.dto.request.CursorPageRequest;
 import com.golapadeok.fluo.domain.member.dto.request.PagingRequest;
 import com.golapadeok.fluo.domain.member.dto.response.MemberInfoResponse;
+import com.golapadeok.fluo.domain.member.dto.response.MemberInvitationListResponse;
 import com.golapadeok.fluo.domain.member.dto.response.MemberWorkspaceListResponse;
+import com.golapadeok.fluo.domain.member.service.MemberInvitationListService;
 import com.golapadeok.fluo.domain.member.service.MemberWorkspaceListService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -27,6 +29,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class MemberController {
 
     private final MemberWorkspaceListService memberWorkspaceListService;
+    private final MemberInvitationListService memberInvitationListService;
 
     @Operation(summary = "내 정보 조회", description = "내 정보 조회를 합니다.")
     @GetMapping("/members/self")
@@ -53,9 +56,9 @@ public class MemberController {
 
     @Operation(summary = "멤버가 받은 초대 목록", description = "멤버가 초대받은 워크스페이스의 초대 목록을 보여줍니다.")
     @GetMapping("/invitations/self")
-    public void getMyInvitations(@AuthenticationPrincipal PrincipalDetails principalDetails,
-                                 @Valid @ParameterObject CursorPageRequest cursorPageRequest) {
-
+    public ResponseEntity<MemberInvitationListResponse> getMyInvitations(@AuthenticationPrincipal PrincipalDetails principalDetails,
+                                                                         @Valid @ParameterObject CursorPageRequest cursorPageRequest) {
+        return ResponseEntity.ok(this.memberInvitationListService.getInvitationList(principalDetails, cursorPageRequest));
     }
 
     @Operation(summary = "초대코드로 워크스페이스 조회", description = "초대 코드 입력시 워크스페이스의 정보가 조회됩니다.")
