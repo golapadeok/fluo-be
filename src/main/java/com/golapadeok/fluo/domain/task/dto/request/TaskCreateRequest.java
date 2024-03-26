@@ -40,8 +40,8 @@ public class TaskCreateRequest {
     private List<Integer> managers;
 
     @NotNull(message = "태그 아이디는 필수 입력입니다.")
-    @Schema(description = "업무에 설정할 태그 아이디 리스트", example = "[1, 2, 3]")
-    private List<Integer> tags;
+    @Schema(description = "업무에 설정할 태그 아이디", example = "1")
+    private Integer tag;
 
     @NotNull(message = "공개 여부는 필수값 입니다.")
     @Schema(description = "업무 공개 여부")

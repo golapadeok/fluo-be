@@ -1,0 +1,27 @@
+package com.golapadeok.fluo.domain.task.dto.response;
+
+import com.golapadeok.fluo.domain.state.dto.StateDto;
+import com.golapadeok.fluo.domain.tag.dto.TagDto;
+import com.golapadeok.fluo.domain.task.domain.Task;
+import com.golapadeok.fluo.domain.task.dto.MemberDto;
+import lombok.Builder;
+import lombok.Getter;
+
+import java.util.List;
+
+@Getter
+public class TaskDetailResponse extends TaskResponse {
+    private final StateDto state;
+    private final List<MemberDto> managers;
+    private final TagDto tag;
+
+    @Builder
+    public TaskDetailResponse(Task task) {
+        super(task);
+        this.managers = task.getManagers().stream()
+                .map(managerTask -> MemberDto.of(managerTask.getMember()))
+                .toList();
+        this.tag = TagDto.of(task.getTag());
+        this.state = StateDto.of(task.getState());
+    }
+}

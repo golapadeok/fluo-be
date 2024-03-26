@@ -1,12 +1,8 @@
 package com.golapadeok.fluo.domain.workspace.service;
 
-import com.golapadeok.fluo.domain.member.domain.Member;
 import com.golapadeok.fluo.domain.member.repository.MemberRepository;
-import com.golapadeok.fluo.domain.tag.domain.Tag;
-import com.golapadeok.fluo.domain.tag.dto.TagDto;
 import com.golapadeok.fluo.domain.tag.repository.TagRepository;
 import com.golapadeok.fluo.domain.task.domain.Task;
-import com.golapadeok.fluo.domain.task.dto.MemberDto;
 import com.golapadeok.fluo.domain.task.dto.TaskDto;
 import com.golapadeok.fluo.domain.workspace.domain.Workspace;
 import com.golapadeok.fluo.domain.workspace.dto.CustomPageImpl;
@@ -21,7 +17,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 @Service
@@ -64,26 +59,16 @@ public class WorkspaceSearchService {
     }
 
 
+    //TODO KDY 수정
     public WorkspaceSearchWithTasksResponse searchWithTasks(Integer workspaceId, CursorPageRequest pageRequest, FilterRequest filterRequest) {
         CustomPageImpl<Task> pageTasks = workspaceRepositoryImpl.searchPageTasks(workspaceId, pageRequest, filterRequest);
         List<Task> tasks = pageTasks.getContent();
         List<TaskDto> results = new ArrayList<>();
-        for (Task task : tasks) {
-            List<String> managerId = Arrays.asList(task.getManager().split(","));
-            List<Integer> convertId = managerId.stream().filter(s -> !s.isEmpty()).map(Integer::parseInt).toList();
-            List<Member> members = memberRepository.findByIdIn(convertId);
-
-            List<String> tagId = Arrays.asList(task.getTag().split(","));
-            List<Integer> convertTagId = tagId.stream().filter(s -> !s.isEmpty()).map(Integer::parseInt).toList();
-            List<Tag> tags = tagRepository.findByIdInAndWorkspaceId(convertTagId, workspaceId);
-
-            results.add(TaskDto.of(task, MemberDto.of(members), TagDto.of(tags)));
-        }
         return WorkspaceSearchWithTasksResponse.of((int) pageTasks.getTotalElements(), pageTasks.getSize(), (int) pageTasks.getNextCursor(), results);
     }
 
     public WorkspaceSearchWithStatesResponse searchWithStates(Integer workspaceId) {
-        return workspaceRepositoryImpl.findWorkspaceWithStages(workspaceId);
+        return workspaceRepositoryImpl.findWorkspaceWithStates(workspaceId);
     }
 
     public WorkspaceSearchWithMembersResponse searchWithMembers(Integer workspaceId) {

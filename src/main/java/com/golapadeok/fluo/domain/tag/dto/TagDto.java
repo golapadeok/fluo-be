@@ -26,6 +26,10 @@ public class TagDto {
         this.colorCode = colorCode;
     }
 
+    public static TagDto of(Tag tag) {
+        return new TagDto(tag.getId().toString(), tag.getTagName(), tag.getColorCode());
+    }
+
     public static List<TagDto> of(List<Tag> tags) {
         Iterator<Tag> iterator = tags.iterator();
         List<TagDto> results = new ArrayList<>();

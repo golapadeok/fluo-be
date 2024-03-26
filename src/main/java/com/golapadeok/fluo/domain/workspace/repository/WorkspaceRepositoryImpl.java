@@ -1,6 +1,5 @@
 package com.golapadeok.fluo.domain.workspace.repository;
 
-import com.golapadeok.fluo.domain.member.domain.QMember;
 import com.golapadeok.fluo.domain.member.domain.QWorkspaceMember;
 import com.golapadeok.fluo.domain.state.domain.QState;
 import com.golapadeok.fluo.domain.state.dto.StateDto;
@@ -99,16 +98,22 @@ public class WorkspaceRepositoryImpl implements WorkspaceRepositoryCustom {
         return new CustomPageImpl<>(content, PageRequest.of(0, pageRequest.getLimit()), totalCount, nextCursorId);
     }
 
-    public WorkspaceSearchWithStatesResponse findWorkspaceWithStages(long workspaceId) {
+    public WorkspaceSearchWithStatesResponse findWorkspaceWithStates(long workspaceId) {
         QWorkspace workspace = QWorkspace.workspace;
         QState state = QState.state;
 
-        return queryFactory
+        List<WorkspaceSearchWithStatesResponse> fetch = queryFactory
                 .select(Projections.constructor(WorkspaceSearchWithStatesResponse.class,
                         Projections.list(Projections.constructor(StateDto.class, state.id, state.name)))).from(workspace)
                 .leftJoin(workspace.states, state)
                 .where(workspace.id.eq(workspaceId))
-                .fetchOne();
+                .fetch();
+
+        List<StateDto> list = fetch.stream()
+                .flatMap(response -> response.getStates().stream())
+                .toList();
+
+        return new WorkspaceSearchWithStatesResponse(list);
     }
 
     public WorkspaceSearchWithMembersResponse findWorkspaceWithMembers(long workspaceId) {
