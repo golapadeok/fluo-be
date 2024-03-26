@@ -3,7 +3,7 @@ package com.golapadeok.fluo.domain.member.service;
 import com.golapadeok.fluo.common.security.domain.PrincipalDetails;
 import com.golapadeok.fluo.domain.member.domain.Member;
 import com.golapadeok.fluo.domain.member.domain.WorkspaceMember;
-import com.golapadeok.fluo.domain.member.dto.request.CursorPageRequest;
+import com.golapadeok.fluo.domain.member.dto.request.PagingRequest;
 import com.golapadeok.fluo.domain.member.dto.response.MemberWorkspaceListResponse;
 import com.golapadeok.fluo.domain.member.dto.response.WorkspaceInfoResponse;
 import com.golapadeok.fluo.domain.member.dto.response.WorkspaceWithMemberInfoResponse;
@@ -14,7 +14,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,13 +24,12 @@ import java.util.List;
 @Service
 public class MemberWorkspaceListService {
 
-    private static final int PAGE_DEFAULT_SIZE = 5;
-    private Long lastWorkspaceId;
+    private Long pageNum;
     private final MemberRepository memberRepository;
     private final WorkspaceMemberRepository workspaceMemberRepository;
     @Transactional(readOnly = true)
-    public MemberWorkspaceListResponse getWorkspaceList(PrincipalDetails principalDetails, CursorPageRequest cursorPageRequest) {
-        Pageable pageable = PageRequest.of(cursorPageRequest.getCursorId(), cursorPageRequest.getLimit());
+    public MemberWorkspaceListResponse getWorkspaceList(PrincipalDetails principalDetails, PagingRequest pagingRequest) {
+        Pageable pageable = PageRequest.of(pagingRequest.getPageNum(), pagingRequest.getLimit());
         
         Member member = principalDetails.getMember();
 
@@ -39,32 +37,40 @@ public class MemberWorkspaceListService {
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
 
         Page<WorkspaceMember> workspaceMembers =
-                getWorkspaceMembersList(findMember, Long.valueOf(cursorPageRequest.getCursorId()), pageable);
+                getWorkspaceMembersList(findMember, pageable);
 
         List<WorkspaceInfoResponse> items = getWorkspaceInfo(workspaceMembers);
         items.forEach(i -> log.info("item : {}", i));
         return MemberWorkspaceListResponse.builder()
                 .total(String.valueOf(workspaceMembers.getTotalElements()))
-                .cursorId(String.valueOf(lastWorkspaceId))
+                .nextPageNum(String.valueOf(this.pageNum))
                 .items(items)
                 .build();
     }
 
     // 커서 기반 페이징 처리
-    private Page<WorkspaceMember> getWorkspaceMembersList(Member findMember, Long cursorId, Pageable pageable) {
-        Page<WorkspaceMember> slice;
-        if(cursorId == 0) {
-            slice = this.workspaceMemberRepository.findByMemberIdOrderByIdDesc(findMember.getId(), pageable);
-            setLastWorkspaceId(slice);
-        }else{
-            slice = this.workspaceMemberRepository.findByIdLessThanAndMemberIdOrderByIdDesc(cursorId, findMember.getId(), pageable);
-            setLastWorkspaceId(slice);
-        }
-        return slice;
+    private Page<WorkspaceMember> getWorkspaceMembersList(Member findMember, Pageable pageable) {
+//        Page<WorkspaceMember> page;
+//        if(cursorId == 0) {
+//            page = this.workspaceMemberRepository.findByMemberIdOrderByIdDesc(findMember.getId(), pageable);
+//            setLastWorkspaceId(page);
+//        }else{
+//            page = this.workspaceMemberRepository.findByIdLessThanAndMemberIdOrderByIdDesc(cursorId, findMember.getId(), pageable);
+//            setLastWorkspaceId(page);
+//        }
+//        return page;
+        Page<WorkspaceMember> page = this.workspaceMemberRepository.findByMemberIdOrderByIdDesc(findMember.getId(), pageable);
+        setLastWorkspaceId(page);
+        return page;
     }
 
-    private void setLastWorkspaceId(Page<WorkspaceMember> slice) {
-        this.lastWorkspaceId = slice.getContent().get(slice.toList().size()-1).getId();
+    private void setLastWorkspaceId(Page<WorkspaceMember> page) {
+        if(!page.hasNext()) {
+            this.pageNum = null;
+            return;
+        }
+//        this.pageNum = page.getContent().get(page.toList().size()-1).getId();
+        this.pageNum = (long) (page.getNumber() + 1); // 다음 페이지 번호
     }
 
     // 워크스페이스의 정보를 조회

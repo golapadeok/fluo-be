@@ -3,6 +3,7 @@ package com.golapadeok.fluo.domain.member.api;
 import com.golapadeok.fluo.common.security.domain.PrincipalDetails;
 import com.golapadeok.fluo.domain.member.domain.Member;
 import com.golapadeok.fluo.domain.member.dto.request.CursorPageRequest;
+import com.golapadeok.fluo.domain.member.dto.request.PagingRequest;
 import com.golapadeok.fluo.domain.member.dto.response.MemberInfoResponse;
 import com.golapadeok.fluo.domain.member.dto.response.MemberWorkspaceListResponse;
 import com.golapadeok.fluo.domain.member.service.MemberWorkspaceListService;
@@ -12,7 +13,6 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springdoc.core.annotations.ParameterObject;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -46,14 +46,15 @@ public class MemberController {
     @Operation(summary = "멤버가 소속된 워크스페이스 조회", description = "멤버가 소속된 워크스페이스를 조회합니다.")
     @GetMapping("/members/self/workspaces")
     public ResponseEntity<MemberWorkspaceListResponse> getMyWorkspace(@AuthenticationPrincipal PrincipalDetails principalDetails,
-                                                                      @Valid @ParameterObject CursorPageRequest cursorPageRequest) {
+                                                                      @Valid @ParameterObject PagingRequest pageRequest) {
 
-        return ResponseEntity.ok(this.memberWorkspaceListService.getWorkspaceList(principalDetails, cursorPageRequest));
+        return ResponseEntity.ok(this.memberWorkspaceListService.getWorkspaceList(principalDetails, pageRequest));
     }
 
     @Operation(summary = "멤버가 받은 초대 목록", description = "멤버가 초대받은 워크스페이스의 초대 목록을 보여줍니다.")
     @GetMapping("/invitations/self")
-    public void getMyInvitations() {
+    public void getMyInvitations(@AuthenticationPrincipal PrincipalDetails principalDetails,
+                                 @Valid @ParameterObject CursorPageRequest cursorPageRequest) {
 
     }
 
