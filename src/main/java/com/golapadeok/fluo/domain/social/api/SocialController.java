@@ -80,7 +80,7 @@ public class SocialController {
     }
 
     @Operation(summary = "로그아웃 진행", description = "엑세스 토큰을 받아 해당 엑세스 토큰을 DB에 저장시켜 다시 엑세스 토큰으로 인증 하지 못하도록 함.")
-    @PostMapping("/auth/logout")
+    @PostMapping("/logout")
     public ResponseEntity<Map<String, String>> logout(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                         @Parameter(description = "엑세스 토큰", required = true)
                                         HttpServletRequest request) {
@@ -107,31 +107,6 @@ public class SocialController {
         return ResponseEntity.ok()
                 .header(HttpHeaders.SET_COOKIE, responseCookie.toString())
                 .body(params);
-    }
-
-    @GetMapping("/auth/refreshToken")
-    public ResponseEntity<String> refreshToken(@CookieValue(name = "refreshToken") String refreshToken,
-                                       @AuthenticationPrincipal PrincipalDetails principalDetails) {
-        log.info("cookie : {}", refreshToken);
-        Member member = principalDetails.getMember();
-
-        String accessToken = recreatingAccessToken(refreshToken, member);
-        log.info("accessToken : {}", accessToken);
-
-        return ResponseEntity.ok()
-                .header(HttpHeaders.AUTHORIZATION, "Bearer "+accessToken)
-                .body("ok");
-    }
-
-    private String recreatingAccessToken(String refreshToken, Member member) {
-        if(refreshToken != null) {
-            boolean isExpire = provider.isTokenValidate(refreshToken);
-            if(isExpire) {
-                log.info("만료되지 않았다면 = 참");
-                return provider.createAccessToken(member.getEmail());
-            }
-        }
-        return null;
     }
 
 }

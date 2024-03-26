@@ -48,9 +48,8 @@ public class SecurityConfig {
         http.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorization -> authorization
                         .requestMatchers(PathRequest.toH2Console()).permitAll()
-                        .requestMatchers("/auth/logout").authenticated()
-//                        .requestMatchers("/invitations/self").authenticated()
-                        .anyRequest().permitAll());
+                        .requestMatchers("/auth/**").permitAll()
+                        .anyRequest().permitAll()); // 테스트 종료시 authentication()으로 변경
 
         http.sessionManagement(sessionManagement -> sessionManagement
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))

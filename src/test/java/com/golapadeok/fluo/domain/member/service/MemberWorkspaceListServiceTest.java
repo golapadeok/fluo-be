@@ -46,17 +46,17 @@ class MemberWorkspaceListServiceTest {
     public void init() {
         // Workspace 생성 및 저장
         List<Workspace> workspaces = Arrays.asList(
-                new Workspace("title", "description"),
-                new Workspace("title1", "description1"),
-                new Workspace("title2", "description2"),
-                new Workspace("title3", "description3"),
-                new Workspace("title4", "description4"),
-                new Workspace("title5", "description5"),
-                new Workspace("title6", "description6"),
-                new Workspace("title7", "description7"),
-                new Workspace("title8", "description8"),
-                new Workspace("title9", "description9"),
-                new Workspace("title10", "description10")
+                new Workspace("title", "description", "url"),
+                new Workspace("title1", "description1", "url"),
+                new Workspace("title2", "description2", "url"),
+                new Workspace("title3", "description3", "url"),
+                new Workspace("title4", "description4", "url"),
+                new Workspace("title5", "description5", "url"),
+                new Workspace("title6", "description6", "url"),
+                new Workspace("title7", "description7", "url"),
+                new Workspace("title8", "description8", "url"),
+                new Workspace("title9", "description9", "url"),
+                new Workspace("title10", "description10", "url")
         );
         workspaceRepository.saveAll(workspaces);
 
