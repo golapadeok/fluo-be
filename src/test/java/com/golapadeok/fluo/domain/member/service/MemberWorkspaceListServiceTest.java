@@ -3,27 +3,21 @@ package com.golapadeok.fluo.domain.member.service;
 import com.golapadeok.fluo.common.security.domain.PrincipalDetails;
 import com.golapadeok.fluo.domain.member.domain.Member;
 import com.golapadeok.fluo.domain.member.domain.WorkspaceMember;
+import com.golapadeok.fluo.domain.member.dto.request.PagingRequest;
 import com.golapadeok.fluo.domain.member.dto.response.MemberWorkspaceListResponse;
 import com.golapadeok.fluo.domain.member.repository.MemberRepository;
 import com.golapadeok.fluo.domain.member.repository.WorkspaceMemberRepository;
 import com.golapadeok.fluo.domain.workspace.domain.Workspace;
 import com.golapadeok.fluo.domain.workspace.repository.WorkspaceRepository;
-import jakarta.transaction.Transactional;
-import jakarta.validation.constraints.Size;
 import lombok.extern.slf4j.Slf4j;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.domain.PageRequest;
 
 import java.util.Arrays;
 import java.util.List;
-
-import static com.mysema.commons.lang.Assert.assertThat;
-import static org.assertj.core.api.Assertions.assertThat;
 
 @Slf4j
 //@Transactional
@@ -98,11 +92,10 @@ class MemberWorkspaceListServiceTest {
                 .build();
         // given
         PrincipalDetails principalDetails = new PrincipalDetails(member);
-        Long cursorId = null;
-        Integer limit = null;
+        PagingRequest pagingRequest = new PagingRequest(1, 5);
 
         // when
-        MemberWorkspaceListResponse workspaceList = this.memberWorkspaceListService.getWorkspaceList(principalDetails, cursorId);
+        MemberWorkspaceListResponse workspaceList = this.memberWorkspaceListService.getWorkspaceList(principalDetails, pagingRequest);
 
         // then
         log.info(workspaceList.toString());

@@ -1,9 +1,15 @@
 package com.golapadeok.fluo.domain.task.dto.response;
 
+import com.golapadeok.fluo.domain.member.domain.Member;
+import com.golapadeok.fluo.domain.state.dto.StateDto;
+import com.golapadeok.fluo.domain.tag.domain.Tag;
+import com.golapadeok.fluo.domain.tag.dto.TagDto;
 import com.golapadeok.fluo.domain.task.domain.ScheduleRange;
 import com.golapadeok.fluo.domain.task.domain.Task;
 import com.golapadeok.fluo.domain.task.domain.TaskConfiguration;
+import com.golapadeok.fluo.domain.task.dto.MemberDto;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -18,31 +24,40 @@ public class TaskCreateResponse {
     private String title;
     private String description;
     private String creator;
-    private List<String> managers;
+    private StateDto state;
+    private List<MemberDto> managers;
+    private List<TagDto> tags;
     private Boolean isPrivate;
     private Integer priority;
     private LocalDate startDate;
     private LocalDate endDate;
 
-    private TaskCreateResponse(String taskId, String title, String description, TaskConfiguration configuration, ScheduleRange scheduleRange) {
+    @Builder
+    private TaskCreateResponse(String taskId, String title, String description, String creator, StateDto state, List<MemberDto> managers, List<TagDto> tags, TaskConfiguration configuration, ScheduleRange scheduleRange) {
         this.taskId = taskId;
         this.title = title;
         this.description = description;
-        this.creator = configuration.getCreator();
-        this.managers = Arrays.asList(configuration.getManager().split(","));
+        this.creator = creator;
+        this.managers = managers;
+        this.state = state;
+        this.tags = tags;
         this.isPrivate = configuration.getIsPrivate();
         this.priority = configuration.getPriority();
         this.startDate = scheduleRange.getStartDate().toLocalDate();
         this.endDate = scheduleRange.getEndDate().toLocalDate();
     }
 
-    public static TaskCreateResponse of(Task task) {
-        return new TaskCreateResponse(
-                task.getId().toString(),
-                task.getTitle(),
-                task.getDescription(),
-                task.getConfiguration(),
-                task.getScheduleRange()
-        );
+    public static TaskCreateResponse of(Task task, List<Member> managers, List<Tag> tags) {
+        return TaskCreateResponse.builder()
+                .taskId(task.getId().toString())
+                .title(task.getTitle())
+                .description(task.getDescription())
+                .creator(task.getCreator())
+                .state(StateDto.of(task.getState()))
+                .tags(TagDto.of(tags))
+                .managers(MemberDto.of(managers))
+                .configuration(task.getConfiguration())
+                .scheduleRange(task.getScheduleRange())
+                .build();
     }
 }

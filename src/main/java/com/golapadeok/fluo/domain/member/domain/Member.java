@@ -1,6 +1,7 @@
 package com.golapadeok.fluo.domain.member.domain;
 
 import com.golapadeok.fluo.common.domain.BaseTimeEntity;
+import com.golapadeok.fluo.domain.invitation.domain.Invitation;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.context.annotation.Bean;

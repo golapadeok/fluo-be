@@ -15,7 +15,7 @@ import java.util.List;
 public class MemberWorkspaceListResponse {
 
     private String total;
-    private String cursorId;
+    private String nextPageNum;
     private List<WorkspaceInfoResponse> items;
 
 }

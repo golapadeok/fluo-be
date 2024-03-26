@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequiredArgsConstructor
 @Tag(name = "업무 API", description = "업무 관련 API 목록")
-@RequestMapping("/api/v1/tasks")
+@RequestMapping("/tasks")
 public class TaskController {
 
     private final TaskCreateService taskCreateService;

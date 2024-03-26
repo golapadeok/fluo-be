@@ -22,13 +22,20 @@ public class State {
     @JoinColumn(name = "states")
     private Workspace workspace;
 
-    public State(Long id, String name) {
+    private Boolean isDefault;
+
+    public State(Long id, String name, Boolean isDefault) {
         this.id = id;
         this.name = name;
+        this.isDefault = isDefault;
+    }
+
+    public State(String name, boolean isDefault) {
+        this(null, name, isDefault);
     }
 
     public State(String name) {
-        this(null, name);
+        this(null, name, false);
     }
 
     public void changeWorkspace(Workspace workspace) {

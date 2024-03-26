@@ -1,15 +1,15 @@
-package com.golapadeok.fluo.domain.member.domain;
+package com.golapadeok.fluo.domain.invitation.domain;
 
+import com.golapadeok.fluo.domain.member.domain.Member;
 import com.golapadeok.fluo.domain.workspace.domain.Workspace;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 
 import java.time.LocalDateTime;
 
+@ToString(exclude = {"member"})
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
@@ -34,4 +34,11 @@ public class Invitation {
 
     private Boolean isPending; // 가입여부
 
+    @Builder
+    public Invitation(Member member, Workspace workspace, LocalDateTime createDate, Boolean isPending) {
+        this.member = member;
+        this.workspace = workspace;
+        this.createDate = createDate;
+        this.isPending = isPending;
+    }
 }
