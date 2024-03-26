@@ -2,8 +2,10 @@ package com.golapadeok.fluo.domain.invitation.api;
 
 import com.golapadeok.fluo.common.security.domain.PrincipalDetails;
 import com.golapadeok.fluo.domain.invitation.dto.request.CursorPageRequest;
+import com.golapadeok.fluo.domain.invitation.dto.response.InvitationWithWorkspaceInfoResponse;
 import com.golapadeok.fluo.domain.invitation.dto.response.MemberInvitationListResponse;
 import com.golapadeok.fluo.domain.invitation.service.MemberInvitationListService;
+import com.golapadeok.fluo.domain.invitation.service.MemberInvitationWorkspaceService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -21,6 +23,7 @@ import org.springframework.web.bind.annotation.*;
 public class MemberInvitationController {
 
     private final MemberInvitationListService memberInvitationListService;
+    private final MemberInvitationWorkspaceService memberInvitationWorkspaceService;
 
     @Operation(summary = "멤버가 받은 초대 목록", description = "멤버가 초대받은 워크스페이스의 초대 목록을 보여줍니다.")
     @GetMapping("/invitations/self")
@@ -31,8 +34,8 @@ public class MemberInvitationController {
 
     @Operation(summary = "초대코드로 워크스페이스 조회", description = "초대 코드 입력시 워크스페이스의 정보가 조회됩니다.")
     @GetMapping("/members/invitations/{invitationsCode}")
-    public void getInvitationsWorkspaceInfo(@PathVariable("invitationCode") String invitationCode) {
-
+    public ResponseEntity<InvitationWithWorkspaceInfoResponse> getInvitationsWorkspaceInfo(@PathVariable("invitationCode") String invitationCode) {
+        return ResponseEntity.ok(this.memberInvitationWorkspaceService.searchWorkspaceByInvitationCode(invitationCode));
     }
 
     @Operation(summary = "초대 수락", description = "초대코드로 워크스페이스 조회 후 수락을 누르면 해당 워크스페이스에 멈베가 추가됩니다.")
