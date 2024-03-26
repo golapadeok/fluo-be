@@ -2,8 +2,10 @@ package com.golapadeok.fluo.domain.invitation.api;
 
 import com.golapadeok.fluo.common.security.domain.PrincipalDetails;
 import com.golapadeok.fluo.domain.invitation.dto.request.CursorPageRequest;
+import com.golapadeok.fluo.domain.invitation.dto.response.InvitationAcceptResponse;
 import com.golapadeok.fluo.domain.invitation.dto.response.InvitationWithWorkspaceInfoResponse;
 import com.golapadeok.fluo.domain.invitation.dto.response.MemberInvitationListResponse;
+import com.golapadeok.fluo.domain.invitation.service.AcceptInvitationService;
 import com.golapadeok.fluo.domain.invitation.service.MemberInvitationListService;
 import com.golapadeok.fluo.domain.invitation.service.MemberInvitationWorkspaceService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -24,6 +26,7 @@ public class MemberInvitationController {
 
     private final MemberInvitationListService memberInvitationListService;
     private final MemberInvitationWorkspaceService memberInvitationWorkspaceService;
+    private final AcceptInvitationService acceptInvitationService;
 
     @Operation(summary = "멤버가 받은 초대 목록", description = "멤버가 초대받은 워크스페이스의 초대 목록을 보여줍니다.")
     @GetMapping("/invitations/self")
@@ -34,14 +37,16 @@ public class MemberInvitationController {
 
     @Operation(summary = "초대코드로 워크스페이스 조회", description = "초대 코드 입력시 워크스페이스의 정보가 조회됩니다.")
     @GetMapping("/members/invitations/{invitationsCode}")
-    public ResponseEntity<InvitationWithWorkspaceInfoResponse> getInvitationsWorkspaceInfo(@PathVariable("invitationCode") String invitationCode) {
-        return ResponseEntity.ok(this.memberInvitationWorkspaceService.searchWorkspaceByInvitationCode(invitationCode));
+    public ResponseEntity<InvitationWithWorkspaceInfoResponse> getInvitationsWorkspaceInfo(@PathVariable("invitationsCode") String invitationsCode) {
+        return ResponseEntity.ok(this.memberInvitationWorkspaceService.searchWorkspaceByInvitationCode(invitationsCode));
     }
 
     @Operation(summary = "초대 수락", description = "초대코드로 워크스페이스 조회 후 수락을 누르면 해당 워크스페이스에 멈베가 추가됩니다.")
-    @PostMapping("/members/invitaions")
-    public void includeWorkspaceMember() {
-
+    @PostMapping("/members/invitaions/{invitationsId}")
+    public ResponseEntity<InvitationAcceptResponse> includeWorkspaceMember(
+            @AuthenticationPrincipal PrincipalDetails principalDetails,
+            @PathVariable("invitationsId") String invitationsId) {
+        return ResponseEntity.ok(this.acceptInvitationService.acceptInvitation(principalDetails, invitationsId));
     }
 
     @Operation(summary = "초대 거절", description = "초대코드로 워크스페이스 조회 후 거절을 누르면 거절됩니다.")
