@@ -24,12 +24,4 @@ public class WorkspaceSearchResponse extends WorkspaceResponse {
         this.members = MemberDto.of(workspace.getWorkspaceMembers().stream().map(WorkspaceMember::getMember).toList());
         this.tags = TagDto.of(workspace.getTags());
     }
-
-    public WorkspaceSearchResponse(Workspace workspace, List<TaskDto> tasks) {
-        super(workspace);
-        this.states = StateDto.of(workspace.getStates());
-        this.tasks = tasks;
-        this.members = MemberDto.of(workspace.getWorkspaceMembers().stream().map(WorkspaceMember::getMember).toList());
-        this.tags = TagDto.of(workspace.getTags());
-    }
 }

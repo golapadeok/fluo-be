@@ -22,8 +22,6 @@ import java.util.List;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class WorkspaceSearchService {
-    private final TagRepository tagRepository;
-    private final MemberRepository memberRepository;
     private final WorkspaceRepository workspaceRepository;
     private final WorkspaceRepositoryImpl workspaceRepositoryImpl;
 
