@@ -26,6 +26,6 @@ public class StateCreateService {
         State state = new State(request.getName());
         state.changeWorkspace(workspace);
 
-        return StateCreateResponse.of(stateRepository.save(state));
+        return new StateCreateResponse(stateRepository.save(state));
     }
 }

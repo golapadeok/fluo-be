@@ -19,6 +19,6 @@ public class StateSearchService {
         State state = stateRepository.findById(id)
                 .orElseThrow(NotFoundStateException::new);
 
-        return StateSearchResponse.of(state);
+        return new StateSearchResponse(state);
     }
 }
