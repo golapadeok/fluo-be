@@ -1,6 +1,8 @@
 package com.golapadeok.fluo.domain.invitation.service;
 
 import com.golapadeok.fluo.domain.invitation.dto.response.InvitationWithWorkspaceInfoResponse;
+import com.golapadeok.fluo.domain.invitation.exception.InvitationErrorStatus;
+import com.golapadeok.fluo.domain.invitation.exception.InvitationException;
 import com.golapadeok.fluo.domain.workspace.domain.Workspace;
 import com.golapadeok.fluo.domain.workspace.repository.WorkspaceRepository;
 import lombok.RequiredArgsConstructor;
@@ -11,14 +13,14 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 @RequiredArgsConstructor
 @Service
-public class MemberInvitationWorkspaceService {
+public class MemberInviteWorkspaceService {
 
     private final WorkspaceRepository workspaceRepository;
 
     @Transactional(readOnly = true)
     public InvitationWithWorkspaceInfoResponse searchWorkspaceByInvitationCode(String invitationCode) {
         Workspace workspace = this.workspaceRepository.findByInvitationCode(invitationCode)
-                .orElseThrow(() -> new IllegalArgumentException("잘못된 초대코드입니다. 다시 입력해주세요."));
+                .orElseThrow(() -> new InvitationException(InvitationErrorStatus.INVALID_INVITATION_CODE));
 
         return InvitationWithWorkspaceInfoResponse.builder()
                 .workspaceId(String.valueOf(workspace.getId()))

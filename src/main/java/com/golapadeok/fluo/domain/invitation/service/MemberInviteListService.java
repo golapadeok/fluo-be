@@ -20,7 +20,7 @@ import java.util.List;
 @Slf4j
 @RequiredArgsConstructor
 @Service
-public class MemberInvitationListService {
+public class MemberInviteListService {
 
     private Long cursorId;
     private final InvitationRepository invitationRepository;
