@@ -3,7 +3,6 @@ package com.golapadeok.fluo.domain.member.api;
 import com.golapadeok.fluo.common.security.domain.PrincipalDetails;
 import com.golapadeok.fluo.domain.member.domain.Member;
 import com.golapadeok.fluo.domain.member.dto.request.CursorPageRequest;
-import com.golapadeok.fluo.domain.member.dto.request.PagingRequest;
 import com.golapadeok.fluo.domain.member.dto.response.MemberInfoResponse;
 import com.golapadeok.fluo.domain.member.dto.response.MemberWorkspaceListResponse;
 import com.golapadeok.fluo.domain.member.service.MemberWorkspaceListService;
