@@ -47,7 +47,7 @@ public class TaskCreateService {
         List<Member> members = memberRepository.findByIdIn(request.getManagers());
 
         Tag tag = tagRepository.findByIdInAndWorkspaceId(request.getTag(), request.getWorkspaceId())
-                .orElseThrow(NotFoundTagException::new);
+                .orElseGet(() -> null);
 
         Task task = Task.builder()
                 .title(request.getTitle())

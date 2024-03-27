@@ -39,7 +39,7 @@ public class TaskCreateRequest {
     @Schema(description = "업무 관리자 아이디 리스트", example = "[1, 2, 3]")
     private List<Integer> managers;
 
-    @NotNull(message = "태그 아이디는 필수 입력입니다.")
+//    @NotNull(message = "태그 아이디는 필수 입력입니다.")
     @Schema(description = "업무에 설정할 태그 아이디", example = "1")
     private Integer tag;
 

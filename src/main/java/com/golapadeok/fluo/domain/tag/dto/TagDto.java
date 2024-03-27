@@ -27,6 +27,9 @@ public class TagDto {
     }
 
     public static TagDto of(Tag tag) {
+        if(tag == null)
+            return null;
+
         return new TagDto(tag.getId().toString(), tag.getTagName(), tag.getColorCode());
     }
 

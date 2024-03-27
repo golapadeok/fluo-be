@@ -16,7 +16,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -36,34 +35,14 @@ public class WorkspaceSearchService {
 
     public WorkspaceSearchResponse search(Integer workspaceId) {
         Workspace workspace = getWorkspace(workspaceId);
-
-        CursorPageRequest cursorPageRequest = new CursorPageRequest(100, 0, true);
-        FilterRequest filterRequest = new FilterRequest(null, null, null, null, null, null);
-
-        WorkspaceSearchWithTasksResponse tasksResponse = searchWithTasks(workspaceId, cursorPageRequest, filterRequest);
-        WorkspaceSearchWithStatesResponse statesResponse = searchWithStates(workspaceId);
-        WorkspaceSearchWithMembersResponse membersResponse = searchWithMembers(workspaceId);
-        WorkspaceSearchWithTagsResponse tagResponse = searchWithTags(workspaceId);
-
-        return WorkspaceSearchResponse.builder()
-                .workspaceId(workspace.getId().toString())
-                .title(workspace.getTitle())
-                .description(workspace.getDescription())
-                .imageUrl(workspace.getImageUrl())
-                .states(statesResponse.getStates())
-                .tasks(tasksResponse.getTasks())
-                .members(membersResponse.getMembers())
-                .tags(tagResponse.getTags())
-                .createDate(workspace.getCreateDate().toLocalDate())
-                .build();
+        return new WorkspaceSearchResponse(workspace);
     }
 
 
-    //TODO KDY 수정
     public WorkspaceSearchWithTasksResponse searchWithTasks(Integer workspaceId, CursorPageRequest pageRequest, FilterRequest filterRequest) {
         CustomPageImpl<Task> pageTasks = workspaceRepositoryImpl.searchPageTasks(workspaceId, pageRequest, filterRequest);
         List<Task> tasks = pageTasks.getContent();
-        List<TaskDto> results = new ArrayList<>();
+        List<TaskDto> results = TaskDto.of(tasks);
         return WorkspaceSearchWithTasksResponse.of((int) pageTasks.getTotalElements(), pageTasks.getSize(), (int) pageTasks.getNextCursor(), results);
     }
 

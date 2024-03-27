@@ -16,6 +16,7 @@ import com.golapadeok.fluo.domain.workspace.dto.response.WorkspaceSearchWithMemb
 import com.golapadeok.fluo.domain.workspace.dto.response.WorkspaceSearchWithStatesResponse;
 import com.golapadeok.fluo.domain.workspace.dto.response.WorkspaceSearchWithTagsResponse;
 import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import io.jsonwebtoken.lang.Assert;
@@ -24,78 +25,55 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Repository
-public class WorkspaceRepositoryImpl implements WorkspaceRepositoryCustom {
+public class WorkspaceRepositoryImpl {
     private final JPAQueryFactory queryFactory;
+    private static final QTask task = QTask.task;
 
     @Autowired
     public WorkspaceRepositoryImpl(EntityManager em) {
         queryFactory = new JPAQueryFactory(em);
     }
 
-    @Override
     public CustomPageImpl<Task> searchPageTasks(Integer workspaceId, CursorPageRequest pageRequest, FilterRequest filterRequest) {
-        QTask task = QTask.task;
 
+        final int limit = pageRequest.getLimit();
         final boolean ascending = pageRequest.getAscending();
-
-        JPAQuery<Task> defaultQuery = queryFactory.selectFrom(task)
-                .where(task.workspace.id.eq(workspaceId.longValue()));
-
         final long cursorId = pageRequest.getCursorId();
-        if (cursorId != 0) {
-            defaultQuery = defaultQuery.where(ascending ? task.id.gt(cursorId) : task.id.lt(cursorId));
-        }
 
-        if (filterRequest.getPriority() != null) {
-            defaultQuery = defaultQuery.where(task.configuration.priority.eq(filterRequest.getPriority()));
-        }
-
-        if (filterRequest.getStateId() != null) {
-            defaultQuery = defaultQuery.where(task.state.id.eq(filterRequest.getStateId().longValue()));
-        }
-
-//        if (filterRequest.getManager() != null) {
-//            // TODO KDY like 사용에 대해 고민해봐야할 듯
-//            defaultQuery = defaultQuery.where(task.configuration.manager.like("%" + filterRequest.getManager() + "%"));
-//        }
-
-        // TODO KDY 날짜는 조건이 어떻게 들어올지 모르겠다
-//        if (filterRequest.getEndDate() != null) {
-//            defaultQuery = defaultQuery.where(task.configuration.priority.eq(filterRequest.getPriority()));
-//        }
-
-        // TODO KDY TAG 구현이 필요하다.
-//        if (filterRequest.getTag() != null) {
-//            defaultQuery = defaultQuery.where(task..priority.eq(filterRequest.getPriority()));
-//        }
-
-
-        if (filterRequest.getProjectName() != null) {
-            defaultQuery = defaultQuery.where(task.title.like(filterRequest.getProjectName()));
-        }
-
-        List<Task> content = defaultQuery
+        List<Task> content = queryFactory
+                .selectFrom(task)
+                .where(
+                        eqTaskWithWorkspaceId(workspaceId),
+                        validateCursorId(ascending, cursorId),
+                        eqPriority(filterRequest.getPriority()),
+                        eqStateId(filterRequest.getStateId()),
+                        eqEndDate(filterRequest.getEndDate()),
+                        eqTagId(filterRequest.getTagId()),
+                        eqProjectName(filterRequest.getProjectName()),
+                        eqManagerName(filterRequest.getManager()))
                 .orderBy(ascending ? task.createDate.asc() : task.createDate.desc())
                 .orderBy(ascending ? task.id.asc() : task.id.desc())
-                .limit(pageRequest.getLimit() + 1L)
+                .limit(limit + 1L)
                 .fetch();
 
-        Long totalCount = queryFactory.select(task.count())
+        List<Long> totals = queryFactory.select(task.count())
                 .from(task)
-                .where(task.workspace.id.eq(workspaceId.longValue()))
-                .fetchOne();
-        Assert.notNull(totalCount, "Total Count must not null");
+                .where(eqTaskWithWorkspaceId(workspaceId))
+                .fetch();
 
         long nextCursorId = -1L;
-        if (content.size() > pageRequest.getLimit()) {
+        if (content.size() > limit) {
             content = content.subList(0, content.size() - 1);
             nextCursorId = content.get(content.size() - 1).getId();
         }
 
-        return new CustomPageImpl<>(content, PageRequest.of(0, pageRequest.getLimit()), totalCount, nextCursorId);
+        return new CustomPageImpl<>(content, PageRequest.of(0, limit), totals.isEmpty() ? 0 : totals.get(0), nextCursorId);
     }
 
     public WorkspaceSearchWithStatesResponse findWorkspaceWithStates(long workspaceId) {
@@ -150,5 +128,59 @@ public class WorkspaceRepositoryImpl implements WorkspaceRepositoryCustom {
         }
 
         return responses.get(0);
+    }
+
+    private static BooleanExpression validateCursorId(boolean ascending, long cursorId) {
+        if (cursorId == 0)
+            return null;
+
+        return ascending ? task.id.gt(cursorId) : task.id.lt(cursorId);
+    }
+
+    private BooleanExpression eqPriority(Integer priority) {
+        if (priority == null)
+            return null;
+
+        return task.configuration.priority.eq(priority);
+    }
+
+    private BooleanExpression eqStateId(Integer stateId) {
+        if (stateId == null)
+            return null;
+
+        return task.state.id.eq(stateId.longValue());
+    }
+
+    private BooleanExpression eqEndDate(String endDate) {
+        if (endDate == null || endDate.isEmpty())
+            return null;
+
+        return task.scheduleRange.endDate.eq(LocalDate.parse(endDate, DateTimeFormatter.ISO_DATE).atStartOfDay());
+    }
+
+    private BooleanExpression eqTagId(Integer tagId) {
+        if (tagId == null)
+            return null;
+
+        return task.tag.id.eq(tagId.longValue());
+    }
+
+    private BooleanExpression eqProjectName(String projectName) {
+        if (projectName == null || projectName.isEmpty())
+            return null;
+
+        return task.title.like(projectName);
+    }
+
+    private BooleanExpression eqManagerName(String managerName) {
+        if (managerName == null || managerName.isEmpty())
+            return null;
+
+        return task.managers.any().member.name.like("%" + managerName + "%");
+    }
+
+    private BooleanExpression eqTaskWithWorkspaceId(Integer workspaceId) {
+        Assert.notNull(workspaceId, "workspace id must not null");
+        return task.workspace.id.eq(workspaceId.longValue());
     }
 }

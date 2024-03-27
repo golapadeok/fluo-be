@@ -82,7 +82,7 @@ public class WorkspaceController {
 
     @PostMapping
     @Operation(summary = "워크스페이스 생성 API", description = "새로운 워크스페이스를 생성합니다.")
-    public ResponseEntity<WorkspaceCreateResponse> createWorkspace(
+    public ResponseEntity<WorkspaceResponse> createWorkspace(
             @Valid @RequestBody WorkspaceCreateRequest request
     ) {
         return ResponseEntity
