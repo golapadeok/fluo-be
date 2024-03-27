@@ -23,6 +23,6 @@ public class StateUpdateService {
         state.changeState(request);
         stateRepository.flush();
 
-        return StateUpdateResponse.of(state);
+        return new StateUpdateResponse(state);
     }
 }
