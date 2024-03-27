@@ -24,7 +24,7 @@ public class TagController {
     @GetMapping("/{tagId}")
     @Operation(summary = "태그 단일조회 API", description = "태그 아이디로 조회합니다.")
     public ResponseEntity<TagSearchResponse> searchTags(
-            @PathVariable("tagId") @Parameter(description = "조회할 태그 아이디") Integer tagId
+            @PathVariable("tagId") @Parameter(description = "조회할 태그 아이디", example = "1") Integer tagId
     ) {
         return ResponseEntity.ok(tagService.searchTags(tagId));
     }
@@ -42,7 +42,7 @@ public class TagController {
     @DeleteMapping("/{tagId}")
     @Operation(summary = "태그 삭제 API", description = "해당 태그 아이디로 삭제합니다.")
     public ResponseEntity<TagDeleteResponse> deleteTags(
-            @PathVariable("tagId") @Parameter(description = "삭제할 태그 아이디") Integer tagId
+            @PathVariable("tagId") @Parameter(description = "삭제할 태그 아이디", example = "1") Integer tagId
     ) {
         return ResponseEntity.ok(tagService.deleteTags(tagId));
     }

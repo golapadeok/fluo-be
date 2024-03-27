@@ -31,6 +31,8 @@ public class QMember extends EntityPathBase<Member> {
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
+    public final ListPath<com.golapadeok.fluo.domain.invitation.domain.Invitation, com.golapadeok.fluo.domain.invitation.domain.QInvitation> invitations = this.<com.golapadeok.fluo.domain.invitation.domain.Invitation, com.golapadeok.fluo.domain.invitation.domain.QInvitation>createList("invitations", com.golapadeok.fluo.domain.invitation.domain.Invitation.class, com.golapadeok.fluo.domain.invitation.domain.QInvitation.class, PathInits.DIRECT2);
+
     public final StringPath name = createString("name");
 
     public final StringPath profile = createString("profile");
