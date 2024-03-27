@@ -54,7 +54,7 @@ public class TagService {
 
         List<Task> tasks = taskRepository.findByTagId(tagId);
         tasks.forEach(task -> task.changeTag(null));
-        
+
         tag.getWorkspace().getTags().remove(tag);
         tagRepository.delete(tag);
         return TagDeleteResponse.of("태그 삭제에 성공했습니다.");
