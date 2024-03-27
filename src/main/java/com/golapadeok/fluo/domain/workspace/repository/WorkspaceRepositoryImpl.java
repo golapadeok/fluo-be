@@ -30,6 +30,7 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Collections;
 import java.util.List;
 
 @Repository
@@ -141,7 +142,7 @@ public class WorkspaceRepositoryImpl {
                 .fetch();
 
         if (responses.isEmpty()) {
-            return new WorkspaceSearchWithMembersResponse(null);
+            return new WorkspaceSearchWithMembersResponse(Collections.emptyList());
         }
 
         return responses.get(0);
@@ -159,7 +160,7 @@ public class WorkspaceRepositoryImpl {
                 .fetch();
 
         if (responses.isEmpty()) {
-            return new WorkspaceSearchWithTagsResponse(null);
+            return new WorkspaceSearchWithTagsResponse(Collections.emptyList());
         }
 
         return responses.get(0);
