@@ -3,7 +3,7 @@ package com.golapadeok.fluo.domain.member.service;
 import com.golapadeok.fluo.common.security.domain.PrincipalDetails;
 import com.golapadeok.fluo.domain.member.domain.Member;
 import com.golapadeok.fluo.domain.member.domain.WorkspaceMember;
-import com.golapadeok.fluo.domain.member.dto.request.PagingRequest;
+import com.golapadeok.fluo.domain.member.dto.request.CursorPageRequest;
 import com.golapadeok.fluo.domain.member.dto.response.MemberWorkspaceListResponse;
 import com.golapadeok.fluo.domain.member.dto.response.WorkspaceInfoResponse;
 import com.golapadeok.fluo.domain.member.dto.response.WorkspaceWithMemberInfoResponse;
@@ -28,8 +28,8 @@ public class MemberWorkspaceListService {
     private final MemberRepository memberRepository;
     private final WorkspaceMemberRepository workspaceMemberRepository;
     @Transactional(readOnly = true)
-    public MemberWorkspaceListResponse getWorkspaceList(PrincipalDetails principalDetails, PagingRequest pagingRequest) {
-        Pageable pageable = PageRequest.of(pagingRequest.getPageNum(), pagingRequest.getLimit());
+    public MemberWorkspaceListResponse getWorkspaceList(PrincipalDetails principalDetails, CursorPageRequest cursorPageRequest) {
+        Pageable pageable = PageRequest.of(0, cursorPageRequest.getLimit());
         
         Member member = principalDetails.getMember();
 
@@ -37,7 +37,7 @@ public class MemberWorkspaceListService {
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
 
         Page<WorkspaceMember> workspaceMembers =
-                getWorkspaceMembersList(findMember, pageable);
+                getWorkspaceMembersList(findMember, cursorPageRequest.getCursorId(), pageable);
 
         List<WorkspaceInfoResponse> items = getWorkspaceInfo(workspaceMembers);
         items.forEach(i -> log.info("item : {}", i));
@@ -49,18 +49,15 @@ public class MemberWorkspaceListService {
     }
 
     // 커서 기반 페이징 처리
-    private Page<WorkspaceMember> getWorkspaceMembersList(Member findMember, Pageable pageable) {
-//        Page<WorkspaceMember> page;
-//        if(cursorId == 0) {
-//            page = this.workspaceMemberRepository.findByMemberIdOrderByIdDesc(findMember.getId(), pageable);
-//            setLastWorkspaceId(page);
-//        }else{
-//            page = this.workspaceMemberRepository.findByIdLessThanAndMemberIdOrderByIdDesc(cursorId, findMember.getId(), pageable);
-//            setLastWorkspaceId(page);
-//        }
-//        return page;
-        Page<WorkspaceMember> page = this.workspaceMemberRepository.findByMemberIdOrderByIdDesc(findMember.getId(), pageable);
-        setLastWorkspaceId(page);
+    private Page<WorkspaceMember> getWorkspaceMembersList(Member findMember, Integer cursorId, Pageable pageable) {
+        Page<WorkspaceMember> page;
+        if(cursorId == 0) {
+            page = this.workspaceMemberRepository.findByMemberIdOrderByIdDesc(findMember.getId(), pageable);
+            setLastWorkspaceId(page);
+        }else{
+            page = this.workspaceMemberRepository.findByIdLessThanAndMemberIdOrderByIdDesc(Long.valueOf(cursorId), findMember.getId(), pageable);
+            setLastWorkspaceId(page);
+        }
         return page;
     }
 
@@ -69,8 +66,7 @@ public class MemberWorkspaceListService {
             this.pageNum = null;
             return;
         }
-//        this.pageNum = page.getContent().get(page.toList().size()-1).getId();
-        this.pageNum = (long) (page.getNumber() + 1); // 다음 페이지 번호
+        this.pageNum = page.getContent().get(page.toList().size()-1).getId();
     }
 
     // 워크스페이스의 정보를 조회
