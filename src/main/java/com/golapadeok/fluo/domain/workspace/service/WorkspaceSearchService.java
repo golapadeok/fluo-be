@@ -4,8 +4,10 @@ import com.golapadeok.fluo.domain.member.repository.MemberRepository;
 import com.golapadeok.fluo.domain.tag.repository.TagRepository;
 import com.golapadeok.fluo.domain.task.domain.Task;
 import com.golapadeok.fluo.domain.task.dto.TaskDto;
+import com.golapadeok.fluo.domain.task.repository.TaskRepository;
 import com.golapadeok.fluo.domain.workspace.domain.Workspace;
 import com.golapadeok.fluo.domain.workspace.dto.CustomPageImpl;
+import com.golapadeok.fluo.domain.workspace.dto.SortType;
 import com.golapadeok.fluo.domain.workspace.dto.request.CursorPageRequest;
 import com.golapadeok.fluo.domain.workspace.dto.request.FilterRequest;
 import com.golapadeok.fluo.domain.workspace.dto.response.*;
@@ -13,6 +15,9 @@ import com.golapadeok.fluo.domain.workspace.exception.NotFoundWorkspaceException
 import com.golapadeok.fluo.domain.workspace.repository.WorkspaceRepository;
 import com.golapadeok.fluo.domain.workspace.repository.WorkspaceRepositoryImpl;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,13 +41,18 @@ public class WorkspaceSearchService {
         return new WorkspaceSearchResponse(workspace);
     }
 
-
-    public WorkspaceSearchWithTasksResponse searchWithTasks(Integer workspaceId, CursorPageRequest pageRequest, FilterRequest filterRequest) {
-        CustomPageImpl<Task> pageTasks = workspaceRepositoryImpl.searchPageTasks(workspaceId, pageRequest, filterRequest);
-        List<Task> tasks = pageTasks.getContent();
-        List<TaskDto> results = TaskDto.of(tasks);
-        return WorkspaceSearchWithTasksResponse.of((int) pageTasks.getTotalElements(), pageTasks.getSize(), (int) pageTasks.getNextCursor(), results);
+    public WorkspaceSearchWithTasksResponse searchWithTasks(Integer workspaceId, CursorPageRequest request, FilterRequest filterRequest) {
+        Page<Task> pageTasks = workspaceRepositoryImpl.searchPageTasks2(workspaceId, request, filterRequest);
+        return WorkspaceSearchWithTasksResponse.of(pageTasks.getTotalPages(), pageTasks.getSize(), pageTasks.getNumber(), TaskDto.of(pageTasks.getContent()));
     }
+
+
+//    public WorkspaceSearchWithTasksResponse searchWithTasks(Integer workspaceId, CursorPageRequest pageRequest, FilterRequest filterRequest) {
+//        CustomPageImpl<Task> pageTasks = workspaceRepositoryImpl.searchPageTasks(workspaceId, pageRequest, filterRequest);
+//        List<Task> tasks = pageTasks.getContent();
+//        List<TaskDto> results = TaskDto.of(tasks);
+//        return WorkspaceSearchWithTasksResponse.of((int) pageTasks.getTotalElements(), pageTasks.getSize(), (int) pageTasks.getNextCursor(), results);
+//    }
 
     public WorkspaceSearchWithStatesResponse searchWithStates(Integer workspaceId) {
         return workspaceRepositoryImpl.findWorkspaceWithStates(workspaceId);
