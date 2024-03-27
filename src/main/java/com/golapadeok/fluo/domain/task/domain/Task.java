@@ -3,13 +3,16 @@ package com.golapadeok.fluo.domain.task.domain;
 import com.golapadeok.fluo.common.domain.BaseTimeEntity;
 import com.golapadeok.fluo.domain.member.domain.Member;
 import com.golapadeok.fluo.domain.state.domain.State;
+import com.golapadeok.fluo.domain.tag.domain.Tag;
 import com.golapadeok.fluo.domain.workspace.domain.Workspace;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.apache.catalina.Manager;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -24,8 +27,7 @@ public class Task extends BaseTimeEntity {
     private String title;
     private String description;
     private String creator;
-    private String manager;
-    private String tag;
+
     @Embedded
     private TaskConfiguration configuration;
 
@@ -40,41 +42,48 @@ public class Task extends BaseTimeEntity {
     @JoinColumn(name = "WORKSPACE_ID")
     private Workspace workspace;
 
+    @OneToMany(mappedBy = "task", fetch = FetchType.LAZY)
+    private List<ManagerTask> managers = new ArrayList<>();
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "MEMBER_ID")
     private Member member;
 
-    public Task(Long id, String title, String description, String creator, String manager, String tag, TaskConfiguration configuration, ScheduleRange scheduleRange) {
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "TAG_ID")
+    private Tag tag;
+
+    public Task(Long id, String title, String description, String creator, TaskConfiguration configuration, ScheduleRange scheduleRange) {
         this.id = id;
         this.title = title;
         this.creator = creator;
-        this.manager = manager;
-        this.tag = tag;
         this.description = description;
         this.configuration = configuration;
         this.scheduleRange = scheduleRange;
     }
 
     @Builder(toBuilder = true)
-    public Task(String title, String description, String creator, String manager, String tag, TaskConfiguration configuration, ScheduleRange scheduleRange) {
-        this(null, title, description, creator, manager, tag, configuration, scheduleRange);
+    public Task(String title, String description, String creator, TaskConfiguration configuration, ScheduleRange scheduleRange) {
+        this(null, title, description, creator, configuration, scheduleRange);
     }
 
     public void changeState(State state) {
         this.state = state;
     }
 
+    public void changeWorkspace(Workspace workspace) {
+        this.workspace = workspace;
+    }
+
+    public void changeTag(Tag tag) {
+        this.tag = tag;
+    }
+
     public void changeTask(Task task) {
         this.title = task.getTitle();
         this.creator = task.getCreator();
-        this.manager = task.getManager();
-        this.tag = task.getTag();
         this.description = task.getDescription();
         this.configuration = task.getConfiguration();
         this.scheduleRange = task.getScheduleRange();
-    }
-
-    public void changeWorkspace(Workspace workspace) {
-        this.workspace = workspace;
     }
 }

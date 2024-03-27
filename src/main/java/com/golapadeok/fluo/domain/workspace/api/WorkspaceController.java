@@ -3,6 +3,7 @@ package com.golapadeok.fluo.domain.workspace.api;
 import com.golapadeok.fluo.domain.workspace.dto.request.FilterRequest;
 import com.golapadeok.fluo.domain.workspace.dto.request.WorkspaceCreateRequest;
 import com.golapadeok.fluo.domain.workspace.dto.request.CursorPageRequest;
+import com.golapadeok.fluo.domain.workspace.dto.request.WorkspaceUpdateRequest;
 import com.golapadeok.fluo.domain.workspace.dto.response.*;
 import com.golapadeok.fluo.domain.workspace.service.*;
 import io.swagger.v3.oas.annotations.Operation;
@@ -24,6 +25,7 @@ public class WorkspaceController {
     private final WorkspaceCreateService workspaceCreateService;
     private final WorkspaceSearchService workspaceSearchService;
     private final WorkspaceDeleteService workspaceDeleteService;
+    private final WorkspaceUpdateService workspaceUpdateService;
 
     @GetMapping
     @Operation(summary = "워크스페이스 전체조회 API", description = "워크스페이스 전체조회 API")
@@ -82,12 +84,23 @@ public class WorkspaceController {
 
     @PostMapping
     @Operation(summary = "워크스페이스 생성 API", description = "새로운 워크스페이스를 생성합니다.")
-    public ResponseEntity<WorkspaceCreateResponse> createWorkspace(
+    public ResponseEntity<WorkspaceResponse> createWorkspace(
             @Valid @RequestBody WorkspaceCreateRequest request
     ) {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(workspaceCreateService.create(request));
+    }
+
+    @PutMapping("/{workspaceId}")
+    @Operation(summary = "워크스페이스 수정 API", description = "워크스페이스 이름을 수정합니다.")
+    public ResponseEntity<WorkspaceResponse> updateWorkspace(
+            @PathVariable(name = "workspaceId") Integer workspaceId,
+            @Valid @RequestBody WorkspaceUpdateRequest request
+    ) {
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(workspaceUpdateService.update(workspaceId, request));
     }
 
     @DeleteMapping("/{workspaceId}")
