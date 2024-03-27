@@ -2,12 +2,13 @@ package com.golapadeok.fluo.domain.invitation.api;
 
 import com.golapadeok.fluo.common.security.domain.PrincipalDetails;
 import com.golapadeok.fluo.domain.invitation.dto.request.CursorPageRequest;
-import com.golapadeok.fluo.domain.invitation.dto.response.InvitationAcceptResponse;
+import com.golapadeok.fluo.domain.invitation.dto.response.InvitationAnswerResponse;
 import com.golapadeok.fluo.domain.invitation.dto.response.InvitationWithWorkspaceInfoResponse;
 import com.golapadeok.fluo.domain.invitation.dto.response.MemberInvitationListResponse;
-import com.golapadeok.fluo.domain.invitation.service.AcceptInvitationService;
-import com.golapadeok.fluo.domain.invitation.service.MemberInvitationListService;
-import com.golapadeok.fluo.domain.invitation.service.MemberInvitationWorkspaceService;
+import com.golapadeok.fluo.domain.invitation.service.AcceptInviteService;
+import com.golapadeok.fluo.domain.invitation.service.InviteDeclinerService;
+import com.golapadeok.fluo.domain.invitation.service.MemberInviteListService;
+import com.golapadeok.fluo.domain.invitation.service.MemberInviteWorkspaceService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -24,9 +25,10 @@ import org.springframework.web.bind.annotation.*;
 @Tag(name = "멤버 초대 관련 API 목록", description = "멤버 초대 관련 API 목록 입니다.")
 public class MemberInvitationController {
 
-    private final MemberInvitationListService memberInvitationListService;
-    private final MemberInvitationWorkspaceService memberInvitationWorkspaceService;
-    private final AcceptInvitationService acceptInvitationService;
+    private final MemberInviteListService memberInvitationListService;
+    private final MemberInviteWorkspaceService memberInvitationWorkspaceService;
+    private final AcceptInviteService acceptInvitationService;
+    private final InviteDeclinerService inviteDeclinerService;
 
     @Operation(summary = "멤버가 받은 초대 목록", description = "멤버가 초대받은 워크스페이스의 초대 목록을 보여줍니다.")
     @GetMapping("/invitations/self")
@@ -41,17 +43,18 @@ public class MemberInvitationController {
         return ResponseEntity.ok(this.memberInvitationWorkspaceService.searchWorkspaceByInvitationCode(invitationsCode));
     }
 
-    @Operation(summary = "초대 수락", description = "초대코드로 워크스페이스 조회 후 수락을 누르면 해당 워크스페이스에 멈베가 추가됩니다.")
-    @PostMapping("/members/invitaions/{invitationsId}")
-    public ResponseEntity<InvitationAcceptResponse> includeWorkspaceMember(
+    @Operation(summary = "초대 수락", description = "초대코드로 워크스페이스 조회 후 수락을 누르면 해당 워크스페이스에 멤버가 추가되며 초대목록이 삭제됩니다.")
+    @PostMapping("/members/invitations/{invitationsId}")
+    public ResponseEntity<InvitationAnswerResponse> includeWorkspaceMember(
             @AuthenticationPrincipal PrincipalDetails principalDetails,
             @PathVariable("invitationsId") String invitationsId) {
         return ResponseEntity.ok(this.acceptInvitationService.acceptInvitation(principalDetails, invitationsId));
     }
 
-    @Operation(summary = "초대 거절", description = "초대코드로 워크스페이스 조회 후 거절을 누르면 거절됩니다.")
-    @DeleteMapping("members/invitations/{invitationsCode}")
-    public void declineInvitation() {
-
+    @Operation(summary = "초대 거절", description = "초대코드로 워크스페이스 조회 후 거절을 누르면 초대목록이 삭제되며 거절됩니다.")
+    @DeleteMapping("members/invitations/{invitationsId}")
+    public ResponseEntity<InvitationAnswerResponse> declineInvitation(
+            @PathVariable("invitationsId") String invitationsId) {
+        return ResponseEntity.ok(this.inviteDeclinerService.declinerInvitation(invitationsId));
     }
 }

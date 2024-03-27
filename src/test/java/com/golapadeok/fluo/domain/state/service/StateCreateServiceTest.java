@@ -42,6 +42,10 @@
 //        //given
 //        StateCreateRequest stateCreateRequest = new StateCreateRequest(1, "state");
 //        Workspace workspace = new Workspace(1L, "title", "title", "description");
+//        State state = new State(1L, "state");
+//
+//        //when
+//        given(stateRepository.save(any(State.class))).willReturn(state);
 ////        State state = new State(1L, "state");
 //
 //        //when

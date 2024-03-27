@@ -5,7 +5,7 @@ import com.golapadeok.fluo.domain.invitation.domain.Invitation;
 import com.golapadeok.fluo.domain.invitation.dto.request.CursorPageRequest;
 import com.golapadeok.fluo.domain.invitation.dto.response.MemberInvitationListResponse;
 import com.golapadeok.fluo.domain.invitation.repository.InvitationRepository;
-import com.golapadeok.fluo.domain.invitation.service.MemberInvitationListService;
+import com.golapadeok.fluo.domain.invitation.service.MemberInviteListService;
 import com.golapadeok.fluo.domain.member.domain.Member;
 import com.golapadeok.fluo.domain.member.repository.MemberRepository;
 import com.golapadeok.fluo.domain.workspace.domain.Workspace;
@@ -26,7 +26,7 @@ import java.util.List;
 class MemberInvitationListServiceTest {
 
     @Autowired
-    private MemberInvitationListService memberInvitationListService;
+    private MemberInviteListService memberInvitationListService;
 
     @Autowired
     private WorkspaceRepository workspaceRepository;
