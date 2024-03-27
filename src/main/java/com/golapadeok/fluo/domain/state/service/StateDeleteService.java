@@ -18,13 +18,15 @@ public class StateDeleteService {
     private final TaskRepository taskRepository;
 
     @Transactional
-    public void delete(Integer stateId) {
-        State deleteState = findByStateId(stateId);
+    public void delete(long stateId) {
+        State deleteState = stateRepository.findById(stateId)
+                .orElseThrow(NotFoundStateException::new);
 
         if (Boolean.TRUE.equals(deleteState.getIsDefault()))
             return;
-        
-        State defaultState = findByDefaultState();
+
+        State defaultState = stateRepository.findByIsDefault(true)
+                .orElseThrow(NotFoundStateException::new);
 
         List<Task> tasks = taskRepository.findByStateId(stateId);
         for (Task task : tasks) {
@@ -32,15 +34,5 @@ public class StateDeleteService {
         }
 
         stateRepository.delete(deleteState);
-    }
-
-    private State findByStateId(long stateId) {
-        return stateRepository.findById(stateId)
-                .orElseThrow(NotFoundStateException::new);
-    }
-
-    private State findByDefaultState() {
-        return stateRepository.findByIsDefault(true)
-                .orElseThrow(NotFoundStateException::new);
     }
 }
