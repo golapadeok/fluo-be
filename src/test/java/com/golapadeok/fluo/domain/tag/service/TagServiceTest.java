@@ -95,7 +95,8 @@ class TagServiceTest {
         Task task = new Task(1L, "", "", "", null, null);
         task.changeTag(tag);
         task.changeWorkspace(workspace);
-        
+
+
         //when
         given(tagRepository.findById(id.longValue()))
                 .willReturn(Optional.of(tag));
