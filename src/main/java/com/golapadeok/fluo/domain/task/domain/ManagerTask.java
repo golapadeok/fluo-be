@@ -24,6 +24,9 @@ public class ManagerTask extends BaseTimeEntity {
 
     public void changeTask(Task task) {
         this.task = task;
+
+        if (task != null)
+            task.getManagers().add(this);
     }
 
     public void changeMember(Member member) {

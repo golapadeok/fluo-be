@@ -20,6 +20,10 @@ public class StateDeleteService {
     @Transactional
     public void delete(Integer stateId) {
         State deleteState = findByStateId(stateId);
+
+        if (Boolean.TRUE.equals(deleteState.getIsDefault()))
+            return;
+        
         State defaultState = findByDefaultState();
 
         List<Task> tasks = taskRepository.findByStateId(stateId);

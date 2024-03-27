@@ -3,6 +3,7 @@ package com.golapadeok.fluo.domain.workspace.api;
 import com.golapadeok.fluo.domain.workspace.dto.request.FilterRequest;
 import com.golapadeok.fluo.domain.workspace.dto.request.WorkspaceCreateRequest;
 import com.golapadeok.fluo.domain.workspace.dto.request.CursorPageRequest;
+import com.golapadeok.fluo.domain.workspace.dto.request.WorkspaceUpdateRequest;
 import com.golapadeok.fluo.domain.workspace.dto.response.*;
 import com.golapadeok.fluo.domain.workspace.service.*;
 import io.swagger.v3.oas.annotations.Operation;
@@ -24,16 +25,12 @@ public class WorkspaceController {
     private final WorkspaceCreateService workspaceCreateService;
     private final WorkspaceSearchService workspaceSearchService;
     private final WorkspaceDeleteService workspaceDeleteService;
-
+    private final WorkspaceUpdateService workspaceUpdateService;
 
     @GetMapping
     @Operation(summary = "워크스페이스 전체조회 API", description = "워크스페이스 전체조회 API")
-    public ResponseEntity<List<WorkspacePageResponse>> getWorkspaces(
-            @Valid @ParameterObject CursorPageRequest pageRequest) {
-        //전체조회
-        //페이징
-        //초대코드
-        List<WorkspacePageResponse> searches = workspaceSearchService.searches(pageRequest);
+    public ResponseEntity<BaseResponse> getWorkspaces() {
+        BaseResponse searches = workspaceSearchService.searches();
         return ResponseEntity.ok(searches);
     }
 
@@ -55,7 +52,9 @@ public class WorkspaceController {
 
     @GetMapping("/{workspaceId}/members")
     @Operation(summary = "워크스페이스의 회원목록 조회 API", description = "해당 워크스페이스의 회원목록을 조회합니다.")
-    public ResponseEntity<WorkspaceSearchWithMembersResponse> searchWorkspaceWithMembers(@PathVariable("workspaceId") Integer workspaceId) {
+    public ResponseEntity<WorkspaceSearchWithMembersResponse> searchWorkspaceWithMembers(
+            @PathVariable("workspaceId") Integer workspaceId
+    ) {
         return ResponseEntity.ok(workspaceSearchService.searchWithMembers(workspaceId));
     }
 
@@ -69,6 +68,14 @@ public class WorkspaceController {
         return ResponseEntity.ok(workspaceSearchService.searchWithTasks(workspaceId, pageRequest, filterRequest));
     }
 
+    @GetMapping("/{workspaceId}/tags")
+    @Operation(summary = "워크스페이스에 포함된 태그목록 조회 API", description = "해당 워크스페이스에 포함된 태그목록을 조회합니다.")
+    public ResponseEntity<WorkspaceSearchWithTagsResponse> searchWorkspaceWithTags(
+            @PathVariable(name = "workspaceId") Integer workspaceId
+    ) {
+        return ResponseEntity.ok(workspaceSearchService.searchWithTags(workspaceId));
+    }
+
     @GetMapping("/{workspaceId}/invitations")
     @Operation(hidden = true)
     public void getWorkspaceWithInvitations() {
@@ -77,12 +84,23 @@ public class WorkspaceController {
 
     @PostMapping
     @Operation(summary = "워크스페이스 생성 API", description = "새로운 워크스페이스를 생성합니다.")
-    public ResponseEntity<WorkspaceCreateResponse> createWorkspace(
+    public ResponseEntity<WorkspaceResponse> createWorkspace(
             @Valid @RequestBody WorkspaceCreateRequest request
     ) {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(workspaceCreateService.create(request));
+    }
+
+    @PutMapping("/{workspaceId}")
+    @Operation(summary = "워크스페이스 수정 API", description = "워크스페이스 이름을 수정합니다.")
+    public ResponseEntity<WorkspaceResponse> updateWorkspace(
+            @PathVariable(name = "workspaceId") Integer workspaceId,
+            @Valid @RequestBody WorkspaceUpdateRequest request
+    ) {
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(workspaceUpdateService.update(workspaceId, request));
     }
 
     @DeleteMapping("/{workspaceId}")

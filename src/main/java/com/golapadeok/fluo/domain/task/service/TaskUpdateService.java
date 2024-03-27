@@ -8,19 +8,21 @@ import com.golapadeok.fluo.domain.state.repository.StateRepository;
 import com.golapadeok.fluo.domain.tag.domain.Tag;
 import com.golapadeok.fluo.domain.tag.exception.NotFoundTagException;
 import com.golapadeok.fluo.domain.tag.repository.TagRepository;
+import com.golapadeok.fluo.domain.task.domain.ManagerTask;
 import com.golapadeok.fluo.domain.task.domain.ScheduleRange;
 import com.golapadeok.fluo.domain.task.domain.Task;
 import com.golapadeok.fluo.domain.task.domain.TaskConfiguration;
 import com.golapadeok.fluo.domain.task.dto.request.TaskUpdateRequest;
-import com.golapadeok.fluo.domain.task.dto.response.TaskUpdateResponse;
+import com.golapadeok.fluo.domain.task.dto.response.TaskDetailResponse;
 import com.golapadeok.fluo.domain.task.exception.NotFoundTaskException;
+import com.golapadeok.fluo.domain.task.repository.ManagerTaskRepository;
 import com.golapadeok.fluo.domain.task.repository.TaskRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -29,42 +31,68 @@ public class TaskUpdateService {
     private final MemberRepository memberRepository;
     private final TaskRepository taskRepository;
     private final StateRepository stateRepository;
+    private final ManagerTaskRepository managerTaskRepository;
 
     @Transactional
-    public TaskUpdateResponse update(Integer taskId, TaskUpdateRequest request) {
-        Task task = findTaskById(taskId);
+    public TaskDetailResponse update(Integer taskId, TaskUpdateRequest request) {
+        Task task = taskRepository.findById(taskId.longValue())
+                .orElseThrow(NotFoundTaskException::new);
 
-        List<Tag> tags = tagRepository.findByIdInAndWorkspaceId(request.getTags(), task.getWorkspace().getId());
-        List<Member> members = memberRepository.findByIdIn(request.getManagers());
-        Task updateTask = updateTask(task, members, tags, request);
+        //Manager 수정
+        updateManagers(task, request.getManagers());
 
-        task.changeTask(updateTask);
-        task.changeState(findStateById(request.getStateId(), task.getWorkspace().getId()));
+        //Tag 수정
+        Tag tag = tagRepository.findById(request.getTag().longValue())
+                .orElseThrow(NotFoundTagException::new);
+        task.changeTag(tag);
 
-        taskRepository.flush();
-        return TaskUpdateResponse.of(task, members, tags);
-    }
+        //State 수정
+        State state = stateRepository.findById(request.getStateId().longValue())
+                .orElseThrow(NotFoundStateException::new);
+        task.changeState(state);
 
-    private Task updateTask(Task task, List<Member> members, List<Tag> tags, TaskUpdateRequest request) {
-        return task.toBuilder()
+        //Task 내용 수정
+        ScheduleRange scheduleRange = extractScheduleRange(request);
+        TaskConfiguration configuration = extractTaskConfigure(request);
+        task.changeTask(task.toBuilder()
                 .title(request.getTitle())
                 .description(request.getDescription())
                 .creator(request.getCreator())
-                .manager(joiningManagerId(members))
-                .tag(joiningTagId(tags))
-                .configuration(extractTaskConfigure(request))
-                .scheduleRange(extractScheduleRange(request))
-                .build();
+                .configuration(configuration)
+                .scheduleRange(scheduleRange)
+                .build());
+
+        taskRepository.flush();
+        return new TaskDetailResponse(task);
     }
 
-    private State findStateById(long stateId, long workspaceId) {
-        return stateRepository.findByIdAndWorkspaceId(stateId, workspaceId)
-                .orElseThrow(NotFoundStateException::new);
-    }
 
-    private Task findTaskById(long taskId) {
-        return taskRepository.findById(taskId)
-                .orElseThrow(NotFoundTaskException::new);
+    /**
+     * Update Task Managers
+     */
+    private void updateManagers(Task task, List<Integer> managerIds) {
+        List<Member> members = memberRepository.findByIdIn(managerIds);
+        List<ManagerTask> managers = task.getManagers();
+
+
+        //새로운 매니저 등록
+        members.stream()
+                .filter(member -> managers.stream().map(managerTask -> managerTask.getMember().getId()).noneMatch(managerId -> Objects.equals(managerId, member.getId())))
+                .forEach(member -> {
+                    ManagerTask managerTask = new ManagerTask();
+                    managerTask.changeTask(task);
+                    managerTask.changeMember(member);
+                    managerTaskRepository.save(managerTask);
+                });
+
+        //이전 매니저 삭제
+        managers.stream()
+                .filter(managerTask -> members.stream().noneMatch(member -> Objects.equals(member.getId(), managerTask.getMember().getId())))
+                .forEach(manager -> {
+                    manager.getTask().getManagers().remove(manager);
+                    manager.changeTask(null);
+                    managerTaskRepository.delete(manager);
+                });
     }
 
     private ScheduleRange extractScheduleRange(TaskUpdateRequest request) {
@@ -79,24 +107,5 @@ public class TaskUpdateService {
                 request.getIsPrivate(),
                 request.getPriority()
         );
-    }
-
-    private String joiningManagerId(List<Member> members) {
-        // TODO KDY 회원 적용하면 주석 제거
-//        if (members.isEmpty())
-//            throw new IllegalArgumentException("관리자가 존재하지 않습니다.");
-
-        return members.stream()
-                .map(member -> member.getId().toString())
-                .collect(Collectors.joining(","));
-    }
-
-    private String joiningTagId(List<Tag> tags) {
-        if (tags.isEmpty())
-            throw new NotFoundTagException();
-
-        return tags.stream()
-                .map(tag -> tag.getId().toString())
-                .collect(Collectors.joining(","));
     }
 }

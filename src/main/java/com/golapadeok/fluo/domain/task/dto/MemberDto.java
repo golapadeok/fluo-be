@@ -18,6 +18,10 @@ public class MemberDto {
         this.name = name;
     }
 
+    public static MemberDto of(Member member) {
+        return new MemberDto(member.getId().toString(), member.getName());
+    }
+
     public static List<MemberDto> of(List<Member> members) {
         Iterator<Member> iterator = members.iterator();
         List<MemberDto> results = new ArrayList<>();

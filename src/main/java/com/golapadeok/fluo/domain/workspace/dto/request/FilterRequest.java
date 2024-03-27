@@ -13,6 +13,6 @@ public class FilterRequest {
     private Integer stateId;
     private String manager;
     private String endDate;
-    private String tag;
+    private Integer tagId;
     private String projectName;
 }

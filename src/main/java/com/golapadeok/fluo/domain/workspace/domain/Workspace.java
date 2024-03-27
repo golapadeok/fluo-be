@@ -8,6 +8,7 @@ import com.golapadeok.fluo.domain.tag.domain.Tag;
 import com.golapadeok.fluo.domain.task.domain.Task;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
@@ -53,11 +54,16 @@ public class Workspace extends BaseTimeEntity {
         this.imageUrl = imageUrl;
     }
 
+    @Builder(toBuilder = true)
     public Workspace(String title, String description, String imageUrl) {
         this(null, title, description, imageUrl);
     }
 
     public void changeImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
+    }
+
+    public void changeWorkspace(Workspace workspace) {
+        this.title = workspace.getTitle();
     }
 }
