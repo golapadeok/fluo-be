@@ -1,5 +1,6 @@
 package com.golapadeok.fluo.domain.tag.domain;
 
+import com.golapadeok.fluo.domain.task.domain.Task;
 import com.golapadeok.fluo.domain.workspace.domain.Workspace;
 import jakarta.persistence.*;
 import lombok.AccessLevel;

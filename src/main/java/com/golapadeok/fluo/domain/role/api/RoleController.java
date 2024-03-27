@@ -10,6 +10,7 @@ import com.golapadeok.fluo.domain.role.service.RoleService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -34,7 +35,7 @@ public class RoleController {
     @PostMapping("/workspaces/{workspaceId}/role")
     public ResponseEntity<CreateRoleResponse> includeWorkspaceRole(@PathVariable("workspaceId") Integer workspaceId,
                                                                    @Parameter(description = "역할의 이름과 권한 리스트")
-                                               @RequestBody RoleCreateRequest request) {
+                                               @Valid @RequestBody RoleCreateRequest request) {
         CreateRoleResponse response = this.roleService.createWorkspaceRole(workspaceId, request);
         return ResponseEntity.ok(response);
     }
@@ -55,7 +56,7 @@ public class RoleController {
     @PutMapping("/workspaces/{workspaceId}/roles/{roleId}")
     public ResponseEntity<UpdateRoleResponse> updateWorkspaceRole(@PathVariable("workspaceId") Integer workspaceId,
                                                                   @PathVariable("roleId") Integer roleId,
-                                                                  @RequestBody RoleUpdateRequest request) {
+                                                                  @Valid @RequestBody RoleUpdateRequest request) {
         return ResponseEntity.ok(this.roleService.updateWorkspaceRole(workspaceId, roleId ,request));
     }
 

@@ -12,6 +12,7 @@ import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -30,7 +31,6 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
     private final JwtTokenProvider provider;
     private final MemberRepository memberRepository;
-    private final BlackListRepository blackListRepository;
 
     private final String authorization = "Authorization";
     private final String tokenPrefix = "Bearer ";
@@ -46,30 +46,24 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
             return;
         }
 
-//        try {
-//            this.blackListRepository.findByAccessToken(header)
-//                    .ifPresent(existingBlackList -> {
-//                        log.error("유저가 이미 로그아웃한 상태입니다.");
-//                        throw new JwtErrorException(JwtErrorStatus.USER_ALREADY_LOGGED_OUT);
-//                    });
-//        } catch (JwtErrorException e) {
-//            request.setAttribute("exception", JwtErrorStatus.USER_ALREADY_LOGGED_OUT.getStatus());
-//        }
-
         /**
-         * header에 refresh token이 오는 경우는 access token이 만료되어 재 발행을 요청할 때 오는 경우이다.
-         * 그렇기 때문에 먼저 refresh token이 만료되었는지를 확인하고,
-         * 만료되지 않았다면 db에 저장된 refresh token과 비교하여 access token을 재발행 해준다.
-         *
-         * 만료가 되었는지 안되었는지는 filter의 isTokenValidate를 통해 확인한다.
-         * 만약 만료되지 않았다면 refreshToken에 값이 들어가고, 만료되었다면 null을 반환한다.
-          */
-        String refreshToken = this.provider.extractRefreshToken(request)
+         * 쿠키에 저장된 refresh token을 꺼내와 만료되었는지를 확인
+         * 만료되었다면 예외를 발생, 재로그인을 해야함. (만료된 토큰입니다.)
+         * 만료가 되지 않았다면 access token의 만료를 확인
+         * access token이 만료되었다면 refresh token이 만료되지 않았다는 기준하에 db에 저장된 refresh token과 대조하여 확인
+         * db에 저장된 refresh token과 같다면 새로운 access token을 생성하고 헤더로 보낸다.
+         * -> 새로 생성된 엑세스 토큰을 가지고 인증을 관리
+         */
+        String refreshToken = this.provider.extractRefreshTokenFromCookies(request)
+                .filter(this.provider::isTokenValidate)
+                .orElseThrow(() -> new JwtErrorException(JwtErrorStatus.EXPIRED_REFRESH));
+
+        String accessToken = this.provider.extractAccessToken(request)
                 .filter(this.provider::isTokenValidate)
                 .orElse(null);
 
-        // refresh token이 만료되지 않았다면 새로운 access token 을 만들고, header로 다시 전송한다.
-        if(refreshToken != null) {
+        // access token이 만료되었을 때 재발급해주는 로직
+        if(accessToken == null) {
             this.memberRepository.findByRefreshToken(refreshToken)
                     .ifPresent(member -> {
                         this.provider.sendAccessToken(response, this.provider.createAccessToken(member.getEmail()));
@@ -77,7 +71,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
             return;
         }
 
-        // access token 유효성 검사 후 인증 로직
+        // access token이 만료되지 않았을 때 유효성 검사 후 인증 로직
         try {
             this.provider.extractAccessToken(request)
                     .filter(this.provider::isTokenValidate)

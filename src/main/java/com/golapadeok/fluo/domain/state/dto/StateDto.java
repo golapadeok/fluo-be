@@ -11,7 +11,12 @@ public class StateDto {
     private final String stateId;
     private final String name;
 
-    private StateDto(String stateId, String name) {
+
+    public StateDto(Long stateId, String name) {
+        this.stateId = stateId.toString();
+        this.name = name;
+    }
+    public StateDto(String stateId, String name) {
         this.stateId = stateId;
         this.name = name;
     }

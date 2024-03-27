@@ -36,7 +36,6 @@ public class SecurityConfig {
     private final JwtTokenProvider provider;
     private final PrincipalDetailsService principalDetailsService;
     private final MemberRepository memberRepository;
-    private final BlackListRepository blackListRepository;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -49,8 +48,8 @@ public class SecurityConfig {
         http.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorization -> authorization
                         .requestMatchers(PathRequest.toH2Console()).permitAll()
-                        .requestMatchers("/api/v1/auth/logout").authenticated()
-                        .anyRequest().permitAll());
+                        .requestMatchers("/auth/**").permitAll()
+                        .anyRequest().permitAll()); // 테스트 종료시 authentication()으로 변경
 
         http.sessionManagement(sessionManagement -> sessionManagement
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
@@ -58,7 +57,7 @@ public class SecurityConfig {
                 .httpBasic(AbstractHttpConfigurer::disable);
 
         // UsernamePasswordAuthenticationFilter 이전에 JwtAuthorizationFilter를 실행하겠다는 뜻
-        http.addFilterBefore(new JwtAuthorizationFilter(this.provider, this.memberRepository, this.blackListRepository), UsernamePasswordAuthenticationFilter.class)
+        http.addFilterBefore(new JwtAuthorizationFilter(this.provider, this.memberRepository), UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(new JwtExceptionFilter(), JwtAuthorizationFilter.class);
 
         return http.build();
@@ -79,7 +78,7 @@ public class SecurityConfig {
                 .httpBasic(httpBasic -> httpBasic.disable());
 
         // UsernamePasswordAuthenticationFilter 이전에 JwtAuthorizationFilter를 실행하겠다는 뜻
-        http.addFilterBefore(new JwtAuthorizationFilter(this.provider, this.memberRepository, this.blackListRepository), UsernamePasswordAuthenticationFilter.class)
+        http.addFilterBefore(new JwtAuthorizationFilter(this.provider, this.memberRepository), UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(new JwtExceptionFilter(), JwtAuthorizationFilter.class);
 
         return http.build();
@@ -94,7 +93,7 @@ public class SecurityConfig {
         config.setAllowCredentials(true);
         config.setAllowedMethods(Collections.singletonList("*"));
         config.setAllowedHeaders(Collections.singletonList("*"));
-        config.setExposedHeaders(Collections.singletonList("Set-Cookie"));
+        config.setExposedHeaders(Collections.singletonList("Set-Cookies"));
         config.setMaxAge(3600L);
 
         source.registerCorsConfiguration("/api/**", config);

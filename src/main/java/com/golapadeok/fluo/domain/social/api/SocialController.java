@@ -1,7 +1,9 @@
 package com.golapadeok.fluo.domain.social.api;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.golapadeok.fluo.common.jwt.JwtTokenProvider;
 import com.golapadeok.fluo.common.security.domain.PrincipalDetails;
+import com.golapadeok.fluo.domain.member.domain.Member;
 import com.golapadeok.fluo.domain.social.domain.SocialType;
 import com.golapadeok.fluo.domain.social.dto.response.SocialLoginResponse;
 import com.golapadeok.fluo.domain.social.service.SocialService;
@@ -11,10 +13,13 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.http.message.LineFormatter;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -30,6 +35,7 @@ import java.util.Map;
 public class SocialController {
 
     private final SocialService oAuthService;
+    private final JwtTokenProvider provider;
 
     @Operation(summary = "소셜 로그인 리다이렉트", description = "소셜 로그인 타입 입력시, 해당 하는 로그인 페이지로 리다이렉트")
     @GetMapping("/auth/{socialLoginType}")
@@ -58,27 +64,27 @@ public class SocialController {
         SocialLoginResponse socialLoginResponse = this.oAuthService.socialLogin(socialType, code);
 
         // 쿠키 세팅
-        Cookie cookie = new Cookie("RefreshToken", socialLoginResponse.getRefreshToken());
-        cookie.setHttpOnly(true);
-        cookie.setPath("/");
-        
-        response.addHeader(HttpHeaders.AUTHORIZATION, "Bearer "+socialLoginResponse.getAccessToken());
-        response.addCookie(cookie);
+        ResponseCookie responseCookie = ResponseCookie.from("refreshToken", socialLoginResponse.getRefreshToken())
+                        .httpOnly(true)
+                        .secure(true)
+                        .path("/")
+                        .build();
 
         Map<String, String> params = new HashMap<>();
         params.put("memberId", socialLoginResponse.getMemberId());
 
-        return ResponseEntity.ok(params);
+        return ResponseEntity.ok()
+                .header(HttpHeaders.SET_COOKIE, responseCookie.toString())
+                .header(HttpHeaders.AUTHORIZATION, "Bearer "+socialLoginResponse.getAccessToken())
+                .body(params);
     }
 
     @Operation(summary = "로그아웃 진행", description = "엑세스 토큰을 받아 해당 엑세스 토큰을 DB에 저장시켜 다시 엑세스 토큰으로 인증 하지 못하도록 함.")
-    @PostMapping("/auth/logout")
+    @PostMapping("/logout")
     public ResponseEntity<Map<String, String>> logout(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                         @Parameter(description = "엑세스 토큰", required = true)
-                                        HttpServletRequest request,
-                                                      @CookieValue(value = "RefreshToken") Cookie cookie) {
-        log.info("cookie : {}", cookie.getValue());
-        log.info("memberId : {}", principalDetails.toString());
+                                        HttpServletRequest request) {
+//        log.info("memberId : {}", principalDetails.toString());
         String accessToken = request.getHeader(HttpHeaders.AUTHORIZATION);
         log.info("accessToken : {}", accessToken);
         if(accessToken == null){
@@ -89,11 +95,18 @@ public class SocialController {
 
         this.oAuthService.logout(principalDetails.getMember(), accessToken);
 
+        ResponseCookie responseCookie = ResponseCookie.from("refreshToken", "")
+                .httpOnly(true)
+                .secure(true)
+                .path("/")
+                .build();
+
         Map<String, String> params = new HashMap<>();
         params.put("message", "로그아웃 되었습니다.");
 
-        return ResponseEntity.ok(params);
+        return ResponseEntity.ok()
+                .header(HttpHeaders.SET_COOKIE, responseCookie.toString())
+                .body(params);
     }
-
 
 }

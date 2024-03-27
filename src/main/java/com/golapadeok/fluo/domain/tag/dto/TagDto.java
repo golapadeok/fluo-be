@@ -10,14 +10,27 @@ import java.util.List;
 
 @Getter
 public class TagDto {
-    private String id;
-    private String tagName;
-    private String colorCode;
+    private final String id;
+    private final String tagName;
+    private final String colorCode;
 
-    private TagDto(String id, String tagName, String colorCode) {
+    public TagDto(Long id, String tagName, String colorCode) {
+        this.id = id.toString();
+        this.tagName = tagName;
+        this.colorCode = colorCode;
+    }
+
+    public TagDto(String id, String tagName, String colorCode) {
         this.id = id;
         this.tagName = tagName;
         this.colorCode = colorCode;
+    }
+
+    public static TagDto of(Tag tag) {
+        if(tag == null)
+            return null;
+
+        return new TagDto(tag.getId().toString(), tag.getTagName(), tag.getColorCode());
     }
 
     public static List<TagDto> of(List<Tag> tags) {
