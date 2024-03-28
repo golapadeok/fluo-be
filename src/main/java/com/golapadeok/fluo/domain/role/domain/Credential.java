@@ -31,4 +31,8 @@ public enum Credential {
         this.name = name;
         this.description = description;
     }
+
+    public static int getSize() {
+        return Credential.values().length;
+    }
 }
