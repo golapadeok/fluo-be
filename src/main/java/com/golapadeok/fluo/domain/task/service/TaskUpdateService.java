@@ -21,6 +21,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -34,8 +35,8 @@ public class TaskUpdateService {
     private final ManagerTaskRepository managerTaskRepository;
 
     @Transactional
-    public TaskDetailResponse update(Integer taskId, TaskUpdateRequest request) {
-        Task task = taskRepository.findById(taskId.longValue())
+    public TaskDetailResponse update(long taskId, TaskUpdateRequest request) {
+        Task task = taskRepository.findById(taskId)
                 .orElseThrow(NotFoundTaskException::new);
 
         //Manager 수정
@@ -76,23 +77,25 @@ public class TaskUpdateService {
 
 
         //새로운 매니저 등록
-        members.stream()
+        List<ManagerTask> saves = members.stream()
                 .filter(member -> managers.stream().map(managerTask -> managerTask.getMember().getId()).noneMatch(managerId -> Objects.equals(managerId, member.getId())))
-                .forEach(member -> {
+                .map(member -> {
                     ManagerTask managerTask = new ManagerTask();
                     managerTask.changeTask(task);
                     managerTask.changeMember(member);
-                    managerTaskRepository.save(managerTask);
-                });
+                    return managerTask;
+                }).toList();
+        managerTaskRepository.saveAll(saves);
 
         //이전 매니저 삭제
-        managers.stream()
+        List<ManagerTask> deletes = managers.stream()
                 .filter(managerTask -> members.stream().noneMatch(member -> Objects.equals(member.getId(), managerTask.getMember().getId())))
-                .forEach(manager -> {
+                .map(manager -> {
                     manager.getTask().getManagers().remove(manager);
                     manager.changeTask(null);
-                    managerTaskRepository.delete(manager);
-                });
+                    return manager;
+                }).toList();
+        managerTaskRepository.deleteAll(deletes);
     }
 
     private ScheduleRange extractScheduleRange(TaskUpdateRequest request) {
