@@ -39,8 +39,10 @@ public class SocialService {
         String refreshToken = this.provider.createRefreshToken();
 
         // 로그인시 access token과 refresh token을 재 생성하고, refresh token을 db에 저장한다.
+        // 이미 회원가입이 되어 있는 상태에서 구글이나 네이버의 계졍에 이름이나 사진이 수정되면 수정해준다.
         Member member = this.memberRepository.findByEmailAndSocialId(socialMember.getEmail(), socialMember.getSocialId())
                 .map(m -> {
+                    m.updateNameAndProfile(socialMember.getName(), socialMember.getProfile());
                     m.updateRefreshToken(refreshToken);
                     return this.memberRepository.save(m);
                 })
