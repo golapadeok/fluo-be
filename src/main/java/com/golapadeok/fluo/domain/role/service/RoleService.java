@@ -56,7 +56,7 @@ public class RoleService {
                 .orElseThrow(() -> new RoleException(RoleErrorStatus.NOT_FOUND_WORKSPACE));
 
         // 1을 더하는 이유는 이번에 생성할 역할을 의미
-        if(workspace.getRoles().size() + 1 > 5) {
+        if(workspace.getRoles().size() + 1 > 6) {
             throw new RoleException(RoleErrorStatus.LIMIT_EXCEEDED_FOR_CREATION);
         }
 
