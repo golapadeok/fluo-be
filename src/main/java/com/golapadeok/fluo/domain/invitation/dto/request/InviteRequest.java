@@ -1,5 +1,6 @@
 package com.golapadeok.fluo.domain.invitation.dto.request;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
@@ -10,7 +11,7 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor
+@Schema(description = "초대코드 요청 데이터")
 public class InviteRequest {
 
     @NotEmpty(message = "초대코드는 필수 입력입니다.")

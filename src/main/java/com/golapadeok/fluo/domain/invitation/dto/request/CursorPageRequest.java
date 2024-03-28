@@ -9,6 +9,7 @@ import org.hibernate.validator.constraints.Range;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Schema(description = "커서 기반 페이징 요청 데이터")
 public class CursorPageRequest {
 
     @Min(value = 0, message = "최솟값은 0입니다.")
