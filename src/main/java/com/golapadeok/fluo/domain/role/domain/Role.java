@@ -30,6 +30,9 @@ public class Role extends BaseTimeEntity { // 그룹역할종류
     @JoinColumn(name = "WORKSPACE_ID")
     private Workspace workspace;
 
+    @OneToMany(mappedBy = "role", cascade = CascadeType.REMOVE)
+    private List<MemberRole> memberRoles = new ArrayList<>();
+
     @Builder
     public Role(String name, String roles, Workspace workspace) {
         this.name = name;

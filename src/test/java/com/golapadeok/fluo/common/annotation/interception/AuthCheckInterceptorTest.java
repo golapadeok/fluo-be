@@ -95,7 +95,7 @@ class AuthCheckInterceptorTest {
         Long workspaceId = 1L;
 
         // when
-        MemberRole memberRole = memberRoleQueryRepository.findByMemberIdAndWorkspaceId(memberId, workspaceId).get();
+        MemberRole memberRole = memberRoleQueryRepository.findWorkspaceWithMemberRoleList(memberId, workspaceId).get();
 
         // then
         log.info("memberRole : {}", memberRole);
