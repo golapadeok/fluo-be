@@ -21,4 +21,6 @@ public interface WorkspaceMemberRepository extends JpaRepository<WorkspaceMember
 
     // 워크스페이스 정보 조회
     Optional<List<WorkspaceMember>> findByWorkspaceId(Long workspaceId);
+
+    Optional<WorkspaceMember> findByMemberIdAndWorkspaceId(Long memberId, Long workspaceId);
 }

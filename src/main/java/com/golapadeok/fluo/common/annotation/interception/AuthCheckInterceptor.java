@@ -53,7 +53,7 @@ public class AuthCheckInterceptor implements HandlerInterceptor {
                     .orElseThrow(() -> new AuthException(AuthStatus.NOT_FOUND_WORKSPACE));
 
             // 워크스페이스 아이디와 멤버 아이디로 멤버의 역할을 조회
-            MemberRole memberRole = this.memberRoleQueryRepository.findByMemberIdAndWorkspaceId(member.getId(), workspace.getId())
+            MemberRole memberRole = this.memberRoleQueryRepository.findWorkspaceWithMemberRoleList(member.getId(), workspace.getId())
                     .orElseThrow(() -> new AuthException(AuthStatus.NOT_FOUND_ROLE));
 
             Set<String> roleSet = new HashSet<>(memberRole.getRole().getRoleList());

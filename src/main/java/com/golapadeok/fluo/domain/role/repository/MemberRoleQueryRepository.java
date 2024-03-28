@@ -6,6 +6,5 @@ import java.util.Optional;
 
 public interface MemberRoleQueryRepository {
 
-    Optional<MemberRole> findByMemberIdAndWorkspaceId(Long memberId, Long workspaceId);
-
+    Optional<MemberRole> findWorkspaceWithMemberRoleList(Long memberId, Long workspaceId);
 }
