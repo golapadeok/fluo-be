@@ -69,9 +69,8 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests((authorization) -> authorization
-//                        .requestMatchers(PathRequest.toH2Console()).permitAll()
-                        .requestMatchers("/api/v1/auth/logout").authenticated()
-                        .anyRequest().permitAll());
+                        .requestMatchers("/auth/**").permitAll()
+                        .anyRequest().permitAll()); // 테스트 종료시 authentication()으로 변경
 
         http.sessionManagement(sessionManagement -> sessionManagement
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
