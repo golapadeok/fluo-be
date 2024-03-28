@@ -6,12 +6,12 @@ import lombok.Getter;
 @Getter
 public class TagCreateResponse {
     private final String tagId;
-    private final String tagName;
+    private final String name;
     private final String colorCode;
 
-    private TagCreateResponse(String tagId, String tagName, String colorCode) {
+    private TagCreateResponse(String tagId, String name, String colorCode) {
         this.tagId = tagId;
-        this.tagName = tagName;
+        this.name = name;
         this.colorCode = colorCode;
     }
 

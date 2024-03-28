@@ -13,7 +13,6 @@ import com.golapadeok.fluo.domain.workspace.domain.Workspace;
 import com.golapadeok.fluo.domain.workspace.exception.NotFoundWorkspaceException;
 import com.golapadeok.fluo.domain.workspace.repository.WorkspaceRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -40,7 +39,7 @@ public class TagService {
         Workspace workspace = workspaceRepository.findById(workspaceId)
                 .orElseThrow(NotFoundWorkspaceException::new);
 
-        Tag tag = new Tag(request.getTagName(), request.getColorCode());
+        Tag tag = new Tag(request.getName(), request.getColorCode());
         tag.changeWorkspace(workspace);
         tag = tagRepository.save(tag);
 
