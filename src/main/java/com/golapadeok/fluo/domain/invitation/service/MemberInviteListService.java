@@ -3,6 +3,7 @@ package com.golapadeok.fluo.domain.invitation.service;
 import com.golapadeok.fluo.common.security.domain.PrincipalDetails;
 import com.golapadeok.fluo.domain.invitation.dto.response.InvitationWorkspaceInfo;
 import com.golapadeok.fluo.domain.invitation.dto.response.MemberInvitationListResponse;
+import com.golapadeok.fluo.domain.invitation.repository.InvitationQueryRepository;
 import com.golapadeok.fluo.domain.invitation.repository.InvitationRepository;
 import com.golapadeok.fluo.domain.invitation.domain.Invitation;
 import com.golapadeok.fluo.domain.member.domain.Member;
@@ -24,19 +25,17 @@ public class MemberInviteListService {
 
     private Long cursorId;
     private final InvitationRepository invitationRepository;
+    private final InvitationQueryRepository invitationQueryRepository;
 
     @Transactional(readOnly = true)
     public MemberInvitationListResponse getInvitationList(PrincipalDetails principalDetails, CursorPageRequest cursorPageRequest) {
         log.info("getInvitationList({}, {}) invoked.", principalDetails.getMember(), cursorPageRequest.getCursorId());
-        Pageable pageable = PageRequest.of(0, cursorPageRequest.getLimit());
 
         Member member = principalDetails.getMember();
 
         // 페이징 처리를 한 초대 목록
-        Page<Invitation> invitations =
-                getInvitationList(member, cursorPageRequest.getCursorId(), pageable);
-
-        Long total = this.invitationRepository.countByMemberId(member.getId());
+        Page<Invitation> invitations = this.invitationQueryRepository.findMemberWithInvitationList(cursorPageRequest.getCursorId().longValue(), member.getId(), cursorPageRequest);
+        this.setCursorId(invitations);
 
         // 초대 목록에서 워크스페이스 정보 뽑기
         List<InvitationWorkspaceInfo> items = invitations.stream()
@@ -44,22 +43,10 @@ public class MemberInviteListService {
                 .toList();
 
         return MemberInvitationListResponse.builder()
-                .total(total.toString())
+                .total(String.valueOf(invitations.getTotalElements()))
                 .cursorId(String.valueOf(cursorId))
                 .items(items)
                 .build();
-    }
-
-    private Page<Invitation> getInvitationList(Member member, Integer cursorId,  Pageable pageable) {
-        Page<Invitation> page;
-        if(cursorId == 0) {
-            page =  this.invitationRepository.findByMemberIdOrderByCreateDateDesc(member.getId(), pageable);
-            this.setCursorId(page);
-        }else {
-            page = this.invitationRepository.findByIdLessThanAndMemberIdOrderByCreateDateDesc(Long.valueOf(cursorId), member.getId(), pageable);
-            this.setCursorId(page);
-        }
-        return page;
     }
 
     private void setCursorId(Page<Invitation> page) {

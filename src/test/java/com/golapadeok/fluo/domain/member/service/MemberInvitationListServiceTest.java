@@ -86,7 +86,7 @@ class MemberInvitationListServiceTest {
         // given
         Member member = Member.builder().id(1L).name("이름1").email("이메일1").profile("프로필1").build();
         PrincipalDetails principalDetails = new PrincipalDetails(member);
-        CursorPageRequest cursorPageRequest = new CursorPageRequest(2, 5);
+        CursorPageRequest cursorPageRequest = new CursorPageRequest(7, 5);
 
         // when
         MemberInvitationListResponse response = memberInvitationListService.getInvitationList(principalDetails, cursorPageRequest);
