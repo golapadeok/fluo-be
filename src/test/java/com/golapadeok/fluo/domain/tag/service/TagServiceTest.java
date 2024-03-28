@@ -7,15 +7,12 @@ import com.golapadeok.fluo.domain.tag.dto.response.TagDeleteResponse;
 import com.golapadeok.fluo.domain.tag.dto.response.TagSearchResponse;
 import com.golapadeok.fluo.domain.tag.repository.TagRepository;
 import com.golapadeok.fluo.domain.task.domain.Task;
-import com.golapadeok.fluo.domain.task.domain.TaskConfiguration;
 import com.golapadeok.fluo.domain.task.repository.TaskRepository;
 import com.golapadeok.fluo.domain.workspace.domain.Workspace;
 import com.golapadeok.fluo.domain.workspace.repository.WorkspaceRepository;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.BDDMockito;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -57,7 +54,7 @@ class TagServiceTest {
 
         assertThat(response).isNotNull();
         assertThat(response.getTagId()).isEqualTo("1");
-        assertThat(response.getTagName()).isEqualTo("tag1");
+        assertThat(response.getName()).isEqualTo("tag1");
         assertThat(response.getColorCode()).isEqualTo("######");
     }
 
@@ -76,7 +73,7 @@ class TagServiceTest {
 
         assertThat(response).isNotNull();
         assertThat(response.getTagId()).isEqualTo("1");
-        assertThat(response.getTagName()).isEqualTo("tag1");
+        assertThat(response.getName()).isEqualTo("tag1");
         assertThat(response.getColorCode()).isEqualTo("######");
 
     }
