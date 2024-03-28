@@ -41,4 +41,8 @@ public class Invitation {
         this.createDate = createDate;
         this.isPending = isPending;
     }
+
+    public void updateIsPending(Boolean isPending) {
+        this.isPending = isPending;
+    }
 }

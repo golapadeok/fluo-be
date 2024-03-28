@@ -2,6 +2,7 @@ package com.golapadeok.fluo.domain.invitation.api;
 
 import com.golapadeok.fluo.common.security.domain.PrincipalDetails;
 import com.golapadeok.fluo.domain.invitation.dto.request.CursorPageRequest;
+import com.golapadeok.fluo.domain.invitation.dto.request.InviteRequest;
 import com.golapadeok.fluo.domain.invitation.dto.response.InvitationAnswerResponse;
 import com.golapadeok.fluo.domain.invitation.dto.response.InvitationWithWorkspaceInfoResponse;
 import com.golapadeok.fluo.domain.invitation.dto.response.MemberInvitationListResponse;
@@ -39,8 +40,8 @@ public class MemberInvitationController {
 
     @Operation(summary = "초대코드로 워크스페이스 조회", description = "초대 코드 입력시 워크스페이스의 정보가 조회됩니다.")
     @GetMapping("/members/invitations/{invitationsCode}")
-    public ResponseEntity<InvitationWithWorkspaceInfoResponse> getInvitationsWorkspaceInfo(@PathVariable("invitationsCode") String invitationsCode) {
-        return ResponseEntity.ok(this.memberInvitationWorkspaceService.searchWorkspaceByInvitationCode(invitationsCode));
+    public ResponseEntity<InvitationWithWorkspaceInfoResponse> getInvitationsWorkspaceInfo(@ParameterObject InviteRequest request) {
+        return ResponseEntity.ok(this.memberInvitationWorkspaceService.searchWorkspaceByInvitationCode(request.getInvitationCode()));
     }
 
     @Operation(summary = "초대 수락", description = "초대코드로 워크스페이스 조회 후 수락을 누르면 해당 워크스페이스에 멤버가 추가되며 초대목록이 삭제됩니다.")

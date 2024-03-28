@@ -22,7 +22,8 @@ public class InviteDeclinerService {
                 .orElseThrow(() -> new InvitationException(InvitationErrorStatus.NOT_FOUND_INVITATION));
 
         // 존재하는 초대였는지를 조회한 후 존재한다면 초대목록에서 삭제
-        this.invitationRepository.delete(invitation);
+        invitation.updateIsPending(false); // 초대여부를 false로 변경하게되면서 초대목록에 보여주지 않음.
+//        this.invitationRepository.delete(invitation);
 
         return new InvitationAnswerResponse("초대를 거절했습니다.");
     }
