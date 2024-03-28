@@ -1,15 +1,9 @@
 package com.golapadeok.fluo.domain.workspace.dto.response;
 
-import com.golapadeok.fluo.domain.task.domain.Task;
 import com.golapadeok.fluo.domain.task.dto.TaskDto;
-import com.golapadeok.fluo.domain.workspace.domain.Workspace;
-import com.golapadeok.fluo.domain.workspace.dto.CustomPageImpl;
 import lombok.Builder;
 import lombok.Getter;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 
-import java.time.LocalDate;
 import java.util.List;
 
 @Getter

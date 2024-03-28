@@ -6,8 +6,9 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface TagRepository extends JpaRepository<Tag, Long> {
-    @Query("select t from Tag t where t.id in (:tagId) and t.workspace.id = :workspaceId")
-    List<Tag> findByIdInAndWorkspaceId(@Param("tagId") List<Integer> tagId, @Param("workspaceId") long workspaceId);
+    @Query("select t from Tag t where t.id = :tagId and t.workspace.id = :workspaceId")
+    Optional<Tag> findByIdInAndWorkspaceId(@Param("tagId") Integer tagId, @Param("workspaceId") long workspaceId);
 }

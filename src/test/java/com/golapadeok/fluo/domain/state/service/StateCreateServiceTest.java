@@ -16,6 +16,8 @@
 //import org.mockito.junit.jupiter.MockitoExtension;
 //import org.springframework.transaction.annotation.Transactional;
 //
+//import java.util.List;
+//import java.util.Objects;
 //import java.util.Optional;
 //
 //import static org.assertj.core.api.Assertions.*;
@@ -44,11 +46,37 @@
 //
 //        //when
 //        given(stateRepository.save(any(State.class))).willReturn(state);
+////        State state = new State(1L, "state");
+//
+//        //when
+////        given(stateRepository.save(any(State.class))).willReturn(state);
 //        given(workspaceRepository.findById(1L)).willReturn(Optional.of(workspace));
 //
 //        //then
 //        StateCreateResponse stateCreateResponse = stateCreateService.create(stateCreateRequest);
 //        assertThat(stateCreateResponse.getStateId()).isEqualTo("1");
 //        assertThat(stateCreateResponse.getName()).isEqualTo("state");
+//    }
+//
+//    @Test
+//    void test() {
+//        //given
+//        List<Integer> newMember = List.of(1, 2, 3);
+//        List<Integer> oldMember = List.of(1, 2, 4);
+//
+//        //when
+//        List<Integer> list = newMember.stream()
+//                .filter(integer -> oldMember.stream().noneMatch(id -> Objects.equals(id, integer)))
+//                .toList();
+//
+//        List<Integer> list1 = oldMember.stream()
+//                .filter(integer -> newMember.stream().noneMatch(id -> Objects.equals(id, integer))).toList();
+//
+//        //then
+//        Assertions.assertThat(list).hasSize(1);
+//        Assertions.assertThat(list.get(0)).isEqualTo(3);
+//
+//        Assertions.assertThat(list1).hasSize(1);
+//        Assertions.assertThat(list1.get(0)).isEqualTo(4);
 //    }
 //}
