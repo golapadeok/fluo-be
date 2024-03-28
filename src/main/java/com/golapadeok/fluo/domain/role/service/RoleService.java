@@ -76,7 +76,7 @@ public class RoleService {
                 .orElseThrow(() -> new RoleException(RoleErrorStatus.NOT_FOUND_ROLE));
 
         // 역할의 이름이 관리자이고, 모든 권한을 갖고있으면(개수) 수정 못하도록 막기
-        if(role.getName().equals("관리자") && role.getRoleList().size() == 10) {
+        if(role.getName().equals("관리자") && role.getRoleList().size() == Credential.getSize()) {
             throw new RoleException(RoleErrorStatus.NOT_DELETE_ADMIN_ROLE);
         }
 
@@ -94,7 +94,7 @@ public class RoleService {
         log.info("role : {}", role.toString());
 
         // 역할의 이름이 관리자이고, 모든 권한을 갖고있으면(개수) 수정 못하도록 막기
-        if(role.getName().equals("관리자") && role.getRoleList().size() == 10) {
+        if(role.getName().equals("관리자") && role.getRoleList().size() == Credential.getSize()) {
             throw new RoleException(RoleErrorStatus.NOT_UPDATE_ADMIN_ROLE);
         }
 

@@ -19,7 +19,7 @@ public class RoleUpdateRequest {
     private String name;
 
     @NotNull(message = "권한 이름은 필수 입력입니다.")
-    @Schema(description = "역할에 속하는 권한의 이름 리스트입니다.", example = "[\"ENTER\", \"USER_INVITE\"]")
+    @Schema(description = "역할에 속하는 권한의 이름 리스트입니다.", example = "[\"CREATE_ROLE\", \"ASSIGN_ROLE\"]")
     private List<String> credentials;
 
     public Role toEntity(Workspace workspace) {
