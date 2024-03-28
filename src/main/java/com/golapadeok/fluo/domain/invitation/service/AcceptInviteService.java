@@ -11,6 +11,7 @@ import com.golapadeok.fluo.domain.member.repository.WorkspaceMemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -20,6 +21,7 @@ public class AcceptInviteService {
     private final InvitationRepository invitationRepository;
     private final WorkspaceMemberRepository workspaceMemberRepository;
 
+    @Transactional
     public InvitationAnswerResponse acceptInvitation(PrincipalDetails principalDetails, String invitationsId) {
         Invitation invitation = this.invitationRepository.findById(Long.valueOf(invitationsId))
                 .orElseThrow(() -> new InvitationException(InvitationErrorStatus.NOT_FOUND_INVITATION));
@@ -33,7 +35,8 @@ public class AcceptInviteService {
         String message;
         if(saved != null) {
             message = "가입을 성공했습니다.";
-            this.invitationRepository.delete(invitation); // 가입이 성공하면 초대 목록에서 제거
+            invitation.updateIsPending(true); // 초대여부를 true로 변경하게 되면서 초대목록에 보여주지 않게 됨.
+//            this.invitationRepository.delete(invitation); // 가입이 성공하면 초대 목록에서 제거
         }else{
             message = "가입을 실패했습니다.";
         }
