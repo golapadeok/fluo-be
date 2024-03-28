@@ -1,91 +1,115 @@
-//package com.golapadeok.fluo.domain.task.service;
-//
-//import com.golapadeok.fluo.domain.member.domain.Member;
-//import com.golapadeok.fluo.domain.member.repository.MemberRepository;
-//import com.golapadeok.fluo.domain.state.domain.State;
-//import com.golapadeok.fluo.domain.state.repository.StateRepository;
-//import com.golapadeok.fluo.domain.tag.domain.Tag;
-//import com.golapadeok.fluo.domain.tag.repository.TagRepository;
-//import com.golapadeok.fluo.domain.task.domain.ScheduleRange;
-//import com.golapadeok.fluo.domain.task.domain.Task;
-//import com.golapadeok.fluo.domain.task.domain.TaskConfiguration;
-//import com.golapadeok.fluo.domain.task.dto.request.TaskCreateRequest;
-//import com.golapadeok.fluo.domain.task.dto.request.TaskUpdateRequest;
-//import com.golapadeok.fluo.domain.task.dto.response.TaskCreateResponse;
-//import com.golapadeok.fluo.domain.task.dto.response.TaskUpdateResponse;
-//import com.golapadeok.fluo.domain.task.repository.TaskRepository;
-//import com.golapadeok.fluo.domain.workspace.domain.Workspace;
-//import com.golapadeok.fluo.domain.workspace.repository.WorkspaceRepository;
-//import org.assertj.core.api.Assertions;
-//import org.hibernate.jdbc.Work;
-//import org.junit.jupiter.api.DisplayName;
-//import org.junit.jupiter.api.Test;
-//import org.junit.jupiter.api.extension.ExtendWith;
-//import org.mockito.InjectMocks;
-//import org.mockito.Mock;
-//import org.mockito.junit.jupiter.MockitoExtension;
-//
-//import java.time.LocalDate;
-//import java.util.List;
-//import java.util.Optional;
-//
-//import static org.mockito.BDDMockito.any;
-//import static org.mockito.BDDMockito.given;
-//
-//@ExtendWith(MockitoExtension.class)
-//class TaskCreateServiceTest {
-//    @InjectMocks
-//    private TaskCreateService taskCreateService;
-//    @InjectMocks
-//    private TaskUpdateService taskUpdateService;
-//    @Mock
-//    private MemberRepository memberRepository;
-//    @Mock
-//    private TaskRepository taskRepository;
-//    @Mock
-//    private WorkspaceRepository workspaceRepository;
-//    @Mock
-//    private StateRepository stateRepository;
-//
-//    @Mock
-//    private TagRepository tagRepository;
-//
-//    @Test
-//    @DisplayName("업무 생성 성공 테스트")
-//    void createTask() {
-//        //given
-//        TaskCreateRequest request = new TaskCreateRequest(
-//                1, 0, "test", "description", "creator1", List.of(1, 2), List.of(1, 2, 3), true, 1, LocalDate.now(), LocalDate.now()
-//        );
-//
-//        TaskConfiguration taskConfiguration = new TaskConfiguration(true, 1);
-//        ScheduleRange scheduleRange = new ScheduleRange(LocalDate.now(), LocalDate.now());
-//        Task task = new Task(1L, "title", "description", "creator1", "1,2", "1,2,3", taskConfiguration, scheduleRange);
-//
-//        //when
-//        given(memberRepository.findByIdIn(List.of(1, 2)))
-//                .willReturn(List.of(
-//                        Member.builder().id(1L).build(),
-//                        Member.builder().id(2L).build()
-//                ));
-//
-//        given(workspaceRepository.findById(request.getWorkspaceId().longValue()))
-//                .willReturn(Optional.of(new Workspace("workspace1", "workspace", "url")));
-//
-//        given(stateRepository.findById(request.getStateId().longValue()))
-//                .willReturn(Optional.of(new State(1L, "state")));
-//
-//        given(taskRepository.save(any(Task.class)))
-//                .willReturn(task);
-//
-//        //then
-//        TaskCreateResponse response = taskCreateService.createTask(request);
-//        Assertions.assertThat(response.getTaskId()).isEqualTo("1");
-//        Assertions.assertThat(response.getCreator()).isEqualTo("creator1");
-//        Assertions.assertThat(response.getManagers()).hasSize(2);
-//        Assertions.assertThat(response.getManagers().get(0).getId()).isEqualTo("1");
-//    }
-//
+package com.golapadeok.fluo.domain.task.service;
+
+import com.golapadeok.fluo.domain.member.domain.Member;
+import com.golapadeok.fluo.domain.member.repository.MemberRepository;
+import com.golapadeok.fluo.domain.state.domain.State;
+import com.golapadeok.fluo.domain.state.exception.NotFoundStateException;
+import com.golapadeok.fluo.domain.state.repository.StateRepository;
+import com.golapadeok.fluo.domain.tag.domain.Tag;
+import com.golapadeok.fluo.domain.tag.repository.TagRepository;
+import com.golapadeok.fluo.domain.task.domain.ManagerTask;
+import com.golapadeok.fluo.domain.task.domain.ScheduleRange;
+import com.golapadeok.fluo.domain.task.domain.Task;
+import com.golapadeok.fluo.domain.task.domain.TaskConfiguration;
+import com.golapadeok.fluo.domain.task.dto.request.TaskCreateRequest;
+import com.golapadeok.fluo.domain.task.dto.request.TaskUpdateRequest;
+import com.golapadeok.fluo.domain.task.dto.response.TaskDetailResponse;
+import com.golapadeok.fluo.domain.task.repository.ManagerTaskRepository;
+import com.golapadeok.fluo.domain.task.repository.TaskRepository;
+import com.golapadeok.fluo.domain.workspace.domain.Workspace;
+import com.golapadeok.fluo.domain.workspace.repository.WorkspaceRepository;
+import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDate;
+import java.util.List;
+import java.util.Optional;
+
+import static org.mockito.BDDMockito.any;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doReturn;
+
+@Transactional
+@ExtendWith(MockitoExtension.class)
+class TaskCreateServiceTest {
+    @InjectMocks
+    private TaskCreateService taskCreateService;
+    @InjectMocks
+    private TaskUpdateService taskUpdateService;
+
+    @Mock
+    private MemberRepository memberRepository;
+    @Mock
+    private TaskRepository taskRepository;
+    @Mock
+    private WorkspaceRepository workspaceRepository;
+    @Mock
+    private StateRepository stateRepository;
+    @Mock
+    private TagRepository tagRepository;
+
+    @Mock
+    private ManagerTaskRepository managerTaskRepository;
+
+    @Test
+    @DisplayName("업무 생성 성공 케이스")
+    void createTask() {
+        //given
+        List<Member> members = List.of(
+                new Member(1L, "email1", "name1", "profile1", null, null, null),
+                new Member(2L, "email2", "name2", "profile2", null, null, null)
+        );
+
+        Workspace workspace = new Workspace(1L, "title", "description", "imageUrl");
+
+        State state = new State(1L, "state", true);
+        state.changeWorkspace(workspace);
+
+        Tag tag = new Tag(1L, "tagName", "######");
+        tag.changeWorkspace(workspace);
+
+        TaskConfiguration taskConfiguration = new TaskConfiguration(true, 1);
+        ScheduleRange scheduleRange = new ScheduleRange(LocalDate.now(), LocalDate.now());
+        Task task = new Task(1L, "title", "description", "creator1", taskConfiguration, scheduleRange);
+        task.changeWorkspace(workspace);
+        task.changeState(state);
+        task.changeTag(tag);
+
+        TaskCreateRequest request = new TaskCreateRequest(
+                1, 1, "test", "description", "creator1", List.of(1, 2), 1, true, 1, LocalDate.now(), LocalDate.now()
+        );
+
+        given(workspaceRepository.findById(request.getWorkspaceId().longValue()))
+                .willReturn(Optional.of(workspace));
+
+        given(stateRepository.findByIdAndWorkspaceId(request.getStateId(), request.getWorkspaceId()))
+                .willReturn(Optional.of(state));
+
+        given(memberRepository.findByIdIn(request.getManagers())).willReturn(members);
+
+        given(tagRepository.findByIdInAndWorkspaceId(request.getTag(), request.getWorkspaceId())).willReturn(Optional.of(tag));
+
+        doReturn(task).when(taskRepository).save(any(Task.class));
+
+        given(managerTaskRepository.save(any(ManagerTask.class))).willReturn(null);
+
+        //when
+        TaskDetailResponse response = taskCreateService.createTask(request);
+
+        //then
+        Assertions.assertThat(response.getTaskId()).isEqualTo("1");
+        Assertions.assertThat(response.getCreator()).isEqualTo("creator1");
+        Assertions.assertThat(response.getManagers()).hasSize(2);
+        Assertions.assertThat(response.getManagers().get(0).getId()).isEqualTo("1");
+        Assertions.assertThat(response.getManagers().get(0).getName()).isEqualTo("name1");
+    }
+
 //    @Test
 //    @DisplayName("업무 수정 성공 테스트")
 //    void updateTask() {
@@ -125,4 +149,4 @@
 //        Assertions.assertThat(response.getManagers()).hasSize(1);
 //        Assertions.assertThat(response.getManagers().get(0).getId()).isEqualTo("10");
 //    }
-//}
+}

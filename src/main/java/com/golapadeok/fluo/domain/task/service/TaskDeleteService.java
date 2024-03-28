@@ -19,10 +19,11 @@ public class TaskDeleteService {
     private final ManagerTaskRepository managerTaskRepository;
 
     @Transactional
-    public TaskDeleteResponse delete(Integer taskId) {
-        Task task = taskRepository.findById(taskId.longValue())
+    public TaskDeleteResponse delete(long taskId) {
+        Task task = taskRepository.findById(taskId)
                 .orElseThrow(NotFoundTaskException::new);
 
+        //업무와 관련된 데이터 삭제
         List<ManagerTask> managerTasks = managerTaskRepository.findAllByTaskId(taskId);
         managerTasks.forEach(manager -> {
             task.getManagers().remove(manager);
@@ -33,7 +34,7 @@ public class TaskDeleteService {
 
         task.getWorkspace().getTasks().remove(task);
         task.changeWorkspace(null);
-        taskRepository.deleteById(taskId.longValue());
+        taskRepository.deleteById(taskId);
         return new TaskDeleteResponse("삭제에 성공했습니다.");
     }
 }
