@@ -47,4 +47,9 @@ public class Member extends BaseTimeEntity {
     public void updateRefreshToken(String recreatingRefreshToken) {
         this.refreshToken = recreatingRefreshToken;
     }
+
+    public void updateNameAndProfile(String name, String profile) {
+        this.name = name;
+        this.profile = profile;
+    }
 }
