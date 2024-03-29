@@ -1,13 +1,11 @@
 package com.golapadeok.fluo.domain.workspace.service;
 
-import com.golapadeok.fluo.domain.member.repository.MemberRepository;
-import com.golapadeok.fluo.domain.tag.repository.TagRepository;
+import com.golapadeok.fluo.domain.member.domain.WorkspaceMember;
+import com.golapadeok.fluo.domain.role.domain.MemberRole;
 import com.golapadeok.fluo.domain.task.domain.Task;
 import com.golapadeok.fluo.domain.task.dto.TaskDto;
-import com.golapadeok.fluo.domain.task.repository.TaskRepository;
+import com.golapadeok.fluo.domain.workspace.dto.MemberWithRoleDto;
 import com.golapadeok.fluo.domain.workspace.domain.Workspace;
-import com.golapadeok.fluo.domain.workspace.dto.CustomPageImpl;
-import com.golapadeok.fluo.domain.workspace.dto.SortType;
 import com.golapadeok.fluo.domain.workspace.dto.request.CursorPageRequest;
 import com.golapadeok.fluo.domain.workspace.dto.request.FilterRequest;
 import com.golapadeok.fluo.domain.workspace.dto.response.*;
@@ -16,12 +14,10 @@ import com.golapadeok.fluo.domain.workspace.repository.WorkspaceRepository;
 import com.golapadeok.fluo.domain.workspace.repository.WorkspaceRepositoryImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -58,8 +54,20 @@ public class WorkspaceSearchService {
         return workspaceRepositoryImpl.findWorkspaceWithStates(workspaceId);
     }
 
-    public WorkspaceSearchWithMembersResponse searchWithMembers(Integer workspaceId) {
-        return workspaceRepositoryImpl.findWorkspaceWithMembers(workspaceId);
+    public WorkspaceSearchWithMembersResponse searchWithMembers(long workspaceId) {
+        //조회할 워크스페이스
+        Workspace workspace = workspaceRepository.findById(workspaceId)
+                .orElseThrow(NotFoundWorkspaceException::new);
+
+        List<MemberWithRoleDto> members = workspace.getWorkspaceMembers().stream()
+                .map(WorkspaceMember::getMember)
+                .map(member -> new MemberWithRoleDto(member,
+                        member.getMemberRoles().stream()
+                                .map(MemberRole::getRole)
+                                .toList()))
+                .toList();
+
+        return new WorkspaceSearchWithMembersResponse(members);
     }
 
     public WorkspaceSearchWithTagsResponse searchWithTags(Integer workspaceId) {
