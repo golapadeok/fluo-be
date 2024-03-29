@@ -30,7 +30,7 @@ public class Workspace extends BaseTimeEntity {
     private String title;
     private String description;
     private String imageUrl;
-    private String invitationCode;
+    private String invitationsCode;
 
     @OneToMany(mappedBy = "workspace", fetch = FetchType.LAZY)
     private List<State> states = new ArrayList<>();
