@@ -7,6 +7,6 @@ import java.util.Optional;
 
 public interface WorkspaceRepository extends JpaRepository<Workspace, Long> {
 
-    Optional<Workspace> findByInvitationCode(String invitationCode);
+    Optional<Workspace> findByInvitationsCode(String invitationsCode);
 
 }
