@@ -42,14 +42,6 @@ public class WorkspaceSearchService {
         return WorkspaceSearchWithTasksResponse.of(pageTasks.getTotalPages(), pageTasks.getSize(), pageTasks.getNumber(), TaskDto.of(pageTasks.getContent()));
     }
 
-
-//    public WorkspaceSearchWithTasksResponse searchWithTasks(Integer workspaceId, CursorPageRequest pageRequest, FilterRequest filterRequest) {
-//        CustomPageImpl<Task> pageTasks = workspaceRepositoryImpl.searchPageTasks(workspaceId, pageRequest, filterRequest);
-//        List<Task> tasks = pageTasks.getContent();
-//        List<TaskDto> results = TaskDto.of(tasks);
-//        return WorkspaceSearchWithTasksResponse.of((int) pageTasks.getTotalElements(), pageTasks.getSize(), (int) pageTasks.getNextCursor(), results);
-//    }
-
     public WorkspaceSearchWithStatesResponse searchWithStates(Integer workspaceId) {
         return workspaceRepositoryImpl.findWorkspaceWithStates(workspaceId);
     }
@@ -64,6 +56,7 @@ public class WorkspaceSearchService {
                 .map(member -> new MemberWithRoleDto(member,
                         member.getMemberRoles().stream()
                                 .map(MemberRole::getRole)
+                                .filter(role -> role.getWorkspace().getId().equals(workspaceId))
                                 .toList()))
                 .toList();
 

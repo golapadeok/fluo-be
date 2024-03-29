@@ -1,15 +1,19 @@
 package com.golapadeok.fluo.domain.workspace.api;
 
 import com.golapadeok.fluo.common.security.domain.PrincipalDetails;
+import com.golapadeok.fluo.common.util.CookieUtils;
 import com.golapadeok.fluo.domain.workspace.dto.request.*;
 import com.golapadeok.fluo.domain.workspace.dto.response.*;
 import com.golapadeok.fluo.domain.workspace.service.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springdoc.core.annotations.ParameterObject;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -82,14 +86,20 @@ public class WorkspaceController {
 
     }
 
+    //
     @PostMapping
     @Operation(summary = "워크스페이스 생성 API", description = "새로운 워크스페이스를 생성합니다.")
     public ResponseEntity<WorkspaceResponse> createWorkspace(
-            @Valid @RequestBody WorkspaceCreateRequest request
+            @AuthenticationPrincipal PrincipalDetails principalDetails,
+            @Valid @RequestBody WorkspaceCreateRequest request,
+            HttpServletResponse response
     ) {
+        WorkspaceResponse result = workspaceCreateService.create(principalDetails, request);
+        ResponseCookie cookie = CookieUtils.createCookie("workspaceId", result.getWorkspaceId(), response);
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(workspaceCreateService.create(request));
+                .header(HttpHeaders.SET_COOKIE, cookie.toString())
+                .body(result);
     }
 
     @PutMapping("/{workspaceId}")
@@ -116,7 +126,7 @@ public class WorkspaceController {
     public ResponseEntity<WorkspaceGrantRoleResponse> grantWorkspaceRole(
             @AuthenticationPrincipal PrincipalDetails principalDetails,
             @Valid @RequestBody WorkspaceGrantRoleRequest request
-            ) {
+    ) {
         return ResponseEntity.ok(this.workspaceGrantRoleService.grantRole(principalDetails, request));
     }
 }
