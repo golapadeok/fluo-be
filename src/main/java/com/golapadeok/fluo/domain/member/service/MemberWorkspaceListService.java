@@ -7,6 +7,8 @@ import com.golapadeok.fluo.domain.member.dto.request.CursorPageRequest;
 import com.golapadeok.fluo.domain.member.dto.response.MemberWorkspaceListResponse;
 import com.golapadeok.fluo.domain.member.dto.response.WorkspaceInfoResponse;
 import com.golapadeok.fluo.domain.member.dto.response.WorkspaceWithMemberInfoResponse;
+import com.golapadeok.fluo.domain.member.exception.MemberErrorStatus;
+import com.golapadeok.fluo.domain.member.exception.MemberException;
 import com.golapadeok.fluo.domain.member.repository.MemberRepository;
 import com.golapadeok.fluo.domain.member.repository.WorkspaceMemberRepository;
 import lombok.RequiredArgsConstructor;
@@ -34,13 +36,13 @@ public class MemberWorkspaceListService {
         Member member = principalDetails.getMember();
 
         Member findMember = this.memberRepository.findById(member.getId())
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
+                .orElseThrow(() -> new MemberException(MemberErrorStatus.NOT_FOUND_MEMBER));
 
         Page<WorkspaceMember> workspaceMembers =
                 getWorkspaceMembersList(findMember, cursorPageRequest.getCursorId(), pageable);
 
         List<WorkspaceInfoResponse> items = getWorkspaceInfo(workspaceMembers);
-        items.forEach(i -> log.info("item : {}", i));
+       
         return MemberWorkspaceListResponse.builder()
                 .total(String.valueOf(workspaceMembers.getTotalElements()))
                 .nextPageNum(String.valueOf(this.pageNum))
@@ -80,7 +82,7 @@ public class MemberWorkspaceListService {
     // 워크스페이스에 소속된 멤버들 조회
     private List<WorkspaceWithMemberInfoResponse> getWorkspaceWithMembers(Long workspaceId) {
         List<WorkspaceMember> workspaceMember = this.workspaceMemberRepository.findByWorkspaceId(workspaceId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 워크스페이스 입니다."));
+                .orElseThrow(() -> new MemberException(MemberErrorStatus.NOT_FOUND_WORKSPACE));
 
         return WorkspaceWithMemberInfoResponse.of(workspaceMember);
     }
