@@ -66,4 +66,8 @@ public class Workspace extends BaseTimeEntity {
     public void changeWorkspace(Workspace workspace) {
         this.title = workspace.getTitle();
     }
+
+    public void changeInvitationCode(String invitationCode) {
+        this.invitationCode = invitationCode;
+    }
 }
