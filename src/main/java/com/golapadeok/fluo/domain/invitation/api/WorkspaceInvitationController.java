@@ -33,10 +33,4 @@ public class WorkspaceInvitationController {
                 .body(this.workspaceInviteMemberEmailService.InviteMemberEmail(workspaceId,request));
     }
 
-    @Operation(summary = "워크스페이스 멤버 초대코드로 초대", description = "멤버에게 초대코드를 알려주어 멤버가 초대코드로 가입")
-    @PostMapping("/workspaces/invitations/{invitationsCode}")
-    public ResponseEntity inviteWorkspaceWithMemberInviteCode(@PathVariable("invitationsCode") String invitationsCode) {
-        return null;
-    }
-
 }
