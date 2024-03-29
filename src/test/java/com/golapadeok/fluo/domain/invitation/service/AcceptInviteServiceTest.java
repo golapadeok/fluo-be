@@ -115,7 +115,7 @@ class AcceptInviteServiceTest {
 
         // when
         this.acceptInviteService.acceptInvitation(principalDetails, String.valueOf(invitationId));
-        Page<Invitation> invitations = this.invitationQueryRepository.findMemberWithInvitationList(0L, 3L, new CursorPageRequest(0, 5));
+        Page<Invitation> invitations = this.invitationQueryRepository.findMemberWithInvitationList(3L, new CursorPageRequest(0, 5));
 
         // then
         assertThat(invitations.getContent().size()).isEqualTo(1);

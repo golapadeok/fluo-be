@@ -9,6 +9,6 @@ import java.util.Optional;
 
 public interface InvitationQueryRepository {
 
-    Page<Invitation> findMemberWithInvitationList(Long invitationId, Long memberId, CursorPageRequest cursorPageRequest);
+    Page<Invitation> findMemberWithInvitationList(Long memberId, CursorPageRequest cursorPageRequest);
 
 }

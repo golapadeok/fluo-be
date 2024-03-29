@@ -24,7 +24,6 @@ import java.util.List;
 public class MemberInviteListService {
 
     private Long cursorId;
-    private final InvitationRepository invitationRepository;
     private final InvitationQueryRepository invitationQueryRepository;
 
     @Transactional(readOnly = true)
@@ -34,7 +33,7 @@ public class MemberInviteListService {
         Member member = principalDetails.getMember();
 
         // 페이징 처리를 한 초대 목록
-        Page<Invitation> invitations = this.invitationQueryRepository.findMemberWithInvitationList(cursorPageRequest.getCursorId().longValue(), member.getId(), cursorPageRequest);
+        Page<Invitation> invitations = this.invitationQueryRepository.findMemberWithInvitationList(member.getId(), cursorPageRequest);
         this.setCursorId(invitations);
 
         // 초대 목록에서 워크스페이스 정보 뽑기

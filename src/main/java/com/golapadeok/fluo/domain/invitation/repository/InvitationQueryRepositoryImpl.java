@@ -28,9 +28,9 @@ public class InvitationQueryRepositoryImpl implements InvitationQueryRepository 
     }
 
     @Override
-    public Page<Invitation> findMemberWithInvitationList(Long invitationId, Long memberId, CursorPageRequest cursorPageRequest) {
+    public Page<Invitation> findMemberWithInvitationList(Long memberId, CursorPageRequest cursorPageRequest) {
         List<Invitation> invitations = query.selectFrom(invitation)
-                .where(eqInvitationId(invitationId, memberId))
+                .where(eqInvitationId(Long.valueOf(cursorPageRequest.getCursorId()), memberId))
                 .orderBy(invitation.createDate.desc())
                 .limit(cursorPageRequest.getLimit())
                 .fetch();
