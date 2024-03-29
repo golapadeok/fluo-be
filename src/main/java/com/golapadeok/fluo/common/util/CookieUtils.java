@@ -1,6 +1,5 @@
-package com.golapadeok.fluo.domain.workspace.util;
+package com.golapadeok.fluo.common.util;
 
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.ResponseCookie;
 
