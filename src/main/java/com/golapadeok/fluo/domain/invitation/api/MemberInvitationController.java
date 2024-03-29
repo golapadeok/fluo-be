@@ -2,7 +2,6 @@ package com.golapadeok.fluo.domain.invitation.api;
 
 import com.golapadeok.fluo.common.security.domain.PrincipalDetails;
 import com.golapadeok.fluo.domain.invitation.dto.request.CursorPageRequest;
-import com.golapadeok.fluo.domain.invitation.dto.request.InviteRequest;
 import com.golapadeok.fluo.domain.invitation.dto.response.InvitationAnswerResponse;
 import com.golapadeok.fluo.domain.invitation.dto.response.InvitationWithWorkspaceInfoResponse;
 import com.golapadeok.fluo.domain.invitation.dto.response.MemberInvitationListResponse;
@@ -36,10 +35,13 @@ public class MemberInvitationController {
         return ResponseEntity.ok(this.memberInvitationListService.getInvitationList(principalDetails, cursorPageRequest));
     }
 
+    @Valid
     @Operation(summary = "초대코드로 워크스페이스 조회", description = "초대 코드 입력시 워크스페이스의 정보가 조회됩니다.")
     @GetMapping("/members/invitations/{invitationsCode}")
-    public ResponseEntity<InvitationWithWorkspaceInfoResponse> getInvitationsWorkspaceInfo(@ParameterObject InviteRequest request) {
-        return ResponseEntity.ok(this.memberInvitationWorkspaceService.searchWorkspaceByInvitationCode(request.getInvitationCode()));
+    public ResponseEntity<InvitationWithWorkspaceInfoResponse> getInvitationsWorkspaceInfo(
+            @PathVariable("invitationsCode")
+            String invitationsCode) {
+        return ResponseEntity.ok(this.memberInvitationWorkspaceService.searchWorkspaceByInvitationCode(invitationsCode));
     }
 
     @Operation(summary = "초대코드로 워크스페이스 가입", description = "워크스페이스 정보를 조회 후 가입을 희망하면 워크스페이스에 가입")
