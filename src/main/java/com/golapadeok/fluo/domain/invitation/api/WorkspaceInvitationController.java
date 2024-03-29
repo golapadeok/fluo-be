@@ -1,8 +1,10 @@
 package com.golapadeok.fluo.domain.invitation.api;
 
+import com.golapadeok.fluo.common.annotation.AuthCheck;
 import com.golapadeok.fluo.domain.invitation.dto.request.InviteEmailRequest;
 import com.golapadeok.fluo.domain.invitation.dto.response.InvitationEmailResponse;
 import com.golapadeok.fluo.domain.invitation.service.WorkspaceInviteMemberEmailService;
+import com.golapadeok.fluo.domain.role.domain.Credential;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -23,6 +25,7 @@ public class WorkspaceInvitationController {
 
     private final WorkspaceInviteMemberEmailService workspaceInviteMemberEmailService;
 
+    @AuthCheck(credential = Credential.INVITE_MEMBER)
     @Operation(summary = "워크스페이스 멤버 이메일로 초대", description = "멤버 이메일을 통해 워크스페이스로 초대")
     @PostMapping("/workspaces/{workspaceId}/invitations")
     public ResponseEntity<InvitationEmailResponse> inviteWorkspaceWithMemberEmail(
