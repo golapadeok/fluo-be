@@ -18,4 +18,12 @@ public class WorkspaceExceptionHandler {
     }
 
 
+    @ExceptionHandler(IllegalArgumentException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ResponseEntity<ErrorResponse> handlerIllegalArgumentException(IllegalArgumentException e) {
+        return ResponseEntity.badRequest().body(
+                new ErrorResponse(e.getMessage())
+        );
+    }
+
 }

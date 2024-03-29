@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Bean;
 import java.util.ArrayList;
 import java.util.List;
 
-@ToString(exclude = {"socialId", "workspaceMembers", "invitations"})
+@ToString(exclude = {"socialId", "workspaceMembers", "invitations", "memberRoles"})
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
