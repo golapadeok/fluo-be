@@ -1,7 +1,11 @@
 package com.golapadeok.fluo.domain.task.api;
 
+import com.golapadeok.fluo.common.annotation.AuthCheck;
+import com.golapadeok.fluo.domain.role.domain.Credential;
 import com.golapadeok.fluo.domain.task.dto.request.TaskCreateRequest;
 import com.golapadeok.fluo.domain.task.dto.request.TaskUpdateRequest;
+import com.golapadeok.fluo.domain.task.dto.response.TaskDeleteResponse;
+import com.golapadeok.fluo.domain.task.dto.response.TaskDetailResponse;
 import com.golapadeok.fluo.domain.task.service.TaskCreateService;
 import com.golapadeok.fluo.domain.task.service.TaskDeleteService;
 import com.golapadeok.fluo.domain.task.service.TaskSearchService;
@@ -28,15 +32,16 @@ public class TaskController {
 
     @GetMapping("/{taskId}")
     @Operation(summary = "업무 단일 조회 API", description = "해당 업무를 조회합니다.")
-    public ResponseEntity<Object> getTask(
+    public ResponseEntity<TaskDetailResponse> getTask(
             @PathVariable("taskId") @Parameter(description = "조회할 업무 아이디") Integer taskId
     ) {
         return ResponseEntity.ok(taskSearchService.search(taskId));
     }
 
+    @AuthCheck(credential = Credential.CREATE_TASK)
     @PostMapping
     @Operation(summary = "업무 생성 API", description = "새로운 업무를 생성합니다.")
-    public ResponseEntity<Object> createTask(
+    public ResponseEntity<TaskDetailResponse> createTask(
             @Valid @RequestBody TaskCreateRequest request
     ) {
         return ResponseEntity
@@ -44,16 +49,18 @@ public class TaskController {
                 .body(taskCreateService.createTask(request));
     }
 
+    @AuthCheck(credential = Credential.MODIFY_TASK)
     @PutMapping("/{taskId}")
     @Operation(summary = "업무 수정 API", description = "해당 업무를 수정합니다.")
-    public ResponseEntity<Object> updateTask(
+    public ResponseEntity<TaskDetailResponse> updateTask(
             @PathVariable("taskId") Integer taskId,
             @Valid @RequestBody TaskUpdateRequest request) {
         return ResponseEntity.ok(taskUpdateService.update(taskId, request));
     }
 
+    @AuthCheck(credential = Credential.DELETE_TASK)
     @DeleteMapping("/{taskId}")
-    public ResponseEntity<Object> deleteTask(
+    public ResponseEntity<TaskDeleteResponse> deleteTask(
             @PathVariable("taskId") Integer taskId) {
         return ResponseEntity.ok(taskDeleteService.delete(taskId));
     }

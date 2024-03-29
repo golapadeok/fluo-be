@@ -60,7 +60,7 @@ public class TaskCreateService {
         task.changeWorkspace(workspace);
         task.changeState(state);
         task.changeTag(tag);
-        taskRepository.save(task);
+        task = taskRepository.save(task);
 
         for (Member member : members) {
             ManagerTask managerTask = new ManagerTask();

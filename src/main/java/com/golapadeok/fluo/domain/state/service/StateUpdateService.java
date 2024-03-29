@@ -15,14 +15,13 @@ public class StateUpdateService {
     private final StateRepository stateRepository;
 
     @Transactional
-    public StateUpdateResponse update(Integer stateId, StateUpdateRequest request) {
-        final long id = stateId;
-        State state = stateRepository.findById(id)
+    public StateUpdateResponse update(long stateId, StateUpdateRequest request) {
+        State state = stateRepository.findById(stateId)
                 .orElseThrow(NotFoundStateException::new);
 
         state.changeState(request);
         stateRepository.flush();
 
-        return StateUpdateResponse.of(state);
+        return new StateUpdateResponse(state);
     }
 }

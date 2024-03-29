@@ -14,11 +14,10 @@ import org.springframework.transaction.annotation.Transactional;
 public class StateSearchService {
     private final StateRepository stateRepository;
 
-    public StateSearchResponse search(Integer stateId) {
-        final long id = stateId;
-        State state = stateRepository.findById(id)
+    public StateSearchResponse search(long stateId) {
+        State state = stateRepository.findById(stateId)
                 .orElseThrow(NotFoundStateException::new);
 
-        return StateSearchResponse.of(state);
+        return new StateSearchResponse(state);
     }
 }

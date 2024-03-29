@@ -1,5 +1,6 @@
 package com.golapadeok.fluo.domain.invitation.dto.response;
 
+import com.golapadeok.fluo.common.util.DateUtils;
 import com.golapadeok.fluo.domain.workspace.domain.Workspace;
 import lombok.*;
 
@@ -30,16 +31,13 @@ public class WorkspaceInfo {
     }
 
     public static WorkspaceInfo of (Workspace workspace) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("EEE, dd MMM yyyy HH:mm:ss 'GMT'", Locale.US)
-                .withZone(ZoneId.of("GMT"));
-
         return WorkspaceInfo.builder()
                 .workspaceId(String.valueOf(workspace.getId()))
                 .title(workspace.getTitle())
                 .intro(workspace.getDescription())
                 .imageUrl(workspace.getImageUrl())
-                .createDate(workspace.getCreateDate().format(formatter))
-                .updateDate(workspace.getUpdateDate().format(formatter))
+                .createDate(DateUtils.dateFormatter(workspace.getCreateDate()))
+                .updateDate(DateUtils.dateFormatter(workspace.getUpdateDate()))
                 .build();
     }
 }

@@ -130,23 +130,23 @@ public class WorkspaceRepositoryImpl {
         return new WorkspaceSearchWithStatesResponse(list);
     }
 
-    public WorkspaceSearchWithMembersResponse findWorkspaceWithMembers(long workspaceId) {
-        QWorkspace workspace = QWorkspace.workspace;
-        QWorkspaceMember workspaceMember = QWorkspaceMember.workspaceMember;
-
-        List<WorkspaceSearchWithMembersResponse> responses = queryFactory
-                .select(Projections.constructor(WorkspaceSearchWithMembersResponse.class,
-                        Projections.list(Projections.constructor(MemberDto.class, workspaceMember.member.id, workspaceMember.member.email, workspaceMember.member.name, workspaceMember.member.profile)))).from(workspace)
-                .leftJoin(workspace.workspaceMembers, workspaceMember)
-                .where(workspace.id.eq(workspaceId).and(workspaceMember.isNotNull()))
-                .fetch();
-
-        if (responses.isEmpty()) {
-            return new WorkspaceSearchWithMembersResponse(Collections.emptyList());
-        }
-
-        return responses.get(0);
-    }
+//    public WorkspaceSearchWithMembersResponse findWorkspaceWithMembers(long workspaceId) {
+//        QWorkspace workspace = QWorkspace.workspace;
+//        QWorkspaceMember workspaceMember = QWorkspaceMember.workspaceMember;
+//
+//        List<WorkspaceSearchWithMembersResponse> responses = queryFactory
+//                .select(Projections.constructor(WorkspaceSearchWithMembersResponse.class,
+//                        Projections.list(Projections.constructor(MemberDto.class, workspaceMember.member.id, workspaceMember.member.email, workspaceMember.member.name, workspaceMember.member.profile)))).from(workspace)
+//                .leftJoin(workspace.workspaceMembers, workspaceMember)
+//                .where(workspace.id.eq(workspaceId).and(workspaceMember.isNotNull()))
+//                .fetch();
+//
+//        if (responses.isEmpty()) {
+//            return new WorkspaceSearchWithMembersResponse(Collections.emptyList());
+//        }
+//
+//        return responses.get(0);
+//    }
 
     public WorkspaceSearchWithTagsResponse findWorkspaceWithTags(long workspaceId) {
         QWorkspace workspace = QWorkspace.workspace;

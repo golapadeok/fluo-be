@@ -16,14 +16,15 @@ public class StateDto {
         this.stateId = stateId.toString();
         this.name = name;
     }
-    public StateDto(String stateId, String name) {
-        this.stateId = stateId;
-        this.name = name;
+
+    public StateDto(State state) {
+        this.stateId = state.getId().toString();
+        this.name = state.getName();
     }
 
     public static StateDto of(State state) {
         Assert.notNull(state, "state must not be null");
-        return new StateDto(state.getId().toString(), state.getName());
+        return new StateDto(state);
     }
 
     public static List<StateDto> of(List<State> states) {

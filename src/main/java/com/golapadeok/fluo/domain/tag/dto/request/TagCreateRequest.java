@@ -17,7 +17,7 @@ public class TagCreateRequest {
     private Integer workspaceId;
     @NotEmpty(message = "태그 이름은 필수값 입니다.")
     @Schema(description = "태그 이름", example = "tagName")
-    private String tagName;
+    private String name;
     @NotEmpty(message = "색상 코드는 필수값 입니다.")
     @Schema(description = "색상 코드", example = "######")
     private String colorCode;

@@ -1,5 +1,6 @@
 package com.golapadeok.fluo.domain.member.dto.response;
 
+import com.golapadeok.fluo.common.util.DateUtils;
 import com.golapadeok.fluo.domain.workspace.domain.Workspace;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -26,16 +27,13 @@ public class WorkspaceInfoResponse {
     private String updateDate;
 
     public static WorkspaceInfoResponse of (Workspace workspace, List<WorkspaceWithMemberInfoResponse> members) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("EEE, dd MMM yyyy HH:mm:ss 'GMT'", Locale.US)
-                .withZone(ZoneId.of("GMT"));
-
         return WorkspaceInfoResponse.builder()
                 .workspaceId(String.valueOf(workspace.getId()))
                 .title(workspace.getTitle())
                 .intro(workspace.getDescription())
                 .members(members)
-                .createDate(workspace.getCreateDate().format(formatter))
-                .updateDate(workspace.getCreateDate().format(formatter))
+                .createDate(DateUtils.dateFormatter(workspace.getCreateDate()))
+                .updateDate(DateUtils.dateFormatter(workspace.getUpdateDate()))
                 .build();
     }
 

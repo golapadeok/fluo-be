@@ -1,11 +1,10 @@
-package com.golapadeok.fluo.domain.member.service;
+package com.golapadeok.fluo.domain.invitation.service;
 
 import com.golapadeok.fluo.common.security.domain.PrincipalDetails;
 import com.golapadeok.fluo.domain.invitation.domain.Invitation;
 import com.golapadeok.fluo.domain.invitation.dto.request.CursorPageRequest;
 import com.golapadeok.fluo.domain.invitation.dto.response.MemberInvitationListResponse;
 import com.golapadeok.fluo.domain.invitation.repository.InvitationRepository;
-import com.golapadeok.fluo.domain.invitation.service.MemberInviteListService;
 import com.golapadeok.fluo.domain.member.domain.Member;
 import com.golapadeok.fluo.domain.member.repository.MemberRepository;
 import com.golapadeok.fluo.domain.workspace.domain.Workspace;
@@ -86,7 +85,7 @@ class MemberInvitationListServiceTest {
         // given
         Member member = Member.builder().id(1L).name("이름1").email("이메일1").profile("프로필1").build();
         PrincipalDetails principalDetails = new PrincipalDetails(member);
-        CursorPageRequest cursorPageRequest = new CursorPageRequest(2, 5);
+        CursorPageRequest cursorPageRequest = new CursorPageRequest(7, 5);
 
         // when
         MemberInvitationListResponse response = memberInvitationListService.getInvitationList(principalDetails, cursorPageRequest);

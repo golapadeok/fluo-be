@@ -6,12 +6,14 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
 
-@ToString(exclude = {"member"})
+@ToString(exclude = {"member", "workspace"})
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@EntityListeners(AuditingEntityListener.class)
 @Entity
 public class Invitation {
 
@@ -39,6 +41,10 @@ public class Invitation {
         this.member = member;
         this.workspace = workspace;
         this.createDate = createDate;
+        this.isPending = isPending;
+    }
+
+    public void updateIsPending(Boolean isPending) {
         this.isPending = isPending;
     }
 }
