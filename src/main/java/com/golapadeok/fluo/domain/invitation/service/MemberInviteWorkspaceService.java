@@ -19,7 +19,7 @@ public class MemberInviteWorkspaceService {
 
     @Transactional(readOnly = true)
     public InvitationWithWorkspaceInfoResponse searchWorkspaceByInvitationCode(String invitationsCode) {
-        Workspace workspace = this.workspaceRepository.findByInvitationsCode(invitationsCode)
+        Workspace workspace = this.workspaceRepository.findByInvitationCode(invitationsCode)
                 .orElseThrow(() -> new InvitationException(InvitationErrorStatus.INVALID_INVITATION_CODE));
 
         return InvitationWithWorkspaceInfoResponse.builder()
