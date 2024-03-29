@@ -1,6 +1,5 @@
 package com.golapadeok.fluo.domain.workspace.repository;
 
-import com.golapadeok.fluo.domain.member.domain.QWorkspaceMember;
 import com.golapadeok.fluo.domain.state.domain.QState;
 import com.golapadeok.fluo.domain.state.dto.StateDto;
 import com.golapadeok.fluo.domain.tag.domain.QTag;
@@ -8,11 +7,9 @@ import com.golapadeok.fluo.domain.tag.dto.TagDto;
 import com.golapadeok.fluo.domain.task.domain.QTask;
 import com.golapadeok.fluo.domain.task.domain.Task;
 import com.golapadeok.fluo.domain.workspace.domain.QWorkspace;
-import com.golapadeok.fluo.domain.workspace.dto.MemberDto;
 import com.golapadeok.fluo.domain.workspace.dto.SortType;
 import com.golapadeok.fluo.domain.workspace.dto.request.CursorPageRequest;
 import com.golapadeok.fluo.domain.workspace.dto.request.FilterRequest;
-import com.golapadeok.fluo.domain.workspace.dto.response.WorkspaceSearchWithMembersResponse;
 import com.golapadeok.fluo.domain.workspace.dto.response.WorkspaceSearchWithStatesResponse;
 import com.golapadeok.fluo.domain.workspace.dto.response.WorkspaceSearchWithTagsResponse;
 import com.querydsl.core.types.Order;
@@ -44,15 +41,7 @@ public class WorkspaceRepositoryImpl {
     }
 
     public Page<Task> searchPageTasks2(Integer workspaceId, CursorPageRequest request, FilterRequest filterRequest) {
-        Order order = request.getAscending().isAscending() ? Order.ASC : Order.DESC;
-        OrderSpecifier specifier = null;
-        if (request.getSortType() == SortType.END) {
-            specifier = new OrderSpecifier(order, task.scheduleRange.endDate);
-        } else if (request.getSortType() == SortType.CREATE) {
-            specifier = new OrderSpecifier(order, task.createDate);
-        } else if (request.getSortType() == SortType.PRIORITY) {
-            specifier = new OrderSpecifier(order, task.configuration.priority);
-        }
+        OrderSpecifier<?> specifier = getOrderSpecifier(request);
 
         List<Task> content = queryFactory
                 .selectFrom(task)
@@ -77,40 +66,22 @@ public class WorkspaceRepositoryImpl {
         return new PageImpl<>(content, PageRequest.of(request.getCursorId() + request.getLimit(), request.getLimit()), totals.isEmpty() ? 0 : totals.get(0));
     }
 
-   /* public CustomPageImpl<Task> searchPageTasks(Integer workspaceId, CursorPageRequest pageRequest, FilterRequest filterRequest) {
-
-        final int limit = pageRequest.getLimit();
-        final boolean ascending = pageRequest.getAscending();
-        final long cursorId = pageRequest.getCursorId();
-
-        List<Task> content = queryFactory
-                .selectFrom(task)
-                .where(eqTaskWithWorkspaceId(workspaceId),
-                        validateCursorId(ascending, cursorId),
-                        eqPriority(filterRequest.getPriority()),
-                        eqStateId(filterRequest.getStateId()),
-                        eqEndDate(filterRequest.getEndDate()),
-                        eqTagId(filterRequest.getTagId()),
-                        eqProjectName(filterRequest.getProjectName()),
-                        eqManagerName(filterRequest.getManager()))
-                .orderBy(ascending ? task.createDate.asc() : task.createDate.desc())
-                .orderBy(ascending ? task.id.asc() : task.id.desc())
-                .limit(limit + 1L)
-                .fetch();
-
-        List<Long> totals = queryFactory.select(task.count())
-                .from(task)
-                .where(eqTaskWithWorkspaceId(workspaceId))
-                .fetch();
-
-        long nextCursorId = -1L;
-        if (content.size() > limit) {
-            content = content.subList(0, content.size() - 1);
-            nextCursorId = content.get(content.size() - 1).getId();
-        }
-
-        return new CustomPageImpl<>(content, PageRequest.of(0, limit), totals.isEmpty() ? 0 : totals.get(0), nextCursorId);
-    }*/
+    private static OrderSpecifier<?> getOrderSpecifier(CursorPageRequest request) {
+        Order order = request.getAscending().isAscending() ? Order.ASC : Order.DESC;
+        return switch (request.getSortType()) {
+            case END -> new OrderSpecifier<>(order, task.scheduleRange.endDate);
+            case CREATE -> new OrderSpecifier<>(order, task.createDate);
+            case PRIORITY -> new OrderSpecifier<>(order, task.configuration.priority);
+        };
+//        if (request.getSortType() == SortType.END) {
+//            specifier = new OrderSpecifier<>(order, task.scheduleRange.endDate);
+//        } else if (request.getSortType() == SortType.CREATE) {
+//            specifier = new OrderSpecifier<>(order, task.createDate);
+//        } else if (request.getSortType() == SortType.PRIORITY) {
+//            specifier = new OrderSpecifier<>(order, task.configuration.priority);
+//        }
+//        return specifier;
+    }
 
     public WorkspaceSearchWithStatesResponse findWorkspaceWithStates(long workspaceId) {
         QWorkspace workspace = QWorkspace.workspace;
@@ -130,24 +101,6 @@ public class WorkspaceRepositoryImpl {
         return new WorkspaceSearchWithStatesResponse(list);
     }
 
-//    public WorkspaceSearchWithMembersResponse findWorkspaceWithMembers(long workspaceId) {
-//        QWorkspace workspace = QWorkspace.workspace;
-//        QWorkspaceMember workspaceMember = QWorkspaceMember.workspaceMember;
-//
-//        List<WorkspaceSearchWithMembersResponse> responses = queryFactory
-//                .select(Projections.constructor(WorkspaceSearchWithMembersResponse.class,
-//                        Projections.list(Projections.constructor(MemberDto.class, workspaceMember.member.id, workspaceMember.member.email, workspaceMember.member.name, workspaceMember.member.profile)))).from(workspace)
-//                .leftJoin(workspace.workspaceMembers, workspaceMember)
-//                .where(workspace.id.eq(workspaceId).and(workspaceMember.isNotNull()))
-//                .fetch();
-//
-//        if (responses.isEmpty()) {
-//            return new WorkspaceSearchWithMembersResponse(Collections.emptyList());
-//        }
-//
-//        return responses.get(0);
-//    }
-
     public WorkspaceSearchWithTagsResponse findWorkspaceWithTags(long workspaceId) {
         QWorkspace workspace = QWorkspace.workspace;
         QTag tag = QTag.tag;
@@ -164,13 +117,6 @@ public class WorkspaceRepositoryImpl {
         }
 
         return responses.get(0);
-    }
-
-    private static BooleanExpression validateCursorId(boolean ascending, long cursorId) {
-        if (cursorId == 0)
-            return null;
-
-        return ascending ? task.id.gt(cursorId) : task.id.lt(cursorId);
     }
 
     private BooleanExpression eqPriority(Integer priority) {
