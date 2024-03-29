@@ -1,9 +1,7 @@
 package com.golapadeok.fluo.domain.workspace.api;
 
-import com.golapadeok.fluo.domain.workspace.dto.request.FilterRequest;
-import com.golapadeok.fluo.domain.workspace.dto.request.WorkspaceCreateRequest;
-import com.golapadeok.fluo.domain.workspace.dto.request.CursorPageRequest;
-import com.golapadeok.fluo.domain.workspace.dto.request.WorkspaceUpdateRequest;
+import com.golapadeok.fluo.common.security.domain.PrincipalDetails;
+import com.golapadeok.fluo.domain.workspace.dto.request.*;
 import com.golapadeok.fluo.domain.workspace.dto.response.*;
 import com.golapadeok.fluo.domain.workspace.service.*;
 import io.swagger.v3.oas.annotations.Operation;
@@ -13,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -26,6 +25,7 @@ public class WorkspaceController {
     private final WorkspaceSearchService workspaceSearchService;
     private final WorkspaceDeleteService workspaceDeleteService;
     private final WorkspaceUpdateService workspaceUpdateService;
+    private final WorkspaceGrantRoleService workspaceGrantRoleService;
 
     @GetMapping
     @Operation(summary = "워크스페이스 전체조회 API", description = "워크스페이스 전체조회 API")
@@ -109,5 +109,14 @@ public class WorkspaceController {
             @PathVariable("workspaceId") Integer workspaceId
     ) {
         return ResponseEntity.ok(workspaceDeleteService.delete(workspaceId));
+    }
+
+    @PostMapping("members/roles")
+    @Operation(summary = "워크스페이스 멤버 역할 부여 API", description = "워크스페이스에서 멤버에게 역할을 부여합니다.")
+    public ResponseEntity<WorkspaceGrantRoleResponse> grantWorkspaceRole(
+            @AuthenticationPrincipal PrincipalDetails principalDetails,
+            @Valid @RequestBody WorkspaceGrantRoleRequest request
+            ) {
+        return ResponseEntity.ok(this.workspaceGrantRoleService.grantRole(principalDetails, request));
     }
 }
