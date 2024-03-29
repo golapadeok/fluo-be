@@ -23,14 +23,20 @@ public class WorkspaceInvitationController {
 
     private final WorkspaceInviteMemberEmailService workspaceInviteMemberEmailService;
 
-    @Operation(summary = "워크스페이스 멤버 초대", description = "멤버 이메일을 통해 워크스페이스로 초대")
+    @Operation(summary = "워크스페이스 멤버 이메일로 초대", description = "멤버 이메일을 통해 워크스페이스로 초대")
     @PostMapping("/workspaces/{workspaceId}/invitations")
-    public ResponseEntity<InvitationEmailResponse> inviteWorkspaceWithMember(
+    public ResponseEntity<InvitationEmailResponse> inviteWorkspaceWithMemberEmail(
             @PathVariable("workspaceId") String workspaceId,
             @Valid @RequestBody InviteEmailRequest request) {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(this.workspaceInviteMemberEmailService.InviteMemberEmail(workspaceId,request));
+    }
+
+    @Operation(summary = "워크스페이스 멤버 초대코드로 초대", description = "멤버에게 초대코드를 알려주어 멤버가 초대코드로 가입")
+    @PostMapping("/workspaces/invitations/{invitationsCode}")
+    public ResponseEntity inviteWorkspaceWithMemberInviteCode(@PathVariable("invitationsCode") String invitationsCode) {
+        return null;
     }
 
 }

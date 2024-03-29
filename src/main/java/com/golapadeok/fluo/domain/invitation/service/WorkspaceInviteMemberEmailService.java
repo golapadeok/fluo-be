@@ -1,5 +1,6 @@
 package com.golapadeok.fluo.domain.invitation.service;
 
+import com.golapadeok.fluo.common.util.DateUtils;
 import com.golapadeok.fluo.domain.invitation.domain.Invitation;
 import com.golapadeok.fluo.domain.invitation.dto.request.InviteEmailRequest;
 import com.golapadeok.fluo.domain.invitation.dto.response.InvitationEmailResponse;
@@ -37,11 +38,13 @@ public class WorkspaceInviteMemberEmailService {
                 .workspace(workspace)
                 .build();
         Invitation saved = invitationRepository.save(invitation);
+        log.info("saved : {}", saved);
 
         return InvitationEmailResponse.builder()
                 .invitationId(String.valueOf(saved.getId()))
                 .workspaceId(workspaceId)
                 .member(MemberInfo.of(member))
+                .createDate(saved.getCreateDate())
                 .build();
     }
 

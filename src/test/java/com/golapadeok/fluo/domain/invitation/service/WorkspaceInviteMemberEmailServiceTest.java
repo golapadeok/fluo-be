@@ -69,6 +69,7 @@ class WorkspaceInviteMemberEmailServiceTest {
         InvitationEmailResponse invitationEmailResponse = this.workspaceInviteMemberEmailService.InviteMemberEmail(workspaceId, inviteEmailRequest);
 
         // then
+        log.info("invitation : {}", invitationEmailResponse);
         assertThat(this.invitationRepository.findById(1L)).isNotNull();
         assertThat(this.invitationRepository.findById(1L).get().getMember().getId()).isEqualTo(1L);
         assertThat(this.invitationRepository.findById(1L).get().getWorkspace().getId()).isEqualTo(1L);
