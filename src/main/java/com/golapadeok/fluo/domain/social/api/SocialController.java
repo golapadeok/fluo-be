@@ -3,6 +3,7 @@ package com.golapadeok.fluo.domain.social.api;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.golapadeok.fluo.common.jwt.JwtTokenProvider;
 import com.golapadeok.fluo.common.security.domain.PrincipalDetails;
+import com.golapadeok.fluo.common.util.CookieUtils;
 import com.golapadeok.fluo.domain.member.domain.Member;
 import com.golapadeok.fluo.domain.social.domain.SocialType;
 import com.golapadeok.fluo.domain.social.dto.response.SocialLoginResponse;
@@ -64,11 +65,8 @@ public class SocialController {
         SocialLoginResponse socialLoginResponse = this.oAuthService.socialLogin(socialType, code);
 
         // 쿠키 세팅
-        ResponseCookie responseCookie = ResponseCookie.from("refreshToken", socialLoginResponse.getRefreshToken())
-                        .httpOnly(true)
-                        .secure(true)
-                        .path("/")
-                        .build();
+        ResponseCookie responseCookie =
+                CookieUtils.createCookie("refreshToken", socialLoginResponse.getRefreshToken(), response);
 
         Map<String, String> params = new HashMap<>();
         params.put("memberId", socialLoginResponse.getMemberId());

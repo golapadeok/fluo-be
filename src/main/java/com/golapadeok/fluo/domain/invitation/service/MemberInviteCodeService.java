@@ -24,7 +24,7 @@ public class MemberInviteCodeService {
     public InvitationAnswerResponse saveMemberInviteCode(PrincipalDetails principalDetails, String invitationsCode) {
         Member member = principalDetails.getMember();
 
-        Workspace workspace = this.workspaceRepository.findByInvitationCode(invitationsCode)
+        Workspace workspace = this.workspaceRepository.findByInvitationsCode(invitationsCode)
                 .orElseThrow(() -> new InvitationException(InvitationErrorStatus.INVALID_INVITATION_CODE));
 
         WorkspaceMember workspaceMember = WorkspaceMember.builder()
