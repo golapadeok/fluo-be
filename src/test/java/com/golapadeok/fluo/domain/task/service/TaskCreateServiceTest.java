@@ -3,16 +3,11 @@ package com.golapadeok.fluo.domain.task.service;
 import com.golapadeok.fluo.domain.member.domain.Member;
 import com.golapadeok.fluo.domain.member.repository.MemberRepository;
 import com.golapadeok.fluo.domain.state.domain.State;
-import com.golapadeok.fluo.domain.state.exception.NotFoundStateException;
 import com.golapadeok.fluo.domain.state.repository.StateRepository;
 import com.golapadeok.fluo.domain.tag.domain.Tag;
 import com.golapadeok.fluo.domain.tag.repository.TagRepository;
-import com.golapadeok.fluo.domain.task.domain.ManagerTask;
-import com.golapadeok.fluo.domain.task.domain.ScheduleRange;
-import com.golapadeok.fluo.domain.task.domain.Task;
-import com.golapadeok.fluo.domain.task.domain.TaskConfiguration;
+import com.golapadeok.fluo.domain.task.domain.*;
 import com.golapadeok.fluo.domain.task.dto.request.TaskCreateRequest;
-import com.golapadeok.fluo.domain.task.dto.request.TaskUpdateRequest;
 import com.golapadeok.fluo.domain.task.dto.response.TaskDetailResponse;
 import com.golapadeok.fluo.domain.task.repository.ManagerTaskRepository;
 import com.golapadeok.fluo.domain.task.repository.TaskRepository;
@@ -76,13 +71,13 @@ class TaskCreateServiceTest {
 
         TaskConfiguration taskConfiguration = new TaskConfiguration(true, 1);
         ScheduleRange scheduleRange = new ScheduleRange(LocalDate.now(), LocalDate.now());
-        Task task = new Task(1L, "title", "description", "creator1", taskConfiguration, scheduleRange);
+        Task task = new Task(1L, "title", "description", "creator1", LabelColor.RED, taskConfiguration, scheduleRange);
         task.changeWorkspace(workspace);
         task.changeState(state);
         task.changeTag(tag);
 
         TaskCreateRequest request = new TaskCreateRequest(
-                1, 1, "test", "description", "creator1", List.of(1, 2), 1, true, 1, LocalDate.now(), LocalDate.now()
+                1, 1, "test", "description", "creator1", List.of(1, 2), 1, true, 1, LabelColor.RED, LocalDate.now(), LocalDate.now()
         );
 
         given(workspaceRepository.findById(request.getWorkspaceId().longValue()))

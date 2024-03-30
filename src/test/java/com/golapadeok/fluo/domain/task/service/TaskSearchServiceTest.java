@@ -3,10 +3,7 @@ package com.golapadeok.fluo.domain.task.service;
 import com.golapadeok.fluo.domain.member.domain.Member;
 import com.golapadeok.fluo.domain.state.domain.State;
 import com.golapadeok.fluo.domain.tag.domain.Tag;
-import com.golapadeok.fluo.domain.task.domain.ManagerTask;
-import com.golapadeok.fluo.domain.task.domain.ScheduleRange;
-import com.golapadeok.fluo.domain.task.domain.Task;
-import com.golapadeok.fluo.domain.task.domain.TaskConfiguration;
+import com.golapadeok.fluo.domain.task.domain.*;
 import com.golapadeok.fluo.domain.task.dto.response.TaskDetailResponse;
 import com.golapadeok.fluo.domain.task.exception.NotFoundTaskException;
 import com.golapadeok.fluo.domain.task.repository.TaskRepository;
@@ -64,7 +61,7 @@ class TaskSearchServiceTest {
         //Task
         TaskConfiguration taskConfiguration = new TaskConfiguration(true, 1);
         ScheduleRange scheduleRange = new ScheduleRange(LocalDate.now(), LocalDate.now());
-        Task task = new Task(1L, "title", "description", "creator1", taskConfiguration, scheduleRange);
+        Task task = new Task(1L, "title", "description", "creator1", LabelColor.RED, taskConfiguration, scheduleRange);
         task.changeWorkspace(workspace);
         task.changeState(state);
         task.changeTag(tag);

@@ -1,10 +1,13 @@
 package com.golapadeok.fluo.domain.task.dto.request;
 
+import com.golapadeok.fluo.domain.task.domain.LabelColor;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Range;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -14,6 +17,7 @@ import java.util.stream.Collectors;
 
 @Getter
 @AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Schema(description = "업무 추가 요청 데이터")
 public class TaskCreateRequest {
     @NotNull(message = "워크스페이스 아이디는 필수 입력입니다.")
@@ -39,7 +43,6 @@ public class TaskCreateRequest {
     @Schema(description = "업무 관리자 아이디 리스트", example = "[1, 2, 3]")
     private List<Integer> managers;
 
-//    @NotNull(message = "태그 아이디는 필수 입력입니다.")
     @Schema(description = "업무에 설정할 태그 아이디", example = "1")
     private Integer tag;
 
@@ -52,6 +55,9 @@ public class TaskCreateRequest {
     @Schema(description = "업무 중요도", example = "5")
     private Integer priority;
 
+    @Schema(description = "캘린더 라벨 색상")
+    private LabelColor labelColor;
+
     @NotNull(message = "날짜는 필수 입력입니다.")
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     @Schema(description = "업무 시작 날짜", example = "2020-01-01")
@@ -61,4 +67,9 @@ public class TaskCreateRequest {
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     @Schema(description = "업무 종료 날짜", example = "2030-01-01")
     private LocalDate endDate;
+
+    public void setLabelColor(String labelColor) {
+        this.labelColor = (labelColor == null || labelColor.isEmpty()) ?
+                LabelColor.RED : LabelColor.valueOf(labelColor.toUpperCase());
+    }
 }

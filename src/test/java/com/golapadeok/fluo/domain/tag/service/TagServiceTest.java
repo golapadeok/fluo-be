@@ -6,6 +6,7 @@ import com.golapadeok.fluo.domain.tag.dto.response.TagCreateResponse;
 import com.golapadeok.fluo.domain.tag.dto.response.TagDeleteResponse;
 import com.golapadeok.fluo.domain.tag.dto.response.TagSearchResponse;
 import com.golapadeok.fluo.domain.tag.repository.TagRepository;
+import com.golapadeok.fluo.domain.task.domain.LabelColor;
 import com.golapadeok.fluo.domain.task.domain.Task;
 import com.golapadeok.fluo.domain.task.repository.TaskRepository;
 import com.golapadeok.fluo.domain.workspace.domain.Workspace;
@@ -21,8 +22,9 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.*;
-import static org.mockito.BDDMockito.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.BDDMockito.any;
+import static org.mockito.BDDMockito.given;
 
 @Transactional
 @ExtendWith(MockitoExtension.class)
@@ -89,7 +91,7 @@ class TagServiceTest {
         Tag tag = new Tag(1L, "tag1", "######");
         tag.changeWorkspace(workspace);
 
-        Task task = new Task(1L, "", "", "", null, null);
+        Task task = new Task(1L, "", "", "", LabelColor.RED, null, null);
         task.changeTag(tag);
         task.changeWorkspace(workspace);
 

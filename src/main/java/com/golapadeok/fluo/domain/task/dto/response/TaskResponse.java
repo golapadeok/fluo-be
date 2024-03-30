@@ -1,5 +1,7 @@
 package com.golapadeok.fluo.domain.task.dto.response;
 
+import com.golapadeok.fluo.common.util.DateUtils;
+import com.golapadeok.fluo.domain.task.domain.LabelColor;
 import com.golapadeok.fluo.domain.task.domain.Task;
 import lombok.Getter;
 
@@ -16,20 +18,19 @@ public class TaskResponse {
     private final String creator;
     private final Boolean isPrivate;
     private final Integer priority;
+    private final LabelColor labelColor;
     private final String startDate;
     private final String endDate;
 
     public TaskResponse(Task task) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("EEE, dd MMM yyyy HH:mm:ss 'GMT'", Locale.US)
-                .withZone(ZoneId.of("GMT"));
-
         this.taskId = task.getId().toString();
         this.title = task.getTitle();
         this.description = task.getDescription();
         this.creator = task.getCreator();
         this.isPrivate = task.getConfiguration().getIsPrivate();
         this.priority = task.getConfiguration().getPriority();
-        this.startDate = task.getScheduleRange().getStartDate().format(formatter);
-        this.endDate = task.getScheduleRange().getEndDate().format(formatter);
+        this.labelColor = task.getLabelColor();
+        this.startDate = DateUtils.dateFormatter(task.getScheduleRange().getStartDate());
+        this.endDate = DateUtils.dateFormatter(task.getScheduleRange().getEndDate());
     }
 }
