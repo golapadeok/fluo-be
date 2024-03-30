@@ -2,6 +2,7 @@ package com.golapadeok.fluo.domain.workspace.api;
 
 import com.golapadeok.fluo.common.security.domain.PrincipalDetails;
 import com.golapadeok.fluo.common.util.CookieUtils;
+import com.golapadeok.fluo.domain.invitation.dto.InvitationCodeDto;
 import com.golapadeok.fluo.domain.workspace.dto.request.*;
 import com.golapadeok.fluo.domain.workspace.dto.response.*;
 import com.golapadeok.fluo.domain.workspace.service.*;
@@ -80,10 +81,13 @@ public class WorkspaceController {
         return ResponseEntity.ok(workspaceSearchService.searchWithTags(workspaceId));
     }
 
-    @GetMapping("/{workspaceId}/invitations")
-    @Operation(hidden = true)
-    public void getWorkspaceWithInvitations() {
-
+    @GetMapping("/{workspaceId}/invitation")
+    @Operation(summary = "워크스페이스의 초대코드 조회 API", description = "해당 워크스페이스에 초대코드를 조회합니다.")
+    public ResponseEntity<InvitationCodeDto> getWorkspaceWithInvitations(
+            @PathVariable(name = "workspaceId") Integer workspaceId
+    ) {
+        InvitationCodeDto invitationCodeDto = workspaceSearchService.searchWithInvitationCode(workspaceId);
+        return ResponseEntity.ok(invitationCodeDto);
     }
 
     //
@@ -129,4 +133,6 @@ public class WorkspaceController {
     ) {
         return ResponseEntity.ok(this.workspaceGrantRoleService.grantRole(principalDetails, request));
     }
+
+
 }

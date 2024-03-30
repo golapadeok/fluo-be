@@ -1,5 +1,6 @@
 package com.golapadeok.fluo.domain.workspace.service;
 
+import com.golapadeok.fluo.domain.invitation.dto.InvitationCodeDto;
 import com.golapadeok.fluo.domain.member.domain.WorkspaceMember;
 import com.golapadeok.fluo.domain.role.domain.MemberRole;
 import com.golapadeok.fluo.domain.task.domain.Task;
@@ -32,17 +33,19 @@ public class WorkspaceSearchService {
         return new BaseResponse(response);
     }
 
-    public WorkspaceSearchResponse search(Integer workspaceId) {
-        Workspace workspace = getWorkspace(workspaceId);
+    public WorkspaceSearchResponse search(long workspaceId) {
+        Workspace workspace = workspaceRepository.findById(workspaceId)
+                .orElseThrow(NotFoundWorkspaceException::new);
+
         return new WorkspaceSearchResponse(workspace);
     }
 
-    public WorkspaceSearchWithTasksResponse searchWithTasks(Integer workspaceId, CursorPageRequest request, FilterRequest filterRequest) {
+    public WorkspaceSearchWithTasksResponse searchWithTasks(long workspaceId, CursorPageRequest request, FilterRequest filterRequest) {
         Page<Task> pageTasks = workspaceRepositoryImpl.searchPageTasks2(workspaceId, request, filterRequest);
         return WorkspaceSearchWithTasksResponse.of(pageTasks.getTotalPages(), pageTasks.getSize(), pageTasks.getNumber(), TaskDto.of(pageTasks.getContent()));
     }
 
-    public WorkspaceSearchWithStatesResponse searchWithStates(Integer workspaceId) {
+    public WorkspaceSearchWithStatesResponse searchWithStates(long workspaceId) {
         return workspaceRepositoryImpl.findWorkspaceWithStates(workspaceId);
     }
 
@@ -63,14 +66,15 @@ public class WorkspaceSearchService {
         return new WorkspaceSearchWithMembersResponse(members);
     }
 
-    public WorkspaceSearchWithTagsResponse searchWithTags(Integer workspaceId) {
+    public WorkspaceSearchWithTagsResponse searchWithTags(long workspaceId) {
         return workspaceRepositoryImpl.findWorkspaceWithTags(workspaceId);
     }
 
-    private Workspace getWorkspace(int workspaceId) {
-        return workspaceRepository.findById((long) workspaceId)
+    public InvitationCodeDto searchWithInvitationCode(long workspaceId) {
+        Workspace workspace = workspaceRepository.findById(workspaceId)
                 .orElseThrow(NotFoundWorkspaceException::new);
+
+        String invitationCode = workspace.getInvitationCode();
+        return new InvitationCodeDto(invitationCode);
     }
-
-
 }
