@@ -40,7 +40,7 @@ public class WorkspaceRepositoryImpl {
         queryFactory = new JPAQueryFactory(em);
     }
 
-    public Page<Task> searchPageTasks2(Integer workspaceId, CursorPageRequest request, FilterRequest filterRequest) {
+    public Page<Task> searchPageTasks2(long workspaceId, CursorPageRequest request, FilterRequest filterRequest) {
         OrderSpecifier<?> specifier = getOrderSpecifier(request);
 
         List<Task> content = queryFactory
@@ -161,8 +161,7 @@ public class WorkspaceRepositoryImpl {
         return task.managers.any().member.name.like("%" + managerName + "%");
     }
 
-    private BooleanExpression eqTaskWithWorkspaceId(Integer workspaceId) {
-        Assert.notNull(workspaceId, "workspace id must not null");
-        return task.workspace.id.eq(workspaceId.longValue());
+    private BooleanExpression eqTaskWithWorkspaceId(long workspaceId) {
+        return task.workspace.id.eq(workspaceId);
     }
 }
