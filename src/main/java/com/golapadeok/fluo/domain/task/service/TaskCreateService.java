@@ -53,6 +53,7 @@ public class TaskCreateService {
                 .title(request.getTitle())
                 .description(request.getDescription())
                 .creator(request.getCreator())
+                .labelColor(request.getLabelColor())
                 .configuration(extractTaskConfigure(request))
                 .scheduleRange(extractScheduleRange(request))
                 .build();

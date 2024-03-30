@@ -1,5 +1,6 @@
 package com.golapadeok.fluo.domain.task.dto.request;
 
+import com.golapadeok.fluo.domain.task.domain.LabelColor;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -14,7 +15,6 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Getter
-@AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class TaskUpdateRequest {
     @NotNull(message = "상태 아이디는 필수 입력입니다.")
@@ -49,6 +49,9 @@ public class TaskUpdateRequest {
     @Schema(description = "업무 중요도", example = "5")
     private Integer priority;
 
+    @Schema(description = "업무 중요도", example = "5")
+    private LabelColor labelColor;
+
     @NotNull(message = "날짜는 필수 입력입니다.")
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     @Schema(description = "업무 시작 날짜", example = "2020-01-01")
@@ -58,4 +61,6 @@ public class TaskUpdateRequest {
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     @Schema(description = "업무 종료 날짜", example = "2030-01-01")
     private LocalDate endDate;
+
+
 }
