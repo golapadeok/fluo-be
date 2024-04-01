@@ -3,6 +3,7 @@ package com.golapadeok.fluo.domain.social.domain.coderedirect;
 import com.golapadeok.fluo.domain.social.domain.SocialType;
 import com.golapadeok.fluo.domain.social.exception.SocialErrorException;
 import com.golapadeok.fluo.domain.social.exception.SocialErrorStatus;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.util.Map;
@@ -11,6 +12,7 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Component
 public class SocialOAuthRedirectComposite{
 
@@ -32,9 +34,11 @@ public class SocialOAuthRedirectComposite{
                         SocialOAuthRedirect::getSocialType,
                         Function.identity()
                 ));
+        log.info("SocialOAuthRedirectComposite_redirect : {}", redirect);
     }
 
     public String getOAuthRedirectURL(SocialType socialType) {
+        log.info("socialType : {}, getOAuthRedirectURL_redirectUrl : {}", redirect.get(socialType).getSocialType(), redirect.get(socialType).getOAuthRedirectURL());
         return Optional.ofNullable(redirect.get(socialType))
                 .orElseThrow(() -> new SocialErrorException(SocialErrorStatus.NOT_FOUNT_SOCIAL_LOGIN))
                 .getOAuthRedirectURL();

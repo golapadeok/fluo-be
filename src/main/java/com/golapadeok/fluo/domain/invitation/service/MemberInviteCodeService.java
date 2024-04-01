@@ -22,6 +22,10 @@ public class MemberInviteCodeService {
     private final WorkspaceMemberRepository workspaceMemberRepository;
 
     public InvitationAnswerResponse saveMemberInviteCode(PrincipalDetails principalDetails, String invitationsCode) {
+        if (principalDetails == null || principalDetails.getMember() == null) {
+            throw new IllegalArgumentException("로그인해야 합니다.");
+        }
+
         Member member = principalDetails.getMember();
 
         Workspace workspace = this.workspaceRepository.findByInvitationCode(invitationsCode)

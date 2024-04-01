@@ -31,6 +31,10 @@ public class MemberWorkspaceListService {
     private final WorkspaceMemberRepository workspaceMemberRepository;
     @Transactional(readOnly = true)
     public MemberWorkspaceListResponse getWorkspaceList(PrincipalDetails principalDetails, CursorPageRequest cursorPageRequest) {
+        if (principalDetails == null || principalDetails.getMember() == null) {
+            throw new IllegalArgumentException("로그인해야 합니다.");
+        }
+
         Pageable pageable = PageRequest.of(0, cursorPageRequest.getLimit());
         
         Member member = principalDetails.getMember();
