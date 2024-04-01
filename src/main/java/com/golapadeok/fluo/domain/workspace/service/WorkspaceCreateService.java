@@ -48,13 +48,16 @@ public class WorkspaceCreateService {
 
     @Transactional
     public WorkspaceResponse create(PrincipalDetails principal, WorkspaceCreateRequest request) {
+        if (principal == null || principal.getMember() == null) {
+            throw new IllegalArgumentException("로그인해야 합니다.");
+        }
+
         String title = request.getTitle();
         String description = request.getDescription();
         String invitationCode = extractedInvitationCode();
 
-
         //Workspace
-        Workspace workspace = new Workspace(title, description, DEFAULT_IMAGE);
+        Workspace workspace = new Workspace(title, description, DEFAULT_IMAGE, principal.getMember().getName());
         workspace.changeInvitationCode(invitationCode);
         workspaceRepository.save(workspace);
 
@@ -63,9 +66,6 @@ public class WorkspaceCreateService {
         state.changeWorkspace(workspace);
         stateRepository.save(state);
 
-        if (principal == null || principal.getMember() == null) {
-            throw new IllegalArgumentException("로그인해야 합니다.");
-        }
 
         WorkspaceMember workspaceMember = new WorkspaceMember(principal.getMember(), workspace, "");
         workspaceMemberRepository.save(workspaceMember);
