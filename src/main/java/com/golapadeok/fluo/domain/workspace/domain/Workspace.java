@@ -31,6 +31,7 @@ public class Workspace extends BaseTimeEntity {
     private String description;
     private String imageUrl;
     private String invitationCode;
+    private String creator;
 
     @OneToMany(mappedBy = "workspace", fetch = FetchType.LAZY)
     private List<State> states = new ArrayList<>();
@@ -47,16 +48,17 @@ public class Workspace extends BaseTimeEntity {
     @OneToMany(mappedBy = "workspace", fetch = FetchType.LAZY)
     private List<Tag> tags = new ArrayList<>();
 
-    public Workspace(Long id, String title, String description, String imageUrl) {
+    public Workspace(Long id, String title, String description, String imageUrl, String creator) {
         this.id = id;
         this.title = title;
         this.description = description;
         this.imageUrl = imageUrl;
+        this.creator = creator;
     }
 
     @Builder(toBuilder = true)
-    public Workspace(String title, String description, String imageUrl) {
-        this(null, title, description, imageUrl);
+    public Workspace(String title, String description, String imageUrl, String creator) {
+        this(null, title, description, imageUrl, creator);
     }
 
     public void changeImageUrl(String imageUrl) {

@@ -90,7 +90,7 @@ public class WorkspaceController {
         return ResponseEntity.ok(invitationCodeDto);
     }
 
-    //
+    //TODO KDY 임시 워크스페이스 생성 API에 인터셉터 workspaceId 쿠키 추가.
     @PostMapping
     @Operation(summary = "워크스페이스 생성 API", description = "새로운 워크스페이스를 생성합니다.")
     public ResponseEntity<WorkspaceResponse> createWorkspace(
@@ -123,6 +123,15 @@ public class WorkspaceController {
             @PathVariable("workspaceId") Integer workspaceId
     ) {
         return ResponseEntity.ok(workspaceDeleteService.delete(workspaceId));
+    }
+
+    @DeleteMapping("/{workspaceId}/members")
+    @Operation(summary = "워크스페이스의 해당 멤버 삭제 API", description = "해당 멤버를 삭제합니다.")
+    public ResponseEntity<WorkspaceDeleteResponse> deleteMember(
+            @PathVariable("workspaceId") Integer workspaceId,
+            @Valid @RequestBody MemberDeleteRequest request
+    ) {
+        return ResponseEntity.ok(workspaceDeleteService.deleteMember(workspaceId, request.getMemberId()));
     }
 
     @PostMapping("members/roles")
