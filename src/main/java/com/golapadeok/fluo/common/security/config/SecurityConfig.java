@@ -14,6 +14,7 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.parameters.P;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
@@ -51,6 +52,9 @@ public class SecurityConfig {
                         .requestMatchers(PathRequest.toH2Console()).permitAll()
                         .requestMatchers("/auth/**").permitAll()
                         .anyRequest().permitAll()); // 테스트 종료시 authentication()으로 변경
+
+        //H2 데이터베이스 접근
+        http.headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin));
 
         http.sessionManagement(sessionManagement -> sessionManagement
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))

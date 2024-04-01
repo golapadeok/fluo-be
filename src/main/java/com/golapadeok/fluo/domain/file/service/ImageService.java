@@ -15,7 +15,6 @@ import reactor.core.publisher.Mono;
 
 @Service
 @RequiredArgsConstructor
-// TODO KDY 코드 리팩토링 필요
 public class ImageService {
     private final AmazonS3Uploader amazonS3Uploader;
     private final DefaultImageRepository repository;
