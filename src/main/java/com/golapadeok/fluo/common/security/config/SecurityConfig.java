@@ -53,6 +53,8 @@ public class SecurityConfig {
                         .requestMatchers("/auth/**").permitAll()
                         .anyRequest().permitAll()); // 테스트 종료시 authentication()으로 변경
 
+        http.cors(cors -> cors.configurationSource(corsConfiguration()));
+
         //H2 데이터베이스 접근
         http.headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin));
 
