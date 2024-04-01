@@ -53,7 +53,7 @@ public class SecurityConfig {
                         .requestMatchers("/auth/**").permitAll()
                         .anyRequest().permitAll()); // 테스트 종료시 authentication()으로 변경
 
-        http.cors(cors -> cors.configurationSource(corsConfiguration()));
+//        http.cors(cors -> cors.configurationSource(corsConfiguration()));
 
         //H2 데이터베이스 접근
         http.headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin));
@@ -78,7 +78,7 @@ public class SecurityConfig {
                         .requestMatchers("/auth/**").permitAll()
                         .anyRequest().permitAll()); // 테스트 종료시 authentication()으로 변경
 
-        http.cors(cors -> cors.configurationSource(corsConfiguration()));
+//        http.cors(cors -> cors.configurationSource(corsConfiguration()));
 //        http.cors(cors -> cors.disable());
 
         http.sessionManagement(sessionManagement -> sessionManagement
@@ -93,24 +93,24 @@ public class SecurityConfig {
         return http.build();
     }
 
-    @Bean
-    public CorsConfigurationSource corsConfiguration() {
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-
-        // 5173
-
-        CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(List.of("https://fluo-fe.pages.dev:443",
-                "http://localhost:5173", "https://project-application.shop:443"));
-        config.setAllowCredentials(true);
-        config.setAllowedMethods(List.of("GET", "POST", "DELETE", "PATCH", "PUT"));
-        config.setAllowedHeaders(List.of("*"));
-        config.setExposedHeaders(Collections.singletonList("Set-Cookies"));
-        config.setMaxAge(3600L);
-
-        source.registerCorsConfiguration("/**", config);
-
-        return source;
-    }
+//    @Bean
+//    public CorsConfigurationSource corsConfiguration() {
+//        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+//
+//        // 5173
+//
+//        CorsConfiguration config = new CorsConfiguration();
+//        config.setAllowedOrigins(List.of("https://fluo-fe.pages.dev:443",
+//                "http://localhost:5173", "https://project-application.shop:443"));
+//        config.setAllowCredentials(true);
+//        config.setAllowedMethods(List.of("GET", "POST", "DELETE", "PATCH", "PUT"));
+//        config.setAllowedHeaders(List.of("*"));
+//        config.setExposedHeaders(Collections.singletonList("Set-Cookies"));
+//        config.setMaxAge(3600L);
+//
+//        source.registerCorsConfiguration("/**", config);
+//
+//        return source;
+//    }
 
 }
