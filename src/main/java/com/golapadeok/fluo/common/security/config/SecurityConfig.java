@@ -78,7 +78,8 @@ public class SecurityConfig {
                         .requestMatchers("/auth/**").permitAll()
                         .anyRequest().permitAll()); // 테스트 종료시 authentication()으로 변경
 
-        http.cors(cors -> cors.configurationSource(corsConfiguration()));
+//        http.cors(cors -> cors.configurationSource(corsConfiguration()));
+        http.cors(cors -> cors.disable());
 
         http.sessionManagement(sessionManagement -> sessionManagement
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
@@ -99,10 +100,11 @@ public class SecurityConfig {
         // 5173
 
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(List.of("https://fluo-fe.pages.dev:443/"));
+        config.setAllowedOrigins(List.of("https://fluo-fe.pages.dev:443/",
+                "http://localhost:5173", "https://project-application.shop:443"));
         config.setAllowCredentials(true);
         config.setAllowedMethods(List.of("GET", "POST", "DELETE", "PATCH", "PUT"));
-        config.setAllowedHeaders(Collections.singletonList("*"));
+        config.setAllowedHeaders(List.of("*"));
         config.setExposedHeaders(Collections.singletonList("Set-Cookies"));
         config.setMaxAge(3600L);
 
