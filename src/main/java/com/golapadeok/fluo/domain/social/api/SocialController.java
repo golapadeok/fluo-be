@@ -54,7 +54,7 @@ public class SocialController {
 //    }
 
     @Operation(summary = "소셜 로그인 진행", description = "소셜 로그인 진행, 만약 회원가입이 안되어 있다면 회원가입을 함.")
-    @GetMapping("/auth/{socialLoginType}/callback")
+    @PostMapping("/auth/{socialLoginType}/callback")
     public ResponseEntity<Map<String, String>> socialLogin(@Parameter(description = "소셜 타입", required = true)
                                             @PathVariable("socialLoginType") String socialLoginType,
                                             @Parameter(description = "로그인 진행 후 일회성 인증 코드", example = "sampleX", required = true)
