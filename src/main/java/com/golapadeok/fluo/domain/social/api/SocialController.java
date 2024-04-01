@@ -72,7 +72,7 @@ public class SocialController {
                 CookieUtils.createCookie("refreshToken", socialLoginResponse.getRefreshToken(), response);
 
         Map<String, String> params = new HashMap<>();
-        params.put(HttpHeaders.AUTHORIZATION, "Bearer "+socialLoginResponse.getAccessToken());
+        params.put(HttpHeaders.AUTHORIZATION, socialLoginResponse.getAccessToken());
         // 리다이렉트
         return ResponseEntity.ok()
                 .header(HttpHeaders.SET_COOKIE, responseCookie.toString())
