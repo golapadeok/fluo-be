@@ -6,6 +6,7 @@ import com.golapadeok.fluo.common.security.domain.PrincipalDetails;
 import com.golapadeok.fluo.common.util.CookieUtils;
 import com.golapadeok.fluo.domain.member.domain.Member;
 import com.golapadeok.fluo.domain.social.domain.SocialType;
+import com.golapadeok.fluo.domain.social.dto.request.AuthorizationCodeRequest;
 import com.golapadeok.fluo.domain.social.dto.response.SocialLoginResponse;
 import com.golapadeok.fluo.domain.social.service.SocialService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -58,13 +59,13 @@ public class SocialController {
     public ResponseEntity<Map<String, String>> socialLogin(@Parameter(description = "소셜 타입", required = true)
                                             @PathVariable("socialLoginType") String socialLoginType,
                                             @Parameter(description = "로그인 진행 후 일회성 인증 코드", example = "sampleX", required = true)
-                                            @RequestParam("code") String code,
+                                            @RequestBody AuthorizationCodeRequest request,
                                             HttpServletResponse response) throws JsonProcessingException {
-        log.info("socialLogin({}, {}) invoked.", socialLoginType, code);
+        log.info("socialLogin({}, {}) invoked.", socialLoginType, request.getCode());
 
         SocialType socialType  = SocialType.valueOf(socialLoginType.toUpperCase());
 
-        SocialLoginResponse socialLoginResponse = this.oAuthService.socialLogin(socialType, code);
+        SocialLoginResponse socialLoginResponse = this.oAuthService.socialLogin(socialType, request.getCode());
 
         // 쿠키 세팅
         ResponseCookie responseCookie =
