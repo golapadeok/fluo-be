@@ -16,7 +16,7 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-//                .allowedOriginPatterns("*")
+//                .allowedOriginPatterns("https://accounts.google.com/*", "https://nid.naver.com")
                 .allowedOrigins("https://fluo-fe.pages.dev",
                         "http://localhost:5173", "https://project-application.shop:443",
                         "https://accounts.google.com", "https://nid.naver.com")
