@@ -8,7 +8,7 @@ import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 
 @OpenAPIDefinition(
         servers = {
-                @Server(url="/", description = "Default Server url")
+                @Server(url="https://project-application.shop:443", description = "Default Server url")
         }
 )
 @ConfigurationPropertiesScan
