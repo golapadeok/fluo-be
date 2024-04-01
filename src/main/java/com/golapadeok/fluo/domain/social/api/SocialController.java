@@ -38,19 +38,20 @@ public class SocialController {
     private final SocialService oAuthService;
     private final JwtTokenProvider provider;
 
-    @Operation(summary = "소셜 로그인 리다이렉트", description = "소셜 로그인 타입 입력시, 해당 하는 로그인 페이지로 리다이렉트")
-    @GetMapping("/auth/{socialLoginType}")
-    public ResponseEntity<String> socialLoginRedirect(@Parameter(description = "소셜 타입", required = true)
-                                                    @PathVariable("socialLoginType") String socialLoginType,
-                                                    HttpServletResponse response) throws IOException {
-        log.info("socialLoginRedirect({}) invoked.", socialLoginType);
-        SocialType socialType = SocialType.valueOf(socialLoginType.toUpperCase());
-        String redirectUrl = this.oAuthService.getRedirectUrl(socialType);
-        log.info("social-redirectUrl : {}", redirectUrl);
-//        response.sendRedirect(redirectUrl);
-
-        return ResponseEntity.ok(redirectUrl);
-    }
+//    @Operation(summary = "소셜 로그인 리다이렉트", description = "소셜 로그인 타입 입력시, 해당 하는 로그인 페이지로 리다이렉트")
+//    @GetMapping("/auth/{socialLoginType}")
+//    public ResponseEntity<String> socialLoginRedirect(@Parameter(description = "소셜 타입", required = true)
+//                                                    @PathVariable("socialLoginType") String socialLoginType,
+//                                                    HttpServletResponse response) throws IOException {
+//        log.info("socialLoginRedirect({}) invoked.", socialLoginType);
+//        var socialType = SocialType.valueOf(socialLoginType.toUpperCase());
+//        String redirectUrl = this.oAuthService.getRedirectUrl(socialType);
+//        log.info("social-redirectUrl : {}", redirectUrl);
+////        response.sendRedirect(redirectUrl);
+//
+//        return ResponseEntity.ok(redirectUrl);
+////        return ResponseEntity.ok().build();
+//    }
 
     @Operation(summary = "소셜 로그인 진행", description = "소셜 로그인 진행, 만약 회원가입이 안되어 있다면 회원가입을 함.")
     @GetMapping("/auth/{socialLoginType}/callback")
@@ -70,11 +71,10 @@ public class SocialController {
                 CookieUtils.createCookie("refreshToken", socialLoginResponse.getRefreshToken(), response);
 
         Map<String, String> params = new HashMap<>();
-        params.put("memberId", socialLoginResponse.getMemberId());
-
+        params.put(HttpHeaders.AUTHORIZATION, "Bearer "+socialLoginResponse.getAccessToken());
+        // 리다이렉트
         return ResponseEntity.ok()
                 .header(HttpHeaders.SET_COOKIE, responseCookie.toString())
-                .header(HttpHeaders.AUTHORIZATION, "Bearer "+socialLoginResponse.getAccessToken())
                 .body(params);
     }
 
