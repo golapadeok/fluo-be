@@ -23,6 +23,10 @@ public class AcceptInviteService {
 
     @Transactional
     public InvitationAnswerResponse acceptInvitation(PrincipalDetails principalDetails, String invitationsId) {
+        if (principalDetails == null || principalDetails.getMember() == null) {
+            throw new IllegalArgumentException("로그인해야 합니다.");
+        }
+
         Invitation invitation = this.invitationRepository.findById(Long.valueOf(invitationsId))
                 .orElseThrow(() -> new InvitationException(InvitationErrorStatus.NOT_FOUND_INVITATION));
 
