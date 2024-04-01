@@ -99,7 +99,7 @@ public class SecurityConfig {
         // 5173
 
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(List.of("*"));
+        config.setAllowedOrigins(List.of("https://localhost:5173", "http://localhost:5713"));
         config.setAllowCredentials(true);
         config.setAllowedMethods(List.of("GET", "POST", "DELETE", "PATCH", "PUT"));
         config.setAllowedHeaders(Collections.singletonList("*"));
