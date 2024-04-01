@@ -46,7 +46,7 @@ public class SocialController {
         log.info("socialLoginRedirect({}) invoked.", socialLoginType);
         SocialType socialType = SocialType.valueOf(socialLoginType.toUpperCase());
         String redirectUrl = this.oAuthService.getRedirectUrl(socialType);
-        log.info("social-redirectUrl : ", redirectUrl);
+        log.info("social-redirectUrl : {}", redirectUrl);
         response.sendRedirect(redirectUrl);
 
         return ResponseEntity.ok().build();
