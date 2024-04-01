@@ -38,7 +38,7 @@ public class SocialOAuthRedirectComposite{
     }
 
     public String getOAuthRedirectURL(SocialType socialType) {
-        log.info("getOAuthRedirectURL_redirectUrl : {}", redirect.get(socialType));
+        log.info("socialType : {}, getOAuthRedirectURL_redirectUrl : {}", redirect.get(socialType).getSocialType(), redirect.get(socialType).getOAuthRedirectURL());
         return Optional.ofNullable(redirect.get(socialType))
                 .orElseThrow(() -> new SocialErrorException(SocialErrorStatus.NOT_FOUNT_SOCIAL_LOGIN))
                 .getOAuthRedirectURL();
