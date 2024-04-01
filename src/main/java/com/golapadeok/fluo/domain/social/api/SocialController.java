@@ -47,9 +47,9 @@ public class SocialController {
         SocialType socialType = SocialType.valueOf(socialLoginType.toUpperCase());
         String redirectUrl = this.oAuthService.getRedirectUrl(socialType);
         log.info("social-redirectUrl : {}", redirectUrl);
-//        response.sendRedirect(redirectUrl);
+        response.sendRedirect(redirectUrl);
 
-        return ResponseEntity.ok(redirectUrl);
+        return ResponseEntity.ok().build();
     }
 
     @Operation(summary = "소셜 로그인 진행", description = "소셜 로그인 진행, 만약 회원가입이 안되어 있다면 회원가입을 함.")
