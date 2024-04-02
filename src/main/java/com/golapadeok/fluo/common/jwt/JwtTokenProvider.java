@@ -22,7 +22,7 @@ public class JwtTokenProvider {
 
 //    private static final long accessTokenExpiredTime = 1000L * 60L * 60L * 24L; // 1일
     private static final long refreshTokenExpiredTime = 1000L * 60L * 60L * 24L * 14L; // 2주
-    private final long accessTokenExpiredTime = 1000L;
+    private final long accessTokenExpiredTime = 1000L * 60L;
 //    private final long refreshTokenExpiredTime = 1000L; // 1일
     private final String authorization = "Authorization";
     private final String tokenPrefix = "Bearer ";
