@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class SocialExceptionHandler {
 
     @ExceptionHandler
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
     private ResponseEntity<ErrorResponse> socialExceptionHandler(SocialErrorException e) {
         return ResponseEntity.status(e.getSocialErrorStatus().getStatus()).body(
                 new ErrorResponse(e.getSocialErrorStatus().getMessage())

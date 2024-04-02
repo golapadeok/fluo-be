@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class RoleExceptionHandler {
 
     @ExceptionHandler
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
     private ResponseEntity<ErrorResponse> roleExceptionHandler(RoleException e) {
         return ResponseEntity
                 .status(e.getRoleErrorStatus().getStatus())
