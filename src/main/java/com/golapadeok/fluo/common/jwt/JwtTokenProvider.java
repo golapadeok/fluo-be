@@ -71,7 +71,6 @@ public class JwtTokenProvider {
 
     // 토큰의 만료시간 검증
     public boolean isTokenValidate(String token) {
-        log.info("token : {}", token);
         try {
             Jws<Claims> claimsJws = Jwts.parserBuilder()
                     .setSigningKey(this.secretKey)
@@ -116,7 +115,6 @@ public class JwtTokenProvider {
         if(cookies != null) {
             for (Cookie cookie : cookies) {
                 if(cookie.getName().equals("refreshToken")) {
-                    log.info("refreshToken : {}", cookie.getValue());
                     return Optional.ofNullable(cookie.getValue());
                 }
             }
