@@ -42,7 +42,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         log.info("access Token : {}", request.getHeader(this.authorization));
         log.info("refresh Token : {}",provider.extractRefreshTokenFromCookies(request));
 
-        // 헤더에 Authorization이라는 이름이 있는지를 확인
+
         String header = request.getHeader(this.authorization);
 //        if(header == null || !header.startsWith(this.tokenPrefix)) {
 //            log.info("access token 이 없음");
@@ -61,7 +61,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
 
 
-        // access token이 만료되었을 때 재발급해주는 로직
+        // 헤더에 Authorization이라는 이름이 있는지를 확인
         if(header == null || !header.startsWith(this.tokenPrefix)) {
             String refreshToken = this.provider.extractRefreshTokenFromCookies(request)
                     .filter(this.provider::isTokenValidate)
@@ -71,8 +71,10 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
                     .ifPresent(member -> {
                         this.provider.sendAccessToken(response, this.provider.createAccessToken(member.getEmail()));
                     });
+            chain.doFilter(request, response);
             return;
         }else {
+            // access token이 만료되었을 때 재발급해주는 로직
             String accessToken = this.provider.extractAccessToken(request)
                     .filter(this.provider::isTokenValidate)
                     .orElse(null);
@@ -87,7 +89,6 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
                         .ifPresent(member -> {
                             this.provider.sendAccessToken(response, this.provider.createAccessToken(member.getEmail()));
                         });
-                return;
             }
         }
 

@@ -3,6 +3,7 @@ package com.golapadeok.fluo.common.annotation.interception;
 import com.golapadeok.fluo.common.annotation.AuthCheck;
 import com.golapadeok.fluo.common.annotation.interception.exception.AuthException;
 import com.golapadeok.fluo.common.annotation.interception.exception.AuthStatus;
+import com.golapadeok.fluo.common.jwt.JwtTokenProvider;
 import com.golapadeok.fluo.domain.member.domain.Member;
 import com.golapadeok.fluo.domain.member.repository.MemberRepository;
 import com.golapadeok.fluo.domain.role.domain.Credential;
@@ -35,6 +36,7 @@ public class AuthCheckInterceptor implements HandlerInterceptor {
     private final MemberRepository memberRepository;
     private final WorkspaceRepository workspaceRepository;
     private final MemberRoleQueryRepository memberRoleQueryRepository;
+    private final JwtTokenProvider provider;
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
@@ -47,7 +49,7 @@ public class AuthCheckInterceptor implements HandlerInterceptor {
             Credential[] credentials = authCheck.credential();
 
             // SecurityContextHolder를 통해 API에 접근하는 회원의 정보를 가져온다.
-            Member member = getAuthentication();
+            Member member = getAuthentication(request);
             log.info("preHandle_member : {}", member);
 
             // 쿠키에 저장된 워크스페이스 아이디를 가져온다.
@@ -86,21 +88,11 @@ public class AuthCheckInterceptor implements HandlerInterceptor {
                 .orElse(null);
     }
 
-    private Member getAuthentication() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        log.info("authentication : {}", authentication.getName());
-        Object principal = authentication.getPrincipal();
-        if(principal instanceof  UserDetails) {
-            UserDetails principal1 = (UserDetails) principal;
-            String username = principal1.getUsername();
-            log.info("getAuthentication_username : {}", username);
-        }
-//        if(authentication != null) {
-//            PrincipalDetails principal = (PrincipalDetails) authentication.getPrincipal();
-//            return principal.getMember();
-//        }
-        if (authentication != null) {
-            String email = authentication.getName();
+    private Member getAuthentication(HttpServletRequest request) {
+        String header = request.getHeader(HttpHeaders.AUTHORIZATION);
+        if(header != null || !header.startsWith("Bearer ")){
+            String accessToken = provider.extractAccessToken(request).get();
+            String email = provider.extractEmail(accessToken).get();
             log.info("getAuthentication email : {}", email);
             return this.memberRepository.findByEmail(email).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
         }
