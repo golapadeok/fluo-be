@@ -57,23 +57,28 @@ public class WorkspaceCreateService {
         String invitationCode = extractedInvitationCode();
 
         //Workspace
+        log.debug("Workspace Save");
         Workspace workspace = new Workspace(title, description, DEFAULT_IMAGE, principal.getMember().getName());
         workspace.changeInvitationCode(invitationCode);
         workspaceRepository.save(workspace);
 
         //State
+        log.debug("State Save");
         State state = new State("default", true);
         state.changeWorkspace(workspace);
         stateRepository.save(state);
 
-
+        log.debug("Workspace Member Save");
         WorkspaceMember workspaceMember = new WorkspaceMember(principal.getMember(), workspace, "");
         workspaceMemberRepository.save(workspaceMember);
 
+
+        log.debug("Role Save");
         String credential = String.join(",", DEFAULT_CREDENTIAL);
         Role defaultRole = new Role("관리자", "관리자 역할입니다.", credential, workspace);
         roleRepository.save(defaultRole);
 
+        log.debug("Member Role Save");
         Member member = principal.getMember();
         memberRoleRepository.save(new MemberRole(member, defaultRole));
 
