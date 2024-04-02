@@ -28,6 +28,10 @@ public class MemberController {
     @Operation(summary = "내 정보 조회", description = "내 정보 조회를 합니다.")
     @GetMapping("/members/self")
     public ResponseEntity<MemberInfoResponse> getMyInfo(@AuthenticationPrincipal PrincipalDetails principalDetails) {
+        if (principalDetails == null || principalDetails.getMember() == null) {
+            throw new IllegalArgumentException("로그인해야 합니다.");
+        }
+
         Member member = principalDetails.getMember();
 
         MemberInfoResponse response = MemberInfoResponse.builder()
