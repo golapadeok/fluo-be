@@ -43,12 +43,12 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         log.info("refresh Token : {}",provider.extractRefreshTokenFromCookies(request));
 
         // 헤더에 Authorization이라는 이름이 있는지를 확인
-        String header = request.getHeader(this.authorization);
-        if(header == null || !header.startsWith(this.tokenPrefix)) {
-            log.info("access token 이 없음");
-            chain.doFilter(request, response);
-            return;
-        }
+//        String header = request.getHeader(this.authorization);
+//        if(header == null || !header.startsWith(this.tokenPrefix)) {
+//            log.info("access token 이 없음");
+//            chain.doFilter(request, response);
+//            return;
+//        }
 
         /**
          * 쿠키에 저장된 refresh token을 꺼내와 만료되었는지를 확인
