@@ -39,6 +39,9 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
             throws ServletException, IOException {
 
+        log.info("access Token : {}", request.getHeader(this.authorization));
+        log.info("refresh Token : {}",provider.extractRefreshTokenFromCookies(request));
+
         // 헤더에 Authorization이라는 이름이 있는지를 확인
         String header = request.getHeader(this.authorization);
         if(header == null || !header.startsWith(this.tokenPrefix)) {
@@ -54,6 +57,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
          * db에 저장된 refresh token과 같다면 새로운 access token을 생성하고 헤더로 보낸다.
          * -> 새로 생성된 엑세스 토큰을 가지고 인증을 관리
          */
+
         String refreshToken = this.provider.extractRefreshTokenFromCookies(request)
                 .filter(this.provider::isTokenValidate)
                 .orElseThrow(() -> new JwtErrorException(JwtErrorStatus.EXPIRED_REFRESH));
