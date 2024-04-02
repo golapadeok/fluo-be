@@ -15,9 +15,9 @@ public class RoleExceptionHandler {
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     private ResponseEntity<ErrorResponse> roleExceptionHandler(RoleException e) {
-        return ResponseEntity.badRequest().body(
-                new ErrorResponse(e.getRoleErrorStatus().getMessage())
-        );
+        return ResponseEntity
+                .status(e.getRoleErrorStatus().getStatus())
+                .body(new ErrorResponse(e.getRoleErrorStatus().getMessage()));
     }
 
 

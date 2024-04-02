@@ -33,10 +33,4 @@ public class WebConfig implements WebMvcConfigurer {
     public void addFormatters(FormatterRegistry registry) {
         registry.addConverter(new SocialConverter());
     }
-
-    @Override
-    public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(authCheckInterceptor)
-                .addPathPatterns("*");
-    }
 }

@@ -6,7 +6,8 @@ import lombok.Getter;
 public enum MemberErrorStatus {
 
     NOT_FOUND_MEMBER(400, "존재하지 않는 회원입니다."),
-    NOT_FOUND_WORKSPACE(400, "존재하지 않는 워크스페이스입니다.");
+    NOT_FOUND_WORKSPACE(400, "존재하지 않는 워크스페이스입니다."),
+    NOT_MEMBER_LOGIN(401, "로그인해야 합니다.");
 
     private final int status;
     private final String message;

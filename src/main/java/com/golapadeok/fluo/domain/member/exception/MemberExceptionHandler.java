@@ -13,7 +13,7 @@ public class MemberExceptionHandler {
     @ExceptionHandler
     public ResponseEntity<ErrorResponse> memberExceptionHandler(MemberException e) {
         return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST)
+                .status(e.getMemberErrorStatus().getStatus())
                 .body(new ErrorResponse(e.getMemberErrorStatus().getMessage()));
     }
 

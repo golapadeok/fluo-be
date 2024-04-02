@@ -40,7 +40,7 @@ public class AuthCheckInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         log.debug("---- [ {} API interceptor ] ----", request.getRequestURL());
         log.info("preHandle_accessToken : {}", request.getHeader(HttpHeaders.AUTHORIZATION));
-        
+
         AuthCheck authCheck = annotationExtracted(handler);
         if(authCheck != null) {
             // 어노테이션에 설정된 권한 가져오기

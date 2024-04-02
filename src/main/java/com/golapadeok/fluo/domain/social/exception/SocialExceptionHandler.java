@@ -14,7 +14,7 @@ public class SocialExceptionHandler {
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     private ResponseEntity<ErrorResponse> socialExceptionHandler(SocialErrorException e) {
-        return ResponseEntity.badRequest().body(
+        return ResponseEntity.status(e.getSocialErrorStatus().getStatus()).body(
                 new ErrorResponse(e.getSocialErrorStatus().getMessage())
         );
     }
