@@ -5,6 +5,7 @@ import com.golapadeok.fluo.common.annotation.interception.exception.AuthExceptio
 import com.golapadeok.fluo.common.annotation.interception.exception.AuthStatus;
 import com.golapadeok.fluo.common.security.domain.PrincipalDetails;
 import com.golapadeok.fluo.domain.member.domain.Member;
+import com.golapadeok.fluo.domain.member.repository.MemberRepository;
 import com.golapadeok.fluo.domain.role.domain.Credential;
 import com.golapadeok.fluo.domain.role.domain.MemberRole;
 import com.golapadeok.fluo.domain.role.repository.MemberRoleQueryRepository;
@@ -17,6 +18,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -30,6 +32,7 @@ import java.util.Set;
 @Component
 public class AuthCheckInterceptor implements HandlerInterceptor {
 
+    private final MemberRepository memberRepository;
     private final WorkspaceRepository workspaceRepository;
     private final MemberRoleQueryRepository memberRoleQueryRepository;
 
@@ -44,6 +47,7 @@ public class AuthCheckInterceptor implements HandlerInterceptor {
 
             // SecurityContextHolder를 통해 API에 접근하는 회원의 정보를 가져온다.
             Member member = getAuthentication();
+            log.info("preHandle_member : {}", member);
 
             // 쿠키에 저장된 워크스페이스 아이디를 가져온다.
             String workspaceId = getWorkspaceId(request);
@@ -83,9 +87,14 @@ public class AuthCheckInterceptor implements HandlerInterceptor {
 
     private Member getAuthentication() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if(authentication != null) {
-            PrincipalDetails principal = (PrincipalDetails) authentication.getPrincipal();
-            return principal.getMember();
+//        if(authentication != null) {
+//            PrincipalDetails principal = (PrincipalDetails) authentication.getPrincipal();
+//            return principal.getMember();
+//        }
+        if (authentication != null && authentication.getPrincipal() instanceof UserDetails) {
+            String email = authentication.getName();
+            log.info("getAuthentication email : {}", email);
+            return this.memberRepository.findByEmail(email).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
         }
 
         return null;
