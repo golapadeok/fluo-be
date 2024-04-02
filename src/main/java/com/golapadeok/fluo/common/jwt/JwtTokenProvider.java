@@ -20,9 +20,9 @@ public class JwtTokenProvider {
     @Value("${jwt.secretKey}")
     private String secretKey;
 
-    private static final long accessTokenExpiredTime = 1000L * 60L * 60L * 24L; // 1일
+//    private static final long accessTokenExpiredTime = 1000L * 60L * 60L * 24L; // 1일
     private static final long refreshTokenExpiredTime = 1000L * 60L * 60L * 24L * 14L; // 2주
-//    private final long accessTokenExpiredTime = 1000L;
+    private final long accessTokenExpiredTime = 1000L * 60L;
 //    private final long refreshTokenExpiredTime = 1000L; // 1일
     private final String authorization = "Authorization";
     private final String tokenPrefix = "Bearer ";
@@ -105,7 +105,7 @@ public class JwtTokenProvider {
     
     // header로 새로 발급된 엑세스 토큰 전송
     public void sendAccessToken(HttpServletResponse response, String updateAccessToken) {
-        response.setStatus(HttpServletResponse.SC_OK);
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         response.setHeader(HttpHeaders.AUTHORIZATION, this.tokenPrefix+updateAccessToken);
     }
 
