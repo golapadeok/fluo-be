@@ -6,6 +6,7 @@ import com.golapadeok.fluo.common.security.domain.PrincipalDetails;
 import com.golapadeok.fluo.common.util.CookieUtils;
 import com.golapadeok.fluo.domain.member.domain.Member;
 import com.golapadeok.fluo.domain.social.domain.SocialType;
+import com.golapadeok.fluo.domain.social.dto.request.AuthorizationCodeRequest;
 import com.golapadeok.fluo.domain.social.dto.response.SocialLoginResponse;
 import com.golapadeok.fluo.domain.social.service.SocialService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -40,41 +41,41 @@ public class SocialController {
 
     @Operation(summary = "소셜 로그인 리다이렉트", description = "소셜 로그인 타입 입력시, 해당 하는 로그인 페이지로 리다이렉트")
     @GetMapping("/auth/{socialLoginType}")
-    public ResponseEntity<Void> socialLoginRedirect(@Parameter(description = "소셜 타입", required = true)
+    public ResponseEntity<String> socialLoginRedirect(@Parameter(description = "소셜 타입", required = true)
                                                     @PathVariable("socialLoginType") String socialLoginType,
                                                     HttpServletResponse response) throws IOException {
         log.info("socialLoginRedirect({}) invoked.", socialLoginType);
-        SocialType socialType = SocialType.valueOf(socialLoginType.toUpperCase());
+        var socialType = SocialType.valueOf(socialLoginType.toUpperCase());
         String redirectUrl = this.oAuthService.getRedirectUrl(socialType);
         log.info("social-redirectUrl : {}", redirectUrl);
-        response.sendRedirect(redirectUrl);
+//        response.sendRedirect(redirectUrl);
 
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(redirectUrl);
+//        return ResponseEntity.ok().build();
     }
 
     @Operation(summary = "소셜 로그인 진행", description = "소셜 로그인 진행, 만약 회원가입이 안되어 있다면 회원가입을 함.")
-    @GetMapping("/auth/{socialLoginType}/callback")
+    @PostMapping("/auth/{socialLoginType}/callback")
     public ResponseEntity<Map<String, String>> socialLogin(@Parameter(description = "소셜 타입", required = true)
                                             @PathVariable("socialLoginType") String socialLoginType,
                                             @Parameter(description = "로그인 진행 후 일회성 인증 코드", example = "sampleX", required = true)
-                                            @RequestParam("code") String code,
+                                            @RequestBody AuthorizationCodeRequest request,
                                             HttpServletResponse response) throws JsonProcessingException {
-        log.info("socialLogin({}, {}) invoked.", socialLoginType, code);
+        log.info("socialLogin({}, {}) invoked.", socialLoginType, request.getCode());
 
         SocialType socialType  = SocialType.valueOf(socialLoginType.toUpperCase());
 
-        SocialLoginResponse socialLoginResponse = this.oAuthService.socialLogin(socialType, code);
+        SocialLoginResponse socialLoginResponse = this.oAuthService.socialLogin(socialType, request.getCode());
 
         // 쿠키 세팅
         ResponseCookie responseCookie =
                 CookieUtils.createCookie("refreshToken", socialLoginResponse.getRefreshToken(), response);
 
         Map<String, String> params = new HashMap<>();
-        params.put("memberId", socialLoginResponse.getMemberId());
-
+        params.put(HttpHeaders.AUTHORIZATION, socialLoginResponse.getAccessToken());
+        // 리다이렉트
         return ResponseEntity.ok()
                 .header(HttpHeaders.SET_COOKIE, responseCookie.toString())
-                .header(HttpHeaders.AUTHORIZATION, "Bearer "+socialLoginResponse.getAccessToken())
                 .body(params);
     }
 

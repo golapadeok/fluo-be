@@ -34,11 +34,11 @@ public class SocialOAuthRedirectComposite{
                         SocialOAuthRedirect::getSocialType,
                         Function.identity()
                 ));
-        log.info("SocialOAuthRedirectComposite_redirect : {}", redirect);
+        //log.info("SocialOAuthRedirectComposite_redirect : {}", redirect);
     }
 
     public String getOAuthRedirectURL(SocialType socialType) {
-        log.info("socialType : {}, getOAuthRedirectURL_redirectUrl : {}", redirect.get(socialType).getSocialType(), redirect.get(socialType).getOAuthRedirectURL());
+        //log.info("socialType : {}, getOAuthRedirectURL_redirectUrl : {}", redirect.get(socialType).getSocialType(), redirect.get(socialType).getOAuthRedirectURL());
         return Optional.ofNullable(redirect.get(socialType))
                 .orElseThrow(() -> new SocialErrorException(SocialErrorStatus.NOT_FOUNT_SOCIAL_LOGIN))
                 .getOAuthRedirectURL();
