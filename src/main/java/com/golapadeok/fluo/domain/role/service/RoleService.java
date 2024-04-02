@@ -88,6 +88,7 @@ public class RoleService {
 
     @Transactional
     public UpdateRoleResponse updateWorkspaceRole(Integer workspaceId, Integer roleId, RoleUpdateRequest request) {
+        log.info("updateWorkspaceRole({}, {}, {}) invoked.", workspaceId, roleId, request);
         Role role = this.roleRepository.findById(Long.valueOf(roleId))
                 .orElseThrow(() -> new RoleException(RoleErrorStatus.NOT_FOUND_ROLE));
 

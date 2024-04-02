@@ -54,14 +54,17 @@ public class AuthCheckInterceptor implements HandlerInterceptor {
 
             // 쿠키에 저장된 워크스페이스 아이디를 가져온다.
             String workspaceId = getWorkspaceId(request);
+            log.info("workspaceId : {}", workspaceId);
 
             // 워크스페이스 아이디가 존재하는지 검증
             Workspace workspace = this.workspaceRepository.findById(Long.valueOf(workspaceId))
                     .orElseThrow(() -> new AuthException(AuthStatus.NOT_FOUND_WORKSPACE));
+            log.info("workspace : {}", workspace);
 
             // 워크스페이스 아이디와 멤버 아이디로 멤버의 역할을 조회
             MemberRole memberRole = this.memberRoleQueryRepository.findWorkspaceWithMemberRoleList(member.getId(), workspace.getId())
                     .orElseThrow(() -> new AuthException(AuthStatus.NOT_FOUND_ROLE));
+            log.info("memberRole : {}", memberRole);
 
             Set<String> roleSet = new HashSet<>(memberRole.getRole().getRoleList());
 
