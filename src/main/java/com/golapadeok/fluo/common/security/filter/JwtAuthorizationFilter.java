@@ -62,19 +62,26 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         /**
          * 프론트에서 엑세스 토큰을 넘기고 있는지.
          * response에 엑세스 토큰이 제대로 담기는지.
+         *
+         * 자동로그인 -> 엑세스 토큰 x -> 쿠키에 저장된 리프레시 토큰 검증 -> 엑세스 토큰 재발급 -> 로그인 유지
          */
         // 헤더에 Authorization이라는 이름이 있는지를 확인
         if(header == null || !header.startsWith(this.tokenPrefix)) {
             log.info("헤더 없다.");
             String refreshToken = this.provider.extractRefreshTokenFromCookies(request)
                     .filter(this.provider::isTokenValidate)
-                    .orElseThrow(() -> new JwtErrorException(JwtErrorStatus.EXPIRED_REFRESH));
+                    .orElse(null);
+//                    .orElseThrow(() -> new JwtErrorException(JwtErrorStatus.EXPIRED_REFRESH));
 
-            this.memberRepository.findByRefreshToken(refreshToken)
-                    .ifPresent(member -> {
-                        this.provider.sendAccessToken(response, this.provider.createAccessToken(member.getEmail()));
-                        saveAuthentication(member);
-                    });
+            if(refreshToken != null) {
+                this.memberRepository.findByRefreshToken(refreshToken)
+                        .ifPresent(member -> {
+                            this.provider.sendAccessToken(response, this.provider.createAccessToken(member.getEmail()));
+                            saveAuthentication(member);
+                        });
+            }else{
+                throw new JwtErrorException(JwtErrorStatus.EXPIRED_REFRESH);
+            }
             chain.doFilter(request, response);
             return;
         }else {
