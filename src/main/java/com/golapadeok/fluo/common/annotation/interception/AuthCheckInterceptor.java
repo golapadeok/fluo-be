@@ -41,7 +41,8 @@ public class AuthCheckInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         log.debug("---- [ {} API interceptor ] ----", request.getRequestURL());
-        log.info("preHandle_accessToken : {}", request.getHeader(HttpHeaders.AUTHORIZATION));
+        log.info("preHandle_request_accessToken : {}", request.getHeader(HttpHeaders.AUTHORIZATION));
+        log.info("preHandle_response_accessToken : {}", response.getHeader(HttpHeaders.AUTHORIZATION));
 
         AuthCheck authCheck = annotationExtracted(handler);
         if(authCheck != null) {

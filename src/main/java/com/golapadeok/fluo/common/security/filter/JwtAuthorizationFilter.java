@@ -74,8 +74,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
                     .ifPresent(member -> {
                         this.provider.sendAccessToken(response, this.provider.createAccessToken(member.getEmail()));
                     });
-            chain.doFilter(request, response);
-            return;
+//            chain.doFilter(request, response);
         }else {
             log.info("헤더 있다.");
             // access token이 만료되었을 때 재발급해주는 로직
