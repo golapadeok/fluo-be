@@ -87,11 +87,12 @@ public class AuthCheckInterceptor implements HandlerInterceptor {
 
     private Member getAuthentication() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        log.info("authentication : {}", authentication.getName());
 //        if(authentication != null) {
 //            PrincipalDetails principal = (PrincipalDetails) authentication.getPrincipal();
 //            return principal.getMember();
 //        }
-        if (authentication != null && authentication.getPrincipal() instanceof UserDetails) {
+        if (authentication != null) {
             String email = authentication.getName();
             log.info("getAuthentication email : {}", email);
             return this.memberRepository.findByEmail(email).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
