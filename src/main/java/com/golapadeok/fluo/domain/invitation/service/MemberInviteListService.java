@@ -30,6 +30,10 @@ public class MemberInviteListService {
     public MemberInvitationListResponse getInvitationList(PrincipalDetails principalDetails, CursorPageRequest cursorPageRequest) {
         log.info("getInvitationList({}, {}) invoked.", principalDetails.getMember(), cursorPageRequest.getCursorId());
 
+        if (principalDetails == null || principalDetails.getMember() == null) {
+            throw new IllegalArgumentException("로그인해야 합니다.");
+        }
+
         Member member = principalDetails.getMember();
 
         // 페이징 처리를 한 초대 목록

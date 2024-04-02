@@ -12,8 +12,8 @@ import java.util.List;
 @Getter
 public class TaskDetailResponse extends TaskResponse {
     private final StateDto state;
-    private final List<MemberDto> managers;
     private final TagDto tag;
+    private final List<MemberDto> managers;
 
     @Builder
     public TaskDetailResponse(Task task) {

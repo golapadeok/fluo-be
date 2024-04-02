@@ -12,6 +12,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.apache.catalina.Manager;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,6 +28,9 @@ public class Task extends BaseTimeEntity {
     private String title;
     private String description;
     private String creator;
+
+    @Enumerated(EnumType.STRING)
+    private LabelColor labelColor;
 
     @Embedded
     private TaskConfiguration configuration;
@@ -53,18 +57,19 @@ public class Task extends BaseTimeEntity {
     @JoinColumn(name = "TAG_ID")
     private Tag tag;
 
-    public Task(Long id, String title, String description, String creator, TaskConfiguration configuration, ScheduleRange scheduleRange) {
+    public Task(Long id, String title, String description, String creator, LabelColor labelColor, TaskConfiguration configuration, ScheduleRange scheduleRange) {
         this.id = id;
         this.title = title;
         this.creator = creator;
         this.description = description;
+        this.labelColor = labelColor;
         this.configuration = configuration;
         this.scheduleRange = scheduleRange;
     }
 
     @Builder(toBuilder = true)
-    public Task(String title, String description, String creator, TaskConfiguration configuration, ScheduleRange scheduleRange) {
-        this(null, title, description, creator, configuration, scheduleRange);
+    public Task(String title, String description, String creator, LabelColor labelColor, TaskConfiguration configuration, ScheduleRange scheduleRange) {
+        this(null, title, description, creator, labelColor, configuration, scheduleRange);
     }
 
     public void changeState(State state) {
@@ -83,6 +88,7 @@ public class Task extends BaseTimeEntity {
         this.title = task.getTitle();
         this.creator = task.getCreator();
         this.description = task.getDescription();
+        this.labelColor = task.getLabelColor();
         this.configuration = task.getConfiguration();
         this.scheduleRange = task.getScheduleRange();
     }

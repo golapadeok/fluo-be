@@ -116,6 +116,19 @@ spring:
     open-in-view: false
 server:
   port: 8080
+oauth2:
+  google:
+    client_id: ${OAUTH_GOOGLE_CLIENT_ID}
+    client_secret: ${OAUTH_GOOGLE_CLIENT_SECRET_ID}
+    redirect_uri: ${OAUTH_GOOGLE_REDIRECT_URI}
+    scope: profile email
+  naver:
+    client_id: ${OAUTH_NAVER_CLIENT_ID}
+    client_secret: ${OAUTH_NAVER_CLIENT_SECRET_ID}
+    redirect_uri: ${OAUTH_NAVER_REDIRECT_URI}
+    scope: name email profile_image
+jwt:
+  secretKey: ${SPRING_JWT_SECRET_KEY}
 ---
 spring:
   config:
@@ -136,3 +149,16 @@ spring:
     open-in-view: false
 server:
   port: 8081
+oauth2:
+  google:
+    client_id: ${OAUTH_GOOGLE_CLIENT_ID}
+    client_secret: ${OAUTH_GOOGLE_CLIENT_SECRET_ID}
+    redirect_uri: ${OAUTH_GOOGLE_REDIRECT_URI}
+    scope: profile email
+  naver:
+    client_id: ${OAUTH_NAVER_CLIENT_ID}
+    client_secret: ${OAUTH_NAVER_CLIENT_SECRET_ID}
+    redirect_uri: ${OAUTH_NAVER_REDIRECT_URI}
+    scope: name email profile_image
+jwt:
+  secretKey: ${SPRING_JWT_SECRET_KEY}
