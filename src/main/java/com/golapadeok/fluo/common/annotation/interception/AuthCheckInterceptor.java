@@ -49,7 +49,7 @@ public class AuthCheckInterceptor implements HandlerInterceptor {
             Credential[] credentials = authCheck.credential();
 
             // SecurityContextHolder를 통해 API에 접근하는 회원의 정보를 가져온다.
-            Member member = getAuthentication(request);
+            Member member = getAuthentication(request, response);
             log.info("preHandle_member : {}", member);
 
             // 쿠키에 저장된 워크스페이스 아이디를 가져온다.
@@ -91,16 +91,20 @@ public class AuthCheckInterceptor implements HandlerInterceptor {
                 .orElse(null);
     }
 
-    private Member getAuthentication(HttpServletRequest request) {
-        String header = request.getHeader(HttpHeaders.AUTHORIZATION);
-        if(header != null || !header.startsWith("Bearer ")){
+    private Member getAuthentication(HttpServletRequest request, HttpServletResponse response) {
+        String requestHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
+//        String responseHeader = response.getHeader(HttpHeaders.AUTHORIZATION);
+        if(requestHeader != null || !requestHeader.startsWith("Bearer ")){
             String accessToken = provider.extractAccessToken(request).get();
             String email = provider.extractEmail(accessToken).get();
             log.info("getAuthentication email : {}", email);
             return this.memberRepository.findByEmail(email).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
+        }else{
+            String accessToken = provider.extractAccessToken(response).get();
+            String email = provider.extractEmail(accessToken).get();
+            log.info("getAuthentication email : {}", email);
+            return this.memberRepository.findByEmail(email).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
         }
-
-        return null;
     }
 
     private AuthCheck annotationExtracted(Object handler) {

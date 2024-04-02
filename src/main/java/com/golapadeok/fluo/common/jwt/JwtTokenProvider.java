@@ -88,6 +88,10 @@ public class JwtTokenProvider {
         return Optional.ofNullable(request.getHeader(this.authorization).replace(this.tokenPrefix, ""));
     }
 
+    public Optional<String> extractAccessToken(HttpServletResponse response) {
+        return Optional.ofNullable(response.getHeader(this.authorization).replace(this.tokenPrefix, ""));
+    }
+
 //    // 리프레시 토큰 헤더에서 추출
 //    public Optional<String> extractRefreshToken(HttpServletRequest request) {
 //        return Optional.ofNullable(request.getHeader(this.refreshToken));
