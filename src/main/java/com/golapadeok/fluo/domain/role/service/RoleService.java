@@ -113,6 +113,7 @@ public class RoleService {
         WorkspaceRoleListResponse workspaceRoleListResponse = WorkspaceRoleListResponse.builder()
                 .roleId(String.valueOf(role.getId()))
                 .name(role.getName())
+                .description(role.getDescription())
                 .credentials(credentialResponses)
                 .build();
 

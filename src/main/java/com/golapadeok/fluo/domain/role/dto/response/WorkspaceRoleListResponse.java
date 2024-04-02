@@ -15,6 +15,7 @@ public class WorkspaceRoleListResponse {
 
     private String roleId;
     private String name;
+    private String description;
     private List<CredentialResponse> credentials;
 
 }

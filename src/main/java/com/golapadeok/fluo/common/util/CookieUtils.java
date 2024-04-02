@@ -1,5 +1,6 @@
 package com.golapadeok.fluo.common.util;
 
+import com.golapadeok.fluo.common.jwt.JwtTokenProvider;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -12,6 +13,7 @@ public class CookieUtils {
         return ResponseCookie.from(cookieName, (String) cookieValue)
                 .httpOnly(true)
                 .secure(true)
+                .sameSite("None")
                 .path("/")
                 .build();
     }
