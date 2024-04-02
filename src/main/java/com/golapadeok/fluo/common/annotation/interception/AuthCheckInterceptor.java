@@ -3,7 +3,6 @@ package com.golapadeok.fluo.common.annotation.interception;
 import com.golapadeok.fluo.common.annotation.AuthCheck;
 import com.golapadeok.fluo.common.annotation.interception.exception.AuthException;
 import com.golapadeok.fluo.common.annotation.interception.exception.AuthStatus;
-import com.golapadeok.fluo.common.security.domain.PrincipalDetails;
 import com.golapadeok.fluo.domain.member.domain.Member;
 import com.golapadeok.fluo.domain.member.repository.MemberRepository;
 import com.golapadeok.fluo.domain.role.domain.Credential;
@@ -14,9 +13,9 @@ import com.golapadeok.fluo.domain.workspace.repository.WorkspaceRepository;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpHeaders;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -40,7 +39,8 @@ public class AuthCheckInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         log.debug("---- [ {} API interceptor ] ----", request.getRequestURL());
-
+        log.info("preHandle_accessToken : {}", request.getHeader(HttpHeaders.AUTHORIZATION));
+        
         AuthCheck authCheck = annotationExtracted(handler);
         if(authCheck != null) {
             // 어노테이션에 설정된 권한 가져오기
@@ -89,8 +89,12 @@ public class AuthCheckInterceptor implements HandlerInterceptor {
     private Member getAuthentication() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         log.info("authentication : {}", authentication.getName());
-        PrincipalDetails principal = (PrincipalDetails) authentication.getPrincipal();
-        log.info("getAuthentication_member : {}", principal.getMember());
+        Object principal = authentication.getPrincipal();
+        if(principal instanceof  UserDetails) {
+            UserDetails principal1 = (UserDetails) principal;
+            String username = principal1.getUsername();
+            log.info("getAuthentication_username : {}", username);
+        }
 //        if(authentication != null) {
 //            PrincipalDetails principal = (PrincipalDetails) authentication.getPrincipal();
 //            return principal.getMember();
