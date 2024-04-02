@@ -32,6 +32,7 @@ public class SocialService {
         return this.socialOAuthRedirectComposite.getOAuthRedirectURL(socialType);
     }
 
+    @Transactional
     public SocialLoginResponse socialLogin(SocialType socialType, String code) throws JsonProcessingException {
         Member socialMember = this.socialOAuthClientComposite.requestAccessTokenAndUserInfo(socialType, code);
 
@@ -55,7 +56,6 @@ public class SocialService {
                 .build();
     }
 
-    @Transactional
     private Member socialSave(Member socialMember, String refreshToken) {
         // refresh token 생성
 

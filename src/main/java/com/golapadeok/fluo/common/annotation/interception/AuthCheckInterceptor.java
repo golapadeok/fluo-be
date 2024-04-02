@@ -14,6 +14,7 @@ import com.golapadeok.fluo.domain.workspace.repository.WorkspaceRepository;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
@@ -88,6 +89,8 @@ public class AuthCheckInterceptor implements HandlerInterceptor {
     private Member getAuthentication() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         log.info("authentication : {}", authentication.getName());
+        PrincipalDetails principal = (PrincipalDetails) authentication.getPrincipal();
+        log.info("getAuthentication_member : {}", principal.getMember());
 //        if(authentication != null) {
 //            PrincipalDetails principal = (PrincipalDetails) authentication.getPrincipal();
 //            return principal.getMember();
