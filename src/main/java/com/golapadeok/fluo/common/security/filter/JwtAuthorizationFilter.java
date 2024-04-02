@@ -45,6 +45,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         // 헤더에 Authorization이라는 이름이 있는지를 확인
         String header = request.getHeader(this.authorization);
         if(header == null || !header.startsWith(this.tokenPrefix)) {
+            log.info("access token 이 없음");
             chain.doFilter(request, response);
             return;
         }
@@ -64,6 +65,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
         // access token이 만료되었을 때 재발급해주는 로직
         if(accessToken == null) {
+            log.info("access token 이 만료");
             String refreshToken = this.provider.extractRefreshTokenFromCookies(request)
                     .filter(this.provider::isTokenValidate)
                     .orElseThrow(() -> new JwtErrorException(JwtErrorStatus.EXPIRED_REFRESH));
@@ -72,7 +74,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
                     .ifPresent(member -> {
                         this.provider.sendAccessToken(response, this.provider.createAccessToken(member.getEmail()));
                     });
-//            return;
+            return;
         }
 
         // access token이 만료되지 않았을 때 유효성 검사 후 인증 로직
