@@ -26,7 +26,7 @@ import java.util.List;
 @Service
 public class MemberWorkspaceListService {
 
-    private Long pageNum;
+    private Long cursorId;
     private final MemberRepository memberRepository;
     private final WorkspaceMemberRepository workspaceMemberRepository;
     @Transactional(readOnly = true)
@@ -49,7 +49,7 @@ public class MemberWorkspaceListService {
        
         return MemberWorkspaceListResponse.builder()
                 .total(String.valueOf(workspaceMembers.getTotalElements()))
-                .nextPageNum(String.valueOf(this.pageNum))
+                .cursorId(String.valueOf(this.cursorId))
                 .items(items)
                 .build();
     }
@@ -69,10 +69,10 @@ public class MemberWorkspaceListService {
 
     private void setLastWorkspaceId(Page<WorkspaceMember> page) {
         if(!page.hasNext()) {
-            this.pageNum = null;
+            this.cursorId = null;
             return;
         }
-        this.pageNum = page.getContent().get(page.toList().size()-1).getId();
+        this.cursorId = page.getContent().get(page.toList().size()-1).getId();
     }
 
     // 워크스페이스의 정보를 조회
