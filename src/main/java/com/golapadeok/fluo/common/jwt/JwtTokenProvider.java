@@ -105,7 +105,7 @@ public class JwtTokenProvider {
     
     // header로 새로 발급된 엑세스 토큰 전송
     public void sendAccessToken(HttpServletResponse response, String updateAccessToken) {
-        response.setStatus(HttpServletResponse.SC_OK);
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         response.setHeader(HttpHeaders.AUTHORIZATION, this.tokenPrefix+updateAccessToken);
     }
 
