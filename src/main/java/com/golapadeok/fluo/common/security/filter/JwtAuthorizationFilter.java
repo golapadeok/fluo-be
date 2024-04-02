@@ -58,21 +58,21 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
          * -> 새로 생성된 엑세스 토큰을 가지고 인증을 관리
          */
 
-        String refreshToken = this.provider.extractRefreshTokenFromCookies(request)
-                .filter(this.provider::isTokenValidate)
-                .orElseThrow(() -> new JwtErrorException(JwtErrorStatus.EXPIRED_REFRESH));
-
         String accessToken = this.provider.extractAccessToken(request)
                 .filter(this.provider::isTokenValidate)
                 .orElse(null);
 
         // access token이 만료되었을 때 재발급해주는 로직
         if(accessToken == null) {
+            String refreshToken = this.provider.extractRefreshTokenFromCookies(request)
+                    .filter(this.provider::isTokenValidate)
+                    .orElseThrow(() -> new JwtErrorException(JwtErrorStatus.EXPIRED_REFRESH));
+
             this.memberRepository.findByRefreshToken(refreshToken)
                     .ifPresent(member -> {
                         this.provider.sendAccessToken(response, this.provider.createAccessToken(member.getEmail()));
                     });
-            return;
+//            return;
         }
 
         // access token이 만료되지 않았을 때 유효성 검사 후 인증 로직
