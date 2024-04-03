@@ -61,4 +61,17 @@ public class TaskUpdateRequest {
     private LocalDate endDate;
 
 
+    public TaskUpdateRequest(Integer stateId, String title, String description, Integer creator, Integer tag, List<Integer> managers, Boolean isPrivate, Integer priority, String labelColor, LocalDate startDate, LocalDate endDate) {
+        this.stateId = stateId;
+        this.title = title;
+        this.description = description;
+        this.creator = creator;
+        this.tag = tag;
+        this.managers = managers;
+        this.isPrivate = isPrivate;
+        this.priority = priority;
+        this.labelColor = labelColor == null ? LabelColor.RED : LabelColor.valueOf(labelColor.toUpperCase());
+        this.startDate = startDate;
+        this.endDate = endDate;
+    }
 }

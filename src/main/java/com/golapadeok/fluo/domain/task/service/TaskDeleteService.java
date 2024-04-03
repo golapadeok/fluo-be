@@ -24,13 +24,13 @@ public class TaskDeleteService {
                 .orElseThrow(NotFoundTaskException::new);
 
         //업무와 관련된 데이터 삭제
-        List<ManagerTask> managerTasks = managerTaskRepository.findAllByTaskId(taskId);
-        managerTasks.forEach(manager -> {
-            task.getManagers().remove(manager);
-            manager.changeTask(null);
-            manager.changeMember(null);
-            managerTaskRepository.delete(manager);
-        });
+//        List<ManagerTask> managerTasks = managerTaskRepository.findAllByTaskId(taskId);
+//        managerTasks.forEach(manager -> {
+//            task.getManagers().remove(manager);
+//            manager.changeTask(null);
+//            manager.changeMember(null);
+//            managerTaskRepository.delete(manager);
+//        });
 
         task.getWorkspace().getTasks().remove(task);
         task.changeWorkspace(null);
