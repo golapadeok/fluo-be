@@ -84,6 +84,7 @@ public class AcceptInviteService {
         String credential = String.join(",", DEFAULT_CREDENTIAL);
         Role generateRole = Role.builder()
                 .name("일반")
+                .description("일반 역할입니다.")
                 .roles(credential)
                 .workspace(workspace)
                 .isDefault(true)
