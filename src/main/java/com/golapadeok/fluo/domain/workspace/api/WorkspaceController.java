@@ -134,13 +134,12 @@ public class WorkspaceController {
         return ResponseEntity.ok(workspaceDeleteService.deleteMember(workspaceId, request.getMemberId()));
     }
 
-    @PostMapping("members/roles")
+    @PostMapping("/members/roles")
     @Operation(summary = "워크스페이스 멤버 역할 부여 API", description = "워크스페이스에서 멤버에게 역할을 부여합니다.")
     public ResponseEntity<WorkspaceGrantRoleResponse> grantWorkspaceRole(
-            @AuthenticationPrincipal PrincipalDetails principalDetails,
             @Valid @RequestBody WorkspaceGrantRoleRequest request
     ) {
-        return ResponseEntity.ok(this.workspaceGrantRoleService.grantRole(principalDetails, request));
+        return ResponseEntity.ok(this.workspaceGrantRoleService.grantRole(request));
     }
 
 
