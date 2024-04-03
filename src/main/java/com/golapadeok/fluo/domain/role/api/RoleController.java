@@ -60,7 +60,7 @@ public class RoleController {
                 .body(this.roleService.getWorkspaceRoleList(workspaceId));
     }
 
-//    @AuthCheck(credential = Credential.DELETE_ROLE)
+    @AuthCheck(credential = Credential.DELETE_ROLE)
     @Operation(summary = "역할 삭제", description = "역할ID를 통해 역할을 삭제")
     @DeleteMapping("/role/{roleId}")
     public ResponseEntity<RoleDeleteResponse> deleteWorkspaceRole(@PathVariable("roleId") Integer roleId) {
