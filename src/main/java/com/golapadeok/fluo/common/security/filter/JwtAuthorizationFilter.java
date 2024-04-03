@@ -41,9 +41,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
             throws ServletException, IOException {
 
-        log.info("access Token : {}", request.getHeader(this.authorization));
-        log.info("refresh Token : {}",provider.extractRefreshTokenFromCookies(request));
-
+        log.info("access token : {}", request.getHeader(HttpHeaders.AUTHORIZATION));
 
         String header = request.getHeader(this.authorization);
         if(header == null || !header.startsWith(this.tokenPrefix)) {
@@ -51,6 +49,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
             chain.doFilter(request, response);
             return;
         }
+
         log.info("여기 까지 옴1");
         /**
          * 쿠키에 저장된 refresh token을 꺼내와 만료되었는지를 확인
@@ -68,23 +67,26 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
          * 자동로그인 -> 엑세스 토큰 x -> 쿠키에 저장된 리프레시 토큰 검증 -> 엑세스 토큰 재발급 -> 로그인 유지
          */
         // 헤더에 Authorization이라는 이름이 있는지를 확인
+
         String accessToken = this.provider.extractAccessToken(request)
                 .filter(this.provider::isTokenValidate)
                 .orElse(null);
+        log.info("access Token : {}", accessToken);
 
         // access token이 만료되었을 때 재발급해주는 로직
         if(accessToken == null) {
             String refreshToken = this.provider.extractRefreshTokenFromCookies(request)
                     .filter(this.provider::isTokenValidate)
                     .orElse(null);
-//                 .orElseThrow(() -> new JwtErrorException(JwtErrorStatus.EXPIRED_REFRESH));
+
             log.info("refreshToken : {}", refreshToken);
             log.info("여기 까지 옴2");
 
             if(refreshToken == null) {
                 log.info("refresh token 만료됨.");
-                Cookie accessCookie = new Cookie("accessToken", "");
-                Cookie refreshCookie = new Cookie("refreshToken", "");
+                Cookie accessCookie = new Cookie("accessToken", null);
+                Cookie refreshCookie = new Cookie("refreshToken", null);
+
                 accessCookie.setMaxAge(0);
                 refreshCookie.setMaxAge(0);
                 response.addCookie(accessCookie);
@@ -104,7 +106,8 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
         // access token이 만료되지 않았을 때 유효성 검사 후 인증 로직
         try {
-            this.provider.extractAccessTokenFromCookies(request)
+            log.info("access token 인증 로직");
+            this.provider.extractAccessToken(request)
                     .filter(this.provider::isTokenValidate)
                     .flatMap(this.provider::extractEmail)
                     .flatMap(this.memberRepository::findByEmail)

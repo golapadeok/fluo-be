@@ -52,7 +52,10 @@ public class AuthCheckInterceptor implements HandlerInterceptor {
 
         AuthCheck authCheck = annotationExtracted(handler);
         if(authCheck != null) {
-            if(provider.extractAccessTokenFromCookies(request).isEmpty()) {
+//            if(provider.extractAccessTokenFromCookies(request).isEmpty()) {
+//                return false;
+//            }
+            if(request.getHeader(HttpHeaders.AUTHORIZATION) == null) {
                 return false;
             }
 

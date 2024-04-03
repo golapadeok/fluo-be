@@ -26,7 +26,7 @@ public class JwtTokenProvider {
 //    private final long accessTokenExpiredTime = 1000L * 60L * 60L * 24L; // 1일
 //    private final long refreshTokenExpiredTime = 1000L * 60L * 60L * 24L * 14L; // 2주
     private final long accessTokenExpiredTime = 1000L * 30L;
-    private final long refreshTokenExpiredTime = 1000L * 60L; // 1일
+    private final long refreshTokenExpiredTime = 1000L * 60L;
     private final String authorization = "Authorization";
     private final String tokenPrefix = "Bearer ";
     private final String refreshToken = "RefreshToken";
