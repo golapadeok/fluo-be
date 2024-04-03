@@ -6,6 +6,7 @@ import com.golapadeok.fluo.domain.task.dto.request.TaskCreateRequest;
 import com.golapadeok.fluo.domain.task.dto.request.TaskUpdateRequest;
 import com.golapadeok.fluo.domain.task.dto.response.TaskDeleteResponse;
 import com.golapadeok.fluo.domain.task.dto.response.TaskDetailResponse;
+import com.golapadeok.fluo.domain.task.dto.response.TaskSearchResponse;
 import com.golapadeok.fluo.domain.task.service.TaskCreateService;
 import com.golapadeok.fluo.domain.task.service.TaskDeleteService;
 import com.golapadeok.fluo.domain.task.service.TaskSearchService;
@@ -34,7 +35,7 @@ public class TaskController {
 
     @GetMapping("/{taskId}")
     @Operation(summary = "업무 단일 조회 API", description = "해당 업무를 조회합니다.")
-    public ResponseEntity<TaskDetailResponse> getTask(
+    public ResponseEntity<TaskSearchResponse> getTask(
             @PathVariable("taskId") @Parameter(description = "조회할 업무 아이디") Integer taskId
     ) {
         return ResponseEntity.ok(taskSearchService.search(taskId));
