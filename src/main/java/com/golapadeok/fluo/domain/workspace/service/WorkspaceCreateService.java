@@ -61,17 +61,16 @@ public class WorkspaceCreateService {
         Workspace workspace = new Workspace(title, description, DEFAULT_IMAGE, principal.getMember().getName());
         workspace.changeInvitationCode(invitationCode);
         workspaceRepository.save(workspace);
-
         //State
         log.debug("State Save");
-        State state = new State("default", true);
-        state.changeWorkspace(workspace);
-        stateRepository.save(state);
+
+        List<State> states = List.of(new State("To Do", true), new State("In Progress", true), new State("Done", true));
+        states.forEach(state -> state.changeWorkspace(workspace));
+        stateRepository.saveAll(states);
 
         log.debug("Workspace Member Save");
         WorkspaceMember workspaceMember = new WorkspaceMember(principal.getMember(), workspace, "");
         workspaceMemberRepository.save(workspaceMember);
-
 
         log.debug("Role Save");
         String credential = String.join(",", DEFAULT_CREDENTIAL);
