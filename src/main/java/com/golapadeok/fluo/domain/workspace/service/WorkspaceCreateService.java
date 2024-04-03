@@ -74,7 +74,8 @@ public class WorkspaceCreateService {
 
         log.debug("Role Save");
         String credential = String.join(",", DEFAULT_CREDENTIAL);
-        Role defaultRole = new Role("관리자", "관리자 역할입니다.", credential, workspace);
+
+        Role defaultRole = new Role("관리자", "관리자 역할입니다.", credential, workspace, true);
         roleRepository.save(defaultRole);
 
         log.debug("Member Role Save");

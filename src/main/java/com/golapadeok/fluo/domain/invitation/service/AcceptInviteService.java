@@ -6,12 +6,20 @@ import com.golapadeok.fluo.domain.invitation.dto.response.InvitationAnswerRespon
 import com.golapadeok.fluo.domain.invitation.exception.InvitationErrorStatus;
 import com.golapadeok.fluo.domain.invitation.exception.InvitationException;
 import com.golapadeok.fluo.domain.invitation.repository.InvitationRepository;
+import com.golapadeok.fluo.domain.member.domain.Member;
 import com.golapadeok.fluo.domain.member.domain.WorkspaceMember;
 import com.golapadeok.fluo.domain.member.repository.WorkspaceMemberRepository;
+import com.golapadeok.fluo.domain.role.domain.MemberRole;
+import com.golapadeok.fluo.domain.role.domain.Role;
+import com.golapadeok.fluo.domain.role.repository.MemberRoleRepository;
+import com.golapadeok.fluo.domain.role.repository.RoleRepository;
+import com.golapadeok.fluo.domain.workspace.domain.Workspace;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -20,6 +28,14 @@ public class AcceptInviteService {
 
     private final InvitationRepository invitationRepository;
     private final WorkspaceMemberRepository workspaceMemberRepository;
+    private final RoleRepository roleRepository;
+    private final MemberRoleRepository memberRoleRepository;
+
+    private static final List<String> DEFAULT_CREDENTIAL = List.of(
+            "CREATE_TASK",
+            "MODIFY_TASK",
+            "DELETE_TASK"
+    );
 
     @Transactional
     public InvitationAnswerResponse acceptInvitation(PrincipalDetails principalDetails, String invitationsId) {
@@ -27,14 +43,22 @@ public class AcceptInviteService {
             throw new IllegalArgumentException("로그인해야 합니다.");
         }
 
+        Member member = principalDetails.getMember();
+
         Invitation invitation = this.invitationRepository.findById(Long.valueOf(invitationsId))
                 .orElseThrow(() -> new InvitationException(InvitationErrorStatus.NOT_FOUND_INVITATION));
 
         WorkspaceMember workspaceMember = WorkspaceMember.builder()
-                .member(principalDetails.getMember())
+                .member(member)
                 .workspace(invitation.getWorkspace())
                 .build();
         Long saved = this.workspaceMemberRepository.save(workspaceMember).getId();
+
+        // 역할 생성
+        Role generateRole = createGenerateRole(invitation.getWorkspace());
+
+        // 역할 부여
+        giveGenerateRole(member, generateRole);
 
         String message;
         if(saved != null) {
@@ -48,4 +72,23 @@ public class AcceptInviteService {
         return new InvitationAnswerResponse(message);
     }
 
+    private void giveGenerateRole(Member member, Role generateRole) {
+        MemberRole memberRole = MemberRole.builder()
+                .member(member)
+                .role(generateRole)
+                .build();
+        this.memberRoleRepository.save(memberRole);
+    }
+
+    private Role createGenerateRole(Workspace workspace) {
+        String credential = String.join(",", DEFAULT_CREDENTIAL);
+        Role generateRole = Role.builder()
+                .name("일반")
+                .roles(credential)
+                .workspace(workspace)
+                .isDefault(true)
+                .build();
+        this.roleRepository.save(generateRole);
+        return generateRole;
+    }
 }

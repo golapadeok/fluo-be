@@ -26,6 +26,7 @@ public class Role extends BaseTimeEntity { // 그룹역할종류
     private String name;
     private String description;
     private String roles;
+    private Boolean isDefault;
 
     @ManyToOne
     @JoinColumn(name = "WORKSPACE_ID")
@@ -35,11 +36,12 @@ public class Role extends BaseTimeEntity { // 그룹역할종류
     private List<MemberRole> memberRoles = new ArrayList<>();
 
     @Builder
-    public Role(String name, String description, String roles, Workspace workspace) {
+    public Role(String name, String description,String roles, Workspace workspace, Boolean isDefault) {
         this.name = name;
         this.description = description;
         this.roles = roles;
         this.workspace = workspace;
+        this.isDefault = isDefault;
     }
 
     public List<String> getRoleList() {

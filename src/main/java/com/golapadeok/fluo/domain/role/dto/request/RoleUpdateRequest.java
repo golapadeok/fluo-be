@@ -38,6 +38,7 @@ public class RoleUpdateRequest {
                 .description(this.description)
                 .roles(String.join(",", credentials.stream().map(Enum::name).toList()))
                 .workspace(workspace)
+                .isDefault(false)
                 .build();
     }
 
