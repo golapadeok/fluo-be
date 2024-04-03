@@ -62,7 +62,7 @@ public class WorkspaceSearchService {
                         member.getMemberRoles().stream()
                                 .map(MemberRole::getRole)
                                 .filter(role -> role.getWorkspace().getId().equals(workspaceId))
-                                .toList()))
+                                .findFirst().get()))
                 .toList();
 
         return new WorkspaceSearchWithMembersResponse(members);
