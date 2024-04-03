@@ -34,7 +34,7 @@ public class TaskCreateRequest {
     @Schema(description = "업무 설명", example = "description")
     private String description;
 
-    @NotEmpty(message = "업무 작성자 아이디는 필수값 입니다.")
+    @NotNull(message = "업무 작성자 아이디는 필수값 입니다.")
     @Schema(description = "업무 작성자 아이디", example = "1")
     private Integer creator;
 
