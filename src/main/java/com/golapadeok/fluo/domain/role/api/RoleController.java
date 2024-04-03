@@ -1,6 +1,7 @@
 package com.golapadeok.fluo.domain.role.api;
 
 import com.golapadeok.fluo.common.annotation.AuthCheck;
+import com.golapadeok.fluo.common.util.CookieUtils;
 import com.golapadeok.fluo.domain.role.domain.Credential;
 import com.golapadeok.fluo.domain.role.dto.request.RoleCreateRequest;
 import com.golapadeok.fluo.domain.role.dto.request.RoleUpdateRequest;
@@ -12,10 +13,13 @@ import com.golapadeok.fluo.domain.role.service.RoleService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -47,8 +51,13 @@ public class RoleController {
 
     @Operation(summary = "워크스페이스의 역할 목록 조회", description = "워크스페이스ID에 해당하는 역할 목록을 조회")
     @GetMapping("/workspaces/{workspaceId}/role")
-    public ResponseEntity<BaseResponse> getWorkspaceRoleList(@PathVariable("workspaceId") Integer workspaceId) {
-        return ResponseEntity.ok(this.roleService.getWorkspaceRoleList(workspaceId));
+    public ResponseEntity<BaseResponse> getWorkspaceRoleList(@PathVariable("workspaceId") Integer workspaceId, HttpServletResponse response) {
+        ResponseCookie cookie = CookieUtils.createCookie("workspaceId", workspaceId, response);
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .header(HttpHeaders.SET_COOKIE, cookie.toString())
+                .body(this.roleService.getWorkspaceRoleList(workspaceId));
     }
 
 //    @AuthCheck(credential = Credential.DELETE_ROLE)
