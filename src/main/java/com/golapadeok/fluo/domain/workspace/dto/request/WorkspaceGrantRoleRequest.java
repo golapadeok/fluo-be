@@ -13,6 +13,7 @@ import lombok.NoArgsConstructor;
 @Schema(name = "멤버 역할 부여 요청 데이터")
 public class WorkspaceGrantRoleRequest {
 
+    private Integer memberId;
     private RoleInfo role;
 
 

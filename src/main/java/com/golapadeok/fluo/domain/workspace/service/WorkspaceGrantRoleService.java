@@ -2,6 +2,7 @@ package com.golapadeok.fluo.domain.workspace.service;
 
 import com.golapadeok.fluo.common.security.domain.PrincipalDetails;
 import com.golapadeok.fluo.domain.member.domain.Member;
+import com.golapadeok.fluo.domain.member.repository.MemberRepository;
 import com.golapadeok.fluo.domain.role.domain.MemberRole;
 import com.golapadeok.fluo.domain.role.domain.Role;
 import com.golapadeok.fluo.domain.role.repository.MemberRoleRepository;
@@ -17,12 +18,16 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class WorkspaceGrantRoleService {
 
+    private final MemberRepository memberRepository;
     private final RoleRepository roleRepository;
     private final MemberRoleRepository memberRoleRepository;
 
     @Transactional
-    public WorkspaceGrantRoleResponse grantRole(PrincipalDetails principalDetails, WorkspaceGrantRoleRequest request) {
-        Member member = principalDetails.getMember();
+    public WorkspaceGrantRoleResponse grantRole(WorkspaceGrantRoleRequest request) {
+        
+        Member member = this.memberRepository.findById(request.getMemberId().longValue())
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
+
         Role role = this.roleRepository.findById(Long.valueOf(request.getRole().getRoleId()))
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 역할입니다."));
 
