@@ -33,19 +33,19 @@ public class Workspace extends BaseTimeEntity {
     private String invitationCode;
     private String creator;
 
-    @OneToMany(mappedBy = "workspace", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "workspace", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private List<State> states = new ArrayList<>();
 
-    @OneToMany(mappedBy = "workspace", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "workspace", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private List<WorkspaceMember> workspaceMembers = new ArrayList<>();
 
-    @OneToMany(mappedBy = "workspace", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "workspace", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private List<Role> roles = new ArrayList<>();
 
-    @OneToMany(mappedBy = "workspace", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "workspace", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private List<Task> tasks = new ArrayList<>();
 
-    @OneToMany(mappedBy = "workspace", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "workspace", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private List<Tag> tags = new ArrayList<>();
 
     public Workspace(Long id, String title, String description, String imageUrl, String creator) {
