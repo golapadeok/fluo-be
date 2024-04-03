@@ -29,6 +29,7 @@ public class MemberWorkspaceListService {
     private Long cursorId;
     private final MemberRepository memberRepository;
     private final WorkspaceMemberRepository workspaceMemberRepository;
+
     @Transactional(readOnly = true)
     public MemberWorkspaceListResponse getWorkspaceList(PrincipalDetails principalDetails, CursorPageRequest cursorPageRequest) {
         if (principalDetails == null || principalDetails.getMember() == null) {
@@ -45,10 +46,12 @@ public class MemberWorkspaceListService {
         Page<WorkspaceMember> workspaceMembers =
                 getWorkspaceMembersList(findMember, cursorPageRequest.getCursorId(), pageable);
 
+        Long total = this.workspaceMemberRepository.countByMemberId(member.getId());
+
         List<WorkspaceInfoResponse> items = getWorkspaceInfo(workspaceMembers);
-       
+
         return MemberWorkspaceListResponse.builder()
-                .total(String.valueOf(workspaceMembers.getTotalElements()))
+                .total(String.valueOf(total))
                 .cursorId(String.valueOf(this.cursorId))
                 .items(items)
                 .build();

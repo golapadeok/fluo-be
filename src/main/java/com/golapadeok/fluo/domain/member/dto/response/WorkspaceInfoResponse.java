@@ -22,6 +22,7 @@ public class WorkspaceInfoResponse {
     private String workspaceId;
     private String title;
     private String intro;
+    private String imageUrl;
     private List<WorkspaceWithMemberInfoResponse> members;
     private String createDate;
     private String updateDate;
@@ -31,6 +32,7 @@ public class WorkspaceInfoResponse {
                 .workspaceId(String.valueOf(workspace.getId()))
                 .title(workspace.getTitle())
                 .intro(workspace.getDescription())
+                .imageUrl(workspace.getImageUrl())
                 .members(members)
                 .createDate(DateUtils.dateFormatter(workspace.getCreateDate()))
                 .updateDate(DateUtils.dateFormatter(workspace.getUpdateDate()))
