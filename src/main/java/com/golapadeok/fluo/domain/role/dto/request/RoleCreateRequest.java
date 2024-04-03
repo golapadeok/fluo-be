@@ -13,7 +13,6 @@ import org.springframework.validation.annotation.Validated;
 
 import java.util.List;
 
-@AllArgsConstructor
 @Getter
 @Schema(description = "역할 추가 요청 데이터")
 public class RoleCreateRequest {
@@ -40,7 +39,7 @@ public class RoleCreateRequest {
         return Role.builder()
                 .name(this.name)
                 .description(this.description)
-                .roles(credentials.toString())
+                .roles(String.join(",", credentials.stream().map(Enum::name).toList()))
                 .workspace(workspace)
                 .build();
     }

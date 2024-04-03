@@ -52,7 +52,7 @@ public class Role extends BaseTimeEntity { // 그룹역할종류
     public void updateRole(RoleUpdateRequest request) {
         this.name = request.getName();
         this.description = request.getDescription();
-        this.roles = String.join(",", request.getCredentials());
+        this.roles = String.join(",", request.getCredentials().stream().map(Enum::name).toList());
     }
 
 }

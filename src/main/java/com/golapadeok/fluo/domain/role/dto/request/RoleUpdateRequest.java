@@ -10,7 +10,6 @@ import lombok.Getter;
 
 import java.util.List;
 
-@AllArgsConstructor
 @Getter
 @Schema(description = "역할 수정 요청 데이터")
 public class RoleUpdateRequest {
@@ -37,7 +36,7 @@ public class RoleUpdateRequest {
         return Role.builder()
                 .name(this.name)
                 .description(this.description)
-                .roles(credentials.toString())
+                .roles(String.join(",", credentials.stream().map(Enum::name).toList()))
                 .workspace(workspace)
                 .build();
     }
