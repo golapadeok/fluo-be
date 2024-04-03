@@ -100,11 +100,14 @@ public class AuthCheckInterceptor implements HandlerInterceptor {
 
     private String getWorkspaceId(HttpServletRequest request) {
         Cookie[] cookies = request.getCookies();
-        return Arrays.stream(cookies)
-                .filter(cookie -> "workspaceId".equals(cookie.getName()))
-                .findFirst()
-                .map(Cookie::getValue)
-                .orElse(null);
+        if(cookies != null) {
+            for (Cookie cookie : cookies) {
+                if(cookie.getName().equals("workspaceId")) {
+                    return cookie.getValue();
+                }
+            }
+        }
+        return null;
     }
 
     private Member getAuthentication(HttpServletRequest request, HttpServletResponse response) {
