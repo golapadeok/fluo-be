@@ -3,6 +3,8 @@ package com.golapadeok.fluo.domain.workspace.service;
 import com.golapadeok.fluo.domain.invitation.dto.InvitationCodeDto;
 import com.golapadeok.fluo.domain.member.domain.WorkspaceMember;
 import com.golapadeok.fluo.domain.role.domain.MemberRole;
+import com.golapadeok.fluo.domain.tag.domain.Tag;
+import com.golapadeok.fluo.domain.tag.dto.TagDto;
 import com.golapadeok.fluo.domain.task.domain.Task;
 import com.golapadeok.fluo.domain.task.dto.TaskDto;
 import com.golapadeok.fluo.domain.workspace.dto.MemberWithRoleDto;
@@ -67,7 +69,12 @@ public class WorkspaceSearchService {
     }
 
     public WorkspaceSearchWithTagsResponse searchWithTags(long workspaceId) {
-        return workspaceRepositoryImpl.findWorkspaceWithTags(workspaceId);
+        Workspace workspace = workspaceRepository.findById(workspaceId)
+                .orElseThrow(NotFoundWorkspaceException::new);
+
+        List<Tag> tags = workspace.getTags();
+        return new WorkspaceSearchWithTagsResponse(TagDto.of(tags));
+//        return workspaceRepositoryImpl.findWorkspaceWithTags(workspaceId);
     }
 
     public InvitationCodeDto searchWithInvitationCode(long workspaceId) {
