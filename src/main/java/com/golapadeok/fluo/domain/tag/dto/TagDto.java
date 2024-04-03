@@ -30,7 +30,7 @@ public class TagDto {
         if (tag == null)
             return null;
 
-        return new TagDto(tag.getId().toString(), tag.getTagName(), tag.getColorCode());
+        return new TagDto(tag.getId().toString(), tag.getTagName(), tag.getColorCode().getColor());
     }
 
     public static List<TagDto> of(List<Tag> tags) {
@@ -38,7 +38,7 @@ public class TagDto {
         List<TagDto> results = new ArrayList<>();
         while (iterator.hasNext()) {
             Tag tag = iterator.next();
-            results.add(new TagDto(tag.getId().toString(), tag.getTagName(), tag.getColorCode()));
+            results.add(new TagDto(tag.getId().toString(), tag.getTagName(), tag.getColorCode().getColor()));
         }
 
         return Collections.unmodifiableList(results);
