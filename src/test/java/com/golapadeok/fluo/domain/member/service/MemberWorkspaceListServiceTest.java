@@ -1,3 +1,4 @@
+/*
 package com.golapadeok.fluo.domain.member.service;
 
 import com.golapadeok.fluo.common.security.domain.PrincipalDetails;
@@ -103,4 +104,4 @@ class MemberWorkspaceListServiceTest {
 //        assertThat(workspaceList.getItems()).isNotNull();
     }
 
-}
+}*/

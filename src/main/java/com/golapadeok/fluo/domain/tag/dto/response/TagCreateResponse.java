@@ -19,7 +19,7 @@ public class TagCreateResponse {
         return new TagCreateResponse(
                 tag.getId().toString(),
                 tag.getTagName(),
-                tag.getColorCode()
+                tag.getColorCode().getColor()
         );
     }
 }

@@ -22,7 +22,7 @@ public class QTag extends EntityPathBase<Tag> {
 
     public static final QTag tag = new QTag("tag");
 
-    public final StringPath colorCode = createString("colorCode");
+    public final EnumPath<com.golapadeok.fluo.domain.tag.dto.ColorCode> colorCode = createEnum("colorCode", com.golapadeok.fluo.domain.tag.dto.ColorCode.class);
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
