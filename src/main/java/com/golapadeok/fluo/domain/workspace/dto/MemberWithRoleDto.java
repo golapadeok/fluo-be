@@ -12,15 +12,13 @@ public class MemberWithRoleDto {
     private final String name;
     private final String email;
     private final String profileUrl;
-    private final List<RoleDto> roles;
+    private final RoleDto roles;
 
-    public MemberWithRoleDto(Member member, List<Role> roles) {
+    public MemberWithRoleDto(Member member, Role roles) {
         this.memberId = member.getId().toString();
         this.name = member.getName();
         this.email = member.getEmail();
         this.profileUrl = member.getProfile();
-        this.roles = roles.stream()
-                .map(RoleDto::new)
-                .toList();
+        this.roles = new RoleDto(roles);
     }
 }
