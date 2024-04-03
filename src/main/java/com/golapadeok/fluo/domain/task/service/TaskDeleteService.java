@@ -32,9 +32,10 @@ public class TaskDeleteService {
 //            managerTaskRepository.delete(manager);
 //        });
 
-        task.getWorkspace().getTasks().remove(task);
-        task.changeWorkspace(null);
+//        task.getWorkspace().getTasks().remove(task);
+//        task.changeWorkspace(null);
         taskRepository.deleteById(taskId);
         return new TaskDeleteResponse("삭제에 성공했습니다.");
     }
 }
+//java.lang.NullPointerException: Cannot invoke "com.golapadeok.fluo.domain.workspace.domain.Workspace.getTasks()" because "this.workspace" is null

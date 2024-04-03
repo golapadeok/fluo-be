@@ -60,18 +60,8 @@ public class TaskUpdateRequest {
     @Schema(description = "업무 종료 날짜", example = "2030-01-01")
     private LocalDate endDate;
 
-
-    public TaskUpdateRequest(Integer stateId, String title, String description, Integer creator, Integer tag, List<Integer> managers, Boolean isPrivate, Integer priority, String labelColor, LocalDate startDate, LocalDate endDate) {
-        this.stateId = stateId;
-        this.title = title;
-        this.description = description;
-        this.creator = creator;
-        this.tag = tag;
-        this.managers = managers;
-        this.isPrivate = isPrivate;
-        this.priority = priority;
-        this.labelColor = labelColor == null ? LabelColor.RED : LabelColor.valueOf(labelColor.toUpperCase());
-        this.startDate = startDate;
-        this.endDate = endDate;
+    public void setLabelColor(String labelColor) {
+        this.labelColor = (labelColor == null || labelColor.isEmpty()) ?
+                LabelColor.RED : LabelColor.valueOf(labelColor.toUpperCase());
     }
 }
