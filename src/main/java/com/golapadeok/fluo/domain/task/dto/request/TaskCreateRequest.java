@@ -37,7 +37,7 @@ public class TaskCreateRequest {
 
     @NotEmpty(message = "업무 작성자 이름은 필수값 입니다.")
     @Schema(description = "업무 작성자 이름", example = "creator")
-    private String creator;
+    private Integer creator;
 
     @NotNull(message = "관리자는 최소 한명 이상입니다.")
     @Schema(description = "업무 관리자 아이디 리스트", example = "[1, 2, 3]")
