@@ -10,7 +10,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
-@AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class TagCreateRequest {
     @NotNull(message = "워크스페이스 아이디는 필수값 입니다.")
@@ -21,11 +20,13 @@ public class TagCreateRequest {
     @Schema(description = "태그 이름", example = "tagName")
     private String name;
 
-    @NotEmpty(message = "색상 코드는 필수값 입니다.")
+    @NotNull(message = "색상 코드는 필수값 입니다.")
     @Schema(description = "색상 코드", example = "######")
-    private String colorCode;
+    private ColorCode colorCode;
 
-    public ColorCode getColorCode() {
-        return ColorCode.valueOf(colorCode.toUpperCase());
+    public TagCreateRequest(Integer workspaceId, String name, ColorCode colorCode) {
+        this.workspaceId = workspaceId;
+        this.name = name;
+        this.colorCode = ColorCode.from(colorCode.toString());
     }
 }
