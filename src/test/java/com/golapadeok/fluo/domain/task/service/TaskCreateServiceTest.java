@@ -61,7 +61,7 @@ class TaskCreateServiceTest {
                 new Member(2L, "email2", "name2", "profile2", null, null, null)
         );
 
-        Workspace workspace = new Workspace(1L, "title", "description", "imageUrl");
+        Workspace workspace = new Workspace(1L, "title", "description", "imageUrl", "member");
 
         State state = new State(1L, "state", true);
         state.changeWorkspace(workspace);
@@ -71,13 +71,13 @@ class TaskCreateServiceTest {
 
         TaskConfiguration taskConfiguration = new TaskConfiguration(true, 1);
         ScheduleRange scheduleRange = new ScheduleRange(LocalDate.now(), LocalDate.now());
-        Task task = new Task(1L, "title", "description", "creator1", LabelColor.RED, taskConfiguration, scheduleRange);
+        Task task = new Task(1L, "title", "description", 1, LabelColor.RED, taskConfiguration, scheduleRange);
         task.changeWorkspace(workspace);
         task.changeState(state);
         task.changeTag(tag);
 
         TaskCreateRequest request = new TaskCreateRequest(
-                1, 1, "test", "description", "creator1", List.of(1, 2), 1, true, 1, LabelColor.RED, LocalDate.now(), LocalDate.now()
+                1, 1, "test", "description", 1, List.of(1, 2), 1, true, 1, LabelColor.RED, LocalDate.now(), LocalDate.now()
         );
 
         given(workspaceRepository.findById(request.getWorkspaceId().longValue()))

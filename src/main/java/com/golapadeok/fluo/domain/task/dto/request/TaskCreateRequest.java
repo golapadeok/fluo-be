@@ -13,7 +13,6 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Getter
 @AllArgsConstructor
@@ -35,8 +34,8 @@ public class TaskCreateRequest {
     @Schema(description = "업무 설명", example = "description")
     private String description;
 
-    @NotEmpty(message = "업무 작성자 이름은 필수값 입니다.")
-    @Schema(description = "업무 작성자 이름", example = "creator")
+    @NotEmpty(message = "업무 작성자 아이디는 필수값 입니다.")
+    @Schema(description = "업무 작성자 아이디", example = "1")
     private Integer creator;
 
     @NotNull(message = "관리자는 최소 한명 이상입니다.")
