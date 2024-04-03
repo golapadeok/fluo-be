@@ -28,8 +28,8 @@ public class TaskUpdateRequest {
     @Schema(description = "업무 설명", example = "description")
     private String description;
 
-    @NotNull(message = "업무 작성자 이름은 필수값 입니다.")
-    @Schema(description = "업무 작성자 이름", example = "creator")
+    @NotNull(message = "업무 작성자 아이는은 필수값 입니다.")
+    @Schema(description = "업무 작성자 아이디", example = "1")
     private Integer creator;
 
     @NotNull(message = "태그 아이디는 필수 입력입니다.")
@@ -49,7 +49,7 @@ public class TaskUpdateRequest {
     @Schema(description = "업무 중요도", example = "5")
     private Integer priority;
 
-    @Schema(description = "업무 중요도", example = "5")
+    @Schema(description = "라벨 색상", example = "RED")
     private LabelColor labelColor;
 
     @NotNull(message = "날짜는 필수 입력입니다.")
