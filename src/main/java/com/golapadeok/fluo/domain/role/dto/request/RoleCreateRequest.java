@@ -30,6 +30,7 @@ public class RoleCreateRequest {
                 .name(this.name)
                 .roles(String.join(",", credentials))
                 .workspace(workspace)
+                .isDefault(false)
                 .build();
     }
 

@@ -29,6 +29,8 @@ public class QRole extends EntityPathBase<Role> {
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
+    public final BooleanPath isDefault = createBoolean("isDefault");
+
     public final ListPath<MemberRole, QMemberRole> memberRoles = this.<MemberRole, QMemberRole>createList("memberRoles", MemberRole.class, QMemberRole.class, PathInits.DIRECT2);
 
     public final StringPath name = createString("name");

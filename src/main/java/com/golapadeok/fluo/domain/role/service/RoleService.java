@@ -24,6 +24,7 @@ public class RoleService {
 
     private final RoleRepository roleRepository;
     private final WorkspaceRepository workspaceRepository;
+    private static final int LIMIT_CREDENTIAL_COUNT = 7;
 
     public BaseResponse getAllCredential(){
         return new BaseResponse(CredentialResponse.toItemList());
@@ -56,7 +57,7 @@ public class RoleService {
                 .orElseThrow(() -> new RoleException(RoleErrorStatus.NOT_FOUND_WORKSPACE));
 
         // 1을 더하는 이유는 이번에 생성할 역할을 의미
-        if(workspace.getRoles().size() + 1 > 6) {
+        if(workspace.getRoles().size() + 1 > LIMIT_CREDENTIAL_COUNT) {
             throw new RoleException(RoleErrorStatus.LIMIT_EXCEEDED_FOR_CREATION);
         }
 
@@ -76,7 +77,7 @@ public class RoleService {
                 .orElseThrow(() -> new RoleException(RoleErrorStatus.NOT_FOUND_ROLE));
 
         // 역할의 이름이 관리자이고, 모든 권한을 갖고있으면(개수) 수정 못하도록 막기
-        if(role.getName().equals("관리자") && role.getRoleList().size() == Credential.getSize()) {
+        if(role.getIsDefault()) {
             throw new RoleException(RoleErrorStatus.NOT_DELETE_ADMIN_ROLE);
         }
 
@@ -94,7 +95,7 @@ public class RoleService {
         log.info("role : {}", role.toString());
 
         // 역할의 이름이 관리자이고, 모든 권한을 갖고있으면(개수) 수정 못하도록 막기
-        if(role.getName().equals("관리자") && role.getRoleList().size() == Credential.getSize()) {
+        if(role.getIsDefault()) {
             throw new RoleException(RoleErrorStatus.NOT_UPDATE_ADMIN_ROLE);
         }
 

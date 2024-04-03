@@ -27,6 +27,7 @@ public class RoleUpdateRequest {
                 .name(this.name)
                 .roles(String.join(",", credentials))
                 .workspace(workspace)
+                .isDefault(false)
                 .build();
     }
 

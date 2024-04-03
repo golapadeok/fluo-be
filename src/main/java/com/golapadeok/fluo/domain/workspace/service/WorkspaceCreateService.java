@@ -71,7 +71,7 @@ public class WorkspaceCreateService {
         workspaceMemberRepository.save(workspaceMember);
 
         String credential = String.join(",", DEFAULT_CREDENTIAL);
-        Role defaultRole = new Role("default", credential, workspace);
+        Role defaultRole = new Role("default", credential, workspace, true);
         roleRepository.save(defaultRole);
 
         Member member = principal.getMember();
