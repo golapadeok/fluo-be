@@ -1,5 +1,6 @@
 package com.golapadeok.fluo.domain.role.dto.request;
 
+import com.golapadeok.fluo.domain.role.domain.Credential;
 import com.golapadeok.fluo.domain.role.domain.Role;
 import com.golapadeok.fluo.domain.workspace.domain.Workspace;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -27,13 +28,19 @@ public class RoleCreateRequest {
 
     @NotNull(message = "권한 이름은 필수 입력입니다.")
     @Schema(description = "역할에 속하는 권한의 이름 리스트입니다.", example = "[\"CREATE_ROLE\", \"ASSIGN_ROLE\"]")
-    private List<String> credentials;
+    private List<Credential> credentials;
+
+    public RoleCreateRequest(String name, String description, List<Credential> credentials) {
+        this.name = name;
+        this.description = description;
+        this.credentials = credentials.stream().map(c -> Credential.from(c.toString())).toList();
+    }
 
     public Role toEntity(Workspace workspace) {
         return Role.builder()
                 .name(this.name)
                 .description(this.description)
-                .roles(String.join(",", credentials))
+                .roles(credentials.toString())
                 .workspace(workspace)
                 .build();
     }

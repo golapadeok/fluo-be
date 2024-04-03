@@ -1,5 +1,6 @@
 package com.golapadeok.fluo.domain.role.domain;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import lombok.Getter;
 
 @Getter
@@ -34,5 +35,10 @@ public enum Credential {
 
     public static int getSize() {
         return Credential.values().length;
+    }
+
+    @JsonCreator
+    public static Credential from(String s) {
+        return Credential.valueOf(s.toUpperCase());
     }
 }
