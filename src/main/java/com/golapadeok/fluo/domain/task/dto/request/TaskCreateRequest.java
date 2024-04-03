@@ -67,8 +67,18 @@ public class TaskCreateRequest {
     @Schema(description = "업무 종료 날짜", example = "2030-01-01")
     private LocalDate endDate;
 
-    public void setLabelColor(String labelColor) {
-        this.labelColor = (labelColor == null || labelColor.isEmpty()) ?
-                LabelColor.RED : LabelColor.valueOf(labelColor.toUpperCase());
+    public TaskCreateRequest(Integer workspaceId, Integer stateId, String title, String description, Integer creator, List<Integer> managers, Integer tag, Boolean isPrivate, Integer priority, LabelColor labelColor, LocalDate startDate, LocalDate endDate) {
+        this.workspaceId = workspaceId;
+        this.stateId = stateId;
+        this.title = title;
+        this.description = description;
+        this.creator = creator;
+        this.managers = managers;
+        this.tag = tag;
+        this.isPrivate = isPrivate;
+        this.priority = priority;
+        this.labelColor = LabelColor.from(labelColor.toString());
+        this.startDate = startDate;
+        this.endDate = endDate;
     }
 }
