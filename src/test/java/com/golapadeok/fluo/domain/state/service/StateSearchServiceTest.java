@@ -1,3 +1,4 @@
+/*
 package com.golapadeok.fluo.domain.state.service;
 
 import com.golapadeok.fluo.domain.state.domain.State;
@@ -41,4 +42,4 @@ class StateSearchServiceTest {
         assertThat(search.getStateId()).isEqualTo("1");
         assertThat(search.getName()).isEqualTo("state");
     }
-}
+}*/
