@@ -1,6 +1,7 @@
 package com.golapadeok.fluo.domain.task.api;
 
 import com.golapadeok.fluo.common.annotation.AuthCheck;
+import com.golapadeok.fluo.common.security.domain.PrincipalDetails;
 import com.golapadeok.fluo.domain.role.domain.Credential;
 import com.golapadeok.fluo.domain.task.dto.request.TaskCreateRequest;
 import com.golapadeok.fluo.domain.task.dto.request.TaskUpdateRequest;
@@ -19,6 +20,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @Slf4j
@@ -41,17 +43,19 @@ public class TaskController {
         return ResponseEntity.ok(taskSearchService.search(taskId));
     }
 
-//    @AuthCheck(credential = Credential.CREATE_TASK)
+    //    @AuthCheck(credential = Credential.CREATE_TASK)
     @PostMapping
     @Operation(summary = "업무 생성 API", description = "새로운 업무를 생성합니다.")
     public ResponseEntity<TaskDetailResponse> createTask(
+            @AuthenticationPrincipal PrincipalDetails principal,
             @Valid @RequestBody TaskCreateRequest request
     ) {
+        log.debug("---[업무 생성 시작 memberId: {}]---", principal.getMember().getId());
         return ResponseEntity
-                .ok(taskCreateService.createTask(request));
+                .ok(taskCreateService.createTask(principal.getMember().getId().intValue(), request));
     }
 
-//    @AuthCheck(credential = Credential.MODIFY_TASK)
+    //    @AuthCheck(credential = Credential.MODIFY_TASK)
     @PutMapping("/{taskId}")
     @Operation(summary = "업무 수정 API", description = "해당 업무를 수정합니다.")
     public ResponseEntity<TaskDetailResponse> updateTask(
@@ -61,7 +65,7 @@ public class TaskController {
         return ResponseEntity.ok(taskUpdateService.update(taskId, request));
     }
 
-//    @AuthCheck(credential = Credential.DELETE_TASK)
+    //    @AuthCheck(credential = Credential.DELETE_TASK)
     @DeleteMapping("/{taskId}")
     public ResponseEntity<TaskDeleteResponse> deleteTask(
             @PathVariable("taskId") Integer taskId) {
