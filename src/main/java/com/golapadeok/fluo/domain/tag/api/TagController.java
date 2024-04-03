@@ -1,6 +1,7 @@
 package com.golapadeok.fluo.domain.tag.api;
 
 import com.golapadeok.fluo.domain.tag.dto.request.TagCreateRequest;
+import com.golapadeok.fluo.domain.tag.dto.request.TagUpdateRequest;
 import com.golapadeok.fluo.domain.tag.dto.response.TagCreateResponse;
 import com.golapadeok.fluo.domain.tag.dto.response.TagDeleteResponse;
 import com.golapadeok.fluo.domain.tag.dto.response.TagSearchResponse;
@@ -35,8 +36,17 @@ public class TagController {
             @Valid @RequestBody TagCreateRequest request
     ) {
         return ResponseEntity
-                .status(HttpStatus.CREATED)
-                .body(tagService.createTags(request));
+                .ok(tagService.createTags(request));
+    }
+
+    @PutMapping("/{tagId}")
+    @Operation(summary = "태그 생성 API", description = "워크스페이스 아이디로 태그를 생성합니다.")
+    public ResponseEntity<TagCreateResponse> createTags(
+            @PathVariable("tagId") @Parameter(description = "수정할 태그 아이디", example = "1") Integer tagId,
+            @Valid @RequestBody TagUpdateRequest request
+    ) {
+        return ResponseEntity
+                .ok(tagService.updateTags(tagId, request));
     }
 
     @DeleteMapping("/{tagId}")
