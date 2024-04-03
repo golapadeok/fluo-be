@@ -1,4 +1,3 @@
-/*
 package com.golapadeok.fluo.domain.task.service;
 
 import com.golapadeok.fluo.domain.member.domain.Member;
@@ -27,14 +26,9 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 
 @Transactional
 @ExtendWith(MockitoExtension.class)
@@ -136,4 +130,4 @@ class TaskUpdateServiceTest {
         assertThat(response.getManagers()).hasSize(1);
         assertThat(response.getManagers().get(0).getId()).isEqualTo("1");
     }
-}*/
+}
