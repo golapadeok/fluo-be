@@ -17,6 +17,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseCookie;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -49,7 +51,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
             chain.doFilter(request, response);
             return;
         }
-
+        log.info("여기 까지 옴1");
         /**
          * 쿠키에 저장된 refresh token을 꺼내와 만료되었는지를 확인
          * 만료되었다면 예외를 발생, 재로그인을 해야함. (만료된 토큰입니다.)
@@ -70,28 +72,44 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
                 .filter(this.provider::isTokenValidate)
                 .orElse(null);
 
-        if(accessToken != null) {
+        // access token이 만료되었을 때 재발급해주는 로직
+        if(accessToken == null) {
             String refreshToken = this.provider.extractRefreshTokenFromCookies(request)
                     .filter(this.provider::isTokenValidate)
-                    .orElseThrow(() -> new JwtErrorException(JwtErrorStatus.EXPIRED_REFRESH));
+                    .orElse(null);
+//                 .orElseThrow(() -> new JwtErrorException(JwtErrorStatus.EXPIRED_REFRESH));
+            log.info("refreshToken : {}", refreshToken);
+            log.info("여기 까지 옴2");
 
-            this.memberRepository.findByRefreshToken(refreshToken)
-                    .ifPresent(member -> {
-                        this.provider.sendAccessToken(response, this.provider.createAccessToken(member.getEmail()));
-                        saveAuthentication(member);
-                    });
-            return;
+            if(refreshToken == null) {
+                log.info("refresh token 만료됨.");
+                Cookie accessCookie = new Cookie("accessToken", "");
+                Cookie refreshCookie = new Cookie("refreshToken", "");
+                accessCookie.setMaxAge(0);
+                refreshCookie.setMaxAge(0);
+                response.addCookie(accessCookie);
+                response.addCookie(refreshCookie);
+
+                throw new JwtErrorException(JwtErrorStatus.EXPIRED_REFRESH);
+            }else{
+                log.info("access token 만료됨.");
+                this.memberRepository.findByRefreshToken(refreshToken)
+                        .ifPresent(member -> {
+                            this.provider.sendAccessToken(response, this.provider.createAccessToken(member.getEmail()));
+                        });
+                return;
+            }
         }
 
 
         // access token이 만료되지 않았을 때 유효성 검사 후 인증 로직
         try {
-            this.provider.extractAccessToken(request)
+            this.provider.extractAccessTokenFromCookies(request)
                     .filter(this.provider::isTokenValidate)
                     .flatMap(this.provider::extractEmail)
                     .flatMap(this.memberRepository::findByEmail)
                     .ifPresent(this::saveAuthentication);
-
+            
             chain.doFilter(request, response);
         } catch(SecurityException | MalformedJwtException e) {
             log.error("MalformedJwtException 에러남");
@@ -106,5 +124,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         PrincipalDetails principalDetails = new PrincipalDetails(member);
         UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(principalDetails, null, principalDetails.getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        log.info("인증 성공");
     }
 }

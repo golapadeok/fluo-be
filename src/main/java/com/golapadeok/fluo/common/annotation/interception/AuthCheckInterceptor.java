@@ -27,6 +27,7 @@ import org.springframework.web.servlet.HandlerInterceptor;
 
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 @RequiredArgsConstructor
@@ -34,30 +35,35 @@ import java.util.Set;
 @Component
 public class AuthCheckInterceptor implements HandlerInterceptor {
 
+    private final JwtTokenProvider provider;
     private final MemberRepository memberRepository;
     private final WorkspaceRepository workspaceRepository;
     private final MemberRoleQueryRepository memberRoleQueryRepository;
-    private final JwtTokenProvider provider;
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        log.debug("---- [ {} API interceptor ] ----", request.getRequestURL());
-        log.info("preHandle_request_accessToken : {}", request.getHeader(HttpHeaders.AUTHORIZATION));
-        log.info("preHandle_response_accessToken : {}", response.getHeader(HttpHeaders.AUTHORIZATION));
+
+        log.debug("---- [ {} API interceptor ] ----", request.getRequestURI());
+        log.info("access token : {}", request.getHeader(HttpHeaders.AUTHORIZATION));
+        Optional<String> s = provider.extractRefreshTokenFromCookies(request);
+        if(s.isPresent()) {
+            log.info("refresh token : {}", provider.extractRefreshTokenFromCookies(request).get());
+        }
 
         AuthCheck authCheck = annotationExtracted(handler);
         if(authCheck != null) {
-            String header = request.getHeader(HttpHeaders.AUTHORIZATION);
-            if(header != null) {
+            if(provider.extractAccessTokenFromCookies(request).isEmpty()) {
                 return false;
             }
-            
+
             // 어노테이션에 설정된 권한 가져오기
             Credential[] credentials = authCheck.credential();
 
             // SecurityContextHolder를 통해 API에 접근하는 회원의 정보를 가져온다.
+
             Member member = getAuthentication(request, response);
             log.info("preHandle_member : {}", member);
+
 
             // 쿠키에 저장된 워크스페이스 아이디를 가져온다.
             String workspaceId = getWorkspaceId(request);
@@ -99,22 +105,10 @@ public class AuthCheckInterceptor implements HandlerInterceptor {
     }
 
     private Member getAuthentication(HttpServletRequest request, HttpServletResponse response) {
-//        String requestHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
-////        String responseHeader = response.getHeader(HttpHeaders.AUTHORIZATION);
-//        if(requestHeader != null || !requestHeader.startsWith("Bearer ")){
-//            String accessToken = provider.extractAccessToken(request).get();
-//            String email = provider.extractEmail(accessToken).get();
-//            log.info("getAuthentication email : {}", email);
-//            return this.memberRepository.findByEmail(email).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
-//        }else{
-//            String accessToken = provider.extractAccessToken(response).get();
-//            String email = provider.extractEmail(accessToken).get();
-//            log.info("getAuthentication email : {}", email);
-//            return this.memberRepository.findByEmail(email).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
-//        }
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if(authentication != null) {
             String email = authentication.getName();
+            log.info("email : {}", email);
             return this.memberRepository.findByEmail(email).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
         }
         return null;
