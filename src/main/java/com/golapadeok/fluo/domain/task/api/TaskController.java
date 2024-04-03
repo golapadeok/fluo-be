@@ -45,8 +45,7 @@ public class TaskController {
             @Valid @RequestBody TaskCreateRequest request
     ) {
         return ResponseEntity
-                .status(HttpStatus.CREATED)
-                .body(taskCreateService.createTask(request));
+                .ok(taskCreateService.createTask(request));
     }
 
     @AuthCheck(credential = Credential.MODIFY_TASK)
