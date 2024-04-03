@@ -79,6 +79,13 @@ public class SecurityConfig {
         http.csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests((authorization) -> authorization
                         .requestMatchers("/auth/**").permitAll()
+                        .requestMatchers(
+                                "/v1/api/get-token",
+                                "/swagger-ui.html",
+                                "/swagger-ui/*",
+                                "/v3/api-docs/**",
+                                "/swagger-resources/**",
+                                "/webjars/**").permitAll()
                         .anyRequest().permitAll()); // 테스트 종료시 authentication()으로 변경
 
 //        http.cors(cors -> cors.configurationSource(corsConfiguration()));
@@ -94,11 +101,6 @@ public class SecurityConfig {
                 .addFilterBefore(new JwtExceptionFilter(), JwtAuthorizationFilter.class);
 
         return http.build();
-    }
-
-    @Bean
-    public WebSecurityCustomizer webSecurityCustomizer() {
-        return (web) -> web.ignoring().requestMatchers("/swagger-ui/**");
     }
 
 //    @Bean
