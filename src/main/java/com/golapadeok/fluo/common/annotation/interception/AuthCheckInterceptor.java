@@ -3,8 +3,10 @@ package com.golapadeok.fluo.common.annotation.interception;
 import com.golapadeok.fluo.common.annotation.AuthCheck;
 import com.golapadeok.fluo.common.annotation.interception.exception.AuthException;
 import com.golapadeok.fluo.common.annotation.interception.exception.AuthStatus;
+import com.golapadeok.fluo.common.jwt.JwtTokenProvider;
 import com.golapadeok.fluo.common.security.domain.PrincipalDetails;
 import com.golapadeok.fluo.domain.member.domain.Member;
+import com.golapadeok.fluo.domain.member.repository.MemberRepository;
 import com.golapadeok.fluo.domain.role.domain.Credential;
 import com.golapadeok.fluo.domain.role.domain.MemberRole;
 import com.golapadeok.fluo.domain.role.repository.MemberRoleQueryRepository;
@@ -15,6 +17,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpHeaders;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -23,6 +26,7 @@ import org.springframework.web.servlet.HandlerInterceptor;
 
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 @RequiredArgsConstructor
@@ -30,23 +34,35 @@ import java.util.Set;
 @Component
 public class AuthCheckInterceptor implements HandlerInterceptor {
 
+    private final JwtTokenProvider provider;
+    private final MemberRepository memberRepository;
     private final WorkspaceRepository workspaceRepository;
     private final MemberRoleQueryRepository memberRoleQueryRepository;
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         log.debug("---- [ {} API interceptor ] ----", request.getRequestURI());
+        log.info("access token : {}", request.getHeader(HttpHeaders.AUTHORIZATION));
+        Optional<String> s = provider.extractRefreshTokenFromCookies(request);
+        if(s.isPresent()) {
+            log.info("refresh token : {}", provider.extractRefreshTokenFromCookies(request).get());
+        }
 
         AuthCheck authCheck = annotationExtracted(handler);
         if(authCheck != null) {
+            if(provider.extractAccessTokenFromCookies(request).isEmpty()) {
+                return false;
+            }
+
             // 어노테이션에 설정된 권한 가져오기
             Credential[] credentials = authCheck.credential();
 
             // SecurityContextHolder를 통해 API에 접근하는 회원의 정보를 가져온다.
-            Member member = getAuthentication();
+            Member member = getAuthentication(request);
 
             // 쿠키에 저장된 워크스페이스 아이디를 가져온다.
             String workspaceId = getWorkspaceId(request);
+            log.info("workspaceId : {}", workspaceId);
 
             // 워크스페이스 아이디가 존재하는지 검증
             Workspace workspace = this.workspaceRepository.findById(Long.valueOf(workspaceId))
@@ -81,13 +97,19 @@ public class AuthCheckInterceptor implements HandlerInterceptor {
                 .orElse(null);
     }
 
-    private Member getAuthentication() {
+    private Member getAuthentication(HttpServletRequest request) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if(authentication != null) {
-            PrincipalDetails principal = (PrincipalDetails) authentication.getPrincipal();
-            return principal.getMember();
+//            PrincipalDetails principal = (PrincipalDetails) authentication.getPrincipal();
+//            return principal.getMember();
+            log.info("authentication.getName() : {}", authentication.getName());
+            return this.memberRepository.findByEmail(authentication.getName()).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
         }
-
+//        String accessToken = provider.extractAccessTokenFromCookies(request).get();
+//        String email = provider.extractEmail(accessToken).get();
+//        Member member = memberRepository.findByEmail(email).orElse(null);
+//        log.info("member : {}", member);
+//        return member;
         return null;
     }
 

@@ -69,13 +69,24 @@ public class SocialController {
                         .secure(true)
                         .path("/")
                         .build();
+        ResponseCookie accessToken = ResponseCookie.from("accessToken", socialLoginResponse.getAccessToken())
+                .httpOnly(true)
+                .secure(true)
+                .path("/")
+                .build();
+        ResponseCookie workspaceId = ResponseCookie.from("workspaceId", "1")
+                .httpOnly(true)
+                .secure(true)
+                .path("/")
+                .build();
 
         Map<String, String> params = new HashMap<>();
         params.put("memberId", socialLoginResponse.getMemberId());
 
         return ResponseEntity.ok()
                 .header(HttpHeaders.SET_COOKIE, responseCookie.toString())
-                .header(HttpHeaders.AUTHORIZATION, "Bearer "+socialLoginResponse.getAccessToken())
+                .header(HttpHeaders.SET_COOKIE, accessToken.toString())
+                .header(HttpHeaders.SET_COOKIE, workspaceId.toString())
                 .body(params);
     }
 

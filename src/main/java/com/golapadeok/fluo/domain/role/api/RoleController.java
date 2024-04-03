@@ -1,5 +1,7 @@
 package com.golapadeok.fluo.domain.role.api;
 
+import com.golapadeok.fluo.common.annotation.AuthCheck;
+import com.golapadeok.fluo.domain.role.domain.Credential;
 import com.golapadeok.fluo.domain.role.dto.request.RoleCreateRequest;
 import com.golapadeok.fluo.domain.role.dto.request.RoleUpdateRequest;
 import com.golapadeok.fluo.domain.role.dto.response.BaseResponse;
@@ -32,6 +34,12 @@ public class RoleController {
         return ResponseEntity.ok(this.roleService.getAllCredential());
     }
 
+    @AuthCheck(credential = Credential.CREATE_ROLE)
+    @GetMapping("/test")
+    public String test() {
+        return "성공";
+    }
+
     @Operation(summary = "워크스페이스 역할 추가", description = "워크스페이스ID에 해당하는 워크스페이스에 역할을 추가")
     @PostMapping("/workspaces/{workspaceId}/role")
     public ResponseEntity<CreateRoleResponse> includeWorkspaceRole(@PathVariable("workspaceId") Integer workspaceId,
@@ -55,6 +63,7 @@ public class RoleController {
         return ResponseEntity.ok(this.roleService.deleteWorkspaceRole(roleId));
     }
 
+    @AuthCheck(credential = Credential.MODIFY_ROLE)
     @Operation(summary = "워크스페이스의 역할 정보 수정", description = "워크스페이스 ID와 역할 ID를 통해 역할의 정보 수정")
     @PutMapping("/workspaces/{workspaceId}/roles/{roleId}")
     public ResponseEntity<UpdateRoleResponse> updateWorkspaceRole(@PathVariable("workspaceId") Integer workspaceId,

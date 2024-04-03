@@ -93,7 +93,7 @@ public class SecurityConfig {
         config.setAllowCredentials(true);
         config.setAllowedMethods(Collections.singletonList("*"));
         config.setAllowedHeaders(Collections.singletonList("*"));
-        config.setExposedHeaders(Collections.singletonList("Set-Cookies"));
+        config.setExposedHeaders(Collections.singletonList("Set-Cookie"));
         config.setMaxAge(3600L);
 
         source.registerCorsConfiguration("/api/**", config);

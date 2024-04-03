@@ -9,8 +9,11 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseCookie;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
+import java.io.IOException;
 import java.util.*;
 
 @Slf4j
@@ -20,10 +23,10 @@ public class JwtTokenProvider {
     @Value("${jwt.secretKey}")
     private String secretKey;
 
-    private final long accessTokenExpiredTime = 1000L * 60L * 60L * 24L; // 1일
-    private final long refreshTokenExpiredTime = 1000L * 60L * 60L * 24L * 14L; // 2주
-//    private final long accessTokenExpiredTime = 1000L;
-//    private final long refreshTokenExpiredTime = 1000L; // 1일
+//    private final long accessTokenExpiredTime = 1000L * 60L * 60L * 24L; // 1일
+//    private final long refreshTokenExpiredTime = 1000L * 60L * 60L * 24L * 14L; // 2주
+    private final long accessTokenExpiredTime = 1000L * 30L;
+    private final long refreshTokenExpiredTime = 1000L * 60L; // 1일
     private final String authorization = "Authorization";
     private final String tokenPrefix = "Bearer ";
     private final String refreshToken = "RefreshToken";
@@ -104,9 +107,24 @@ public class JwtTokenProvider {
     }
     
     // header로 새로 발급된 엑세스 토큰 전송
-    public void sendAccessToken(HttpServletResponse response, String updateAccessToken) {
-        response.setStatus(HttpServletResponse.SC_OK);
-        response.setHeader(HttpHeaders.AUTHORIZATION, this.tokenPrefix+updateAccessToken);
+//    public void sendAccessToken(HttpServletResponse response, String updateAccessToken) {
+//        response.setStatus(HttpServletResponse.SC_OK);
+//        response.setHeader(HttpHeaders.AUTHORIZATION, this.tokenPrefix+updateAccessToken);
+//    }
+
+    public void sendAccessToken(HttpServletResponse response, String updateAccessToken) throws IOException {
+        ResponseCookie accessToken = ResponseCookie.from("accessToken", updateAccessToken)
+                .httpOnly(true)
+                .secure(true)
+                .path("/")
+                .build();
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        response.setHeader(HttpHeaders.SET_COOKIE, accessToken.toString());
+        String statusCode = "1000";
+        response.getWriter().write(statusCode);
+//        return ResponseEntity.status(HttpServletResponse.SC_UNAUTHORIZED)
+//                .header(HttpHeaders.SET_COOKIE, accessToken.toString())
+//                .body(statusCode);
     }
 
     // 쿠키에서 refreshToken 찾기
@@ -115,6 +133,19 @@ public class JwtTokenProvider {
         if(cookies != null) {
             for (Cookie cookie : cookies) {
                 if(cookie.getName().equals("refreshToken")) {
+                    return Optional.ofNullable(cookie.getValue());
+                }
+            }
+        }
+        return Optional.empty();
+    }
+
+    // 쿠키에서 refreshToken 찾기
+    public Optional<String> extractAccessTokenFromCookies(HttpServletRequest request) {
+        Cookie[] cookies = request.getCookies();
+        if(cookies != null) {
+            for (Cookie cookie : cookies) {
+                if(cookie.getName().equals("accessToken")) {
                     return Optional.ofNullable(cookie.getValue());
                 }
             }
