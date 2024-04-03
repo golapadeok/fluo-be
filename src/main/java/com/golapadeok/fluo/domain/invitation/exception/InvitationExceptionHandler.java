@@ -10,7 +10,7 @@ public class InvitationExceptionHandler {
 
     @ExceptionHandler
     public ResponseEntity<ErrorResponse> invitationExceptionHanlder(InvitationException e) {
-        return ResponseEntity.badRequest()
+        return ResponseEntity.status(e.getInvitationErrorStatus().getStatus())
                 .body(new ErrorResponse(e.getInvitationErrorStatus().getMessage()));
     }
 

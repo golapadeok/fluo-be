@@ -24,6 +24,7 @@ public class Role extends BaseTimeEntity { // 그룹역할종류
     private Long id;
 
     private String name;
+    private String description;
     private String roles;
 
     @ManyToOne
@@ -34,8 +35,9 @@ public class Role extends BaseTimeEntity { // 그룹역할종류
     private List<MemberRole> memberRoles = new ArrayList<>();
 
     @Builder
-    public Role(String name, String roles, Workspace workspace) {
+    public Role(String name, String description, String roles, Workspace workspace) {
         this.name = name;
+        this.description = description;
         this.roles = roles;
         this.workspace = workspace;
     }
@@ -49,6 +51,7 @@ public class Role extends BaseTimeEntity { // 그룹역할종류
 
     public void updateRole(RoleUpdateRequest request) {
         this.name = request.getName();
+        this.description = request.getDescription();
         this.roles = String.join(",", request.getCredentials());
     }
 

@@ -20,7 +20,7 @@ public class SwaggerConfig {
         final String securitySchemeName = "bearerAuth";
 
         Server local = new Server();
-        local.setUrl("https://localhost:9999");
+        local.setUrl("http://localhost:9999");
 
         Server dev = new Server();
         dev.setUrl("http://3.36.174.59:8090");

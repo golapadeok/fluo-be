@@ -10,9 +10,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.apache.catalina.Manager;
 
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,7 +25,7 @@ public class Task extends BaseTimeEntity {
     private Long id;
     private String title;
     private String description;
-    private String creator;
+    private Integer creator;
 
     @Enumerated(EnumType.STRING)
     private LabelColor labelColor;
@@ -57,7 +55,7 @@ public class Task extends BaseTimeEntity {
     @JoinColumn(name = "TAG_ID")
     private Tag tag;
 
-    public Task(Long id, String title, String description, String creator, LabelColor labelColor, TaskConfiguration configuration, ScheduleRange scheduleRange) {
+    public Task(Long id, String title, String description, Integer creator, LabelColor labelColor, TaskConfiguration configuration, ScheduleRange scheduleRange) {
         this.id = id;
         this.title = title;
         this.creator = creator;
@@ -68,7 +66,7 @@ public class Task extends BaseTimeEntity {
     }
 
     @Builder(toBuilder = true)
-    public Task(String title, String description, String creator, LabelColor labelColor, TaskConfiguration configuration, ScheduleRange scheduleRange) {
+    public Task(String title, String description, Integer creator, LabelColor labelColor, TaskConfiguration configuration, ScheduleRange scheduleRange) {
         this(null, title, description, creator, labelColor, configuration, scheduleRange);
     }
 

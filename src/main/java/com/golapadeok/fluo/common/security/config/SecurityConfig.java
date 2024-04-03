@@ -1,5 +1,6 @@
 package com.golapadeok.fluo.common.security.config;
 
+import com.golapadeok.fluo.common.annotation.interception.AuthCheckInterceptor;
 import com.golapadeok.fluo.common.jwt.JwtTokenProvider;
 import com.golapadeok.fluo.common.security.filter.JwtAuthorizationFilter;
 import com.golapadeok.fluo.common.security.filter.JwtExceptionFilter;
@@ -25,6 +26,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.servlet.HandlerInterceptor;
 
 import java.util.Arrays;
 import java.util.Collections;

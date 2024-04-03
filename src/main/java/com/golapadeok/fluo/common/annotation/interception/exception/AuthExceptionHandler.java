@@ -10,7 +10,7 @@ public class AuthExceptionHandler {
     @ExceptionHandler
     public ResponseEntity<ErrorResponse> exceptionHandler(AuthException e) {
         return ResponseEntity
-                .badRequest()
+                .status(e.getAuthStatus().getStatus())
                 .body(new ErrorResponse(e.getAuthStatus().getMessage()));
     }
 

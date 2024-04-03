@@ -33,14 +33,14 @@ public class RoleService {
     public BaseResponse getWorkspaceRoleList(Integer workspaceId) {
        List<Role> roles = this.roleRepository.findByWorkspaceId(workspaceId.longValue())
                 .orElseThrow(() -> new RoleException(RoleErrorStatus.NOT_FOUND_WORKSPACE));
-        log.info("role : {}", roles.toString());
+//        log.info("role : {}", roles.toString());
 
         List<WorkspaceRoleListResponse> response = roles.stream()
                 .map(role -> WorkspaceRoleListResponse.builder()
                         .roleId(String.valueOf(role.getId()))
                         .name(role.getName())
                         .credentials(role.getRoleList().stream()
-                                .map(r -> new CredentialResponse(Credential.valueOf(r.trim()).getName(), Credential.valueOf(r.trim()).getDescription()))
+                                //.map(r -> new CredentialResponse(Credential.valueOf(r.trim()).getName(), Credential.valueOf(r.trim()).getDescription()))
                                 .toList())
                         .build())
                 .toList();
@@ -88,6 +88,7 @@ public class RoleService {
 
     @Transactional
     public UpdateRoleResponse updateWorkspaceRole(Integer workspaceId, Integer roleId, RoleUpdateRequest request) {
+        log.info("updateWorkspaceRole({}, {}, {}) invoked.", workspaceId, roleId, request);
         Role role = this.roleRepository.findById(Long.valueOf(roleId))
                 .orElseThrow(() -> new RoleException(RoleErrorStatus.NOT_FOUND_ROLE));
 
@@ -98,21 +99,30 @@ public class RoleService {
             throw new RoleException(RoleErrorStatus.NOT_UPDATE_ADMIN_ROLE);
         }
 
+        // 해당 워크스페이스에 같은 역할이름이 있는지를 검증
+        roleRepository.findByNameAndWorkspaceId(request.getName(), workspaceId.longValue())
+                .ifPresent(r -> {
+                    throw new RoleException(RoleErrorStatus.DUPLICATION_NAME);
+                });
+
         // 역할 업데이트
         role.updateRole(request);
         
         // 해당 역할의 권한들의 이름과 설명을 리스트에 담아준다.
-        List<CredentialResponse> credentialResponses = role.getRoleList().stream()
-                .map(r -> CredentialResponse.builder()
-                        .name(Credential.valueOf(r.trim()).getName())
-                        .description(Credential.valueOf(r.trim()).getDescription())
-                        .build())
+//        List<CredentialResponse> credentialResponses = role.getRoleList().stream()
+//                .map(r -> CredentialResponse.builder()
+//                        .name(Credential.valueOf(r.trim()).getName())
+//                        .description(Credential.valueOf(r.trim()).getDescription())
+//                        .build())
+//                .toList();
+        List<String> credentialResponses = role.getRoleList().stream()
                 .toList();
 
         // 해당 워크스페이스의 역할과 해당하는 권한들의 이름과 설명을 출력한다.
         WorkspaceRoleListResponse workspaceRoleListResponse = WorkspaceRoleListResponse.builder()
                 .roleId(String.valueOf(role.getId()))
                 .name(role.getName())
+                .description(role.getDescription())
                 .credentials(credentialResponses)
                 .build();
 

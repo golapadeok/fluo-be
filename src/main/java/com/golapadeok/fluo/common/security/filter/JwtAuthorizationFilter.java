@@ -17,6 +17,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseCookie;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -39,9 +41,11 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
             throws ServletException, IOException {
 
-        // 헤더에 Authorization이라는 이름이 있는지를 확인
+        log.info("access token : {}", request.getHeader(HttpHeaders.AUTHORIZATION));
+
         String header = request.getHeader(this.authorization);
         if(header == null || !header.startsWith(this.tokenPrefix)) {
+            log.info("access token 이 없음");
             chain.doFilter(request, response);
             return;
         }
@@ -54,31 +58,59 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
          * db에 저장된 refresh token과 같다면 새로운 access token을 생성하고 헤더로 보낸다.
          * -> 새로 생성된 엑세스 토큰을 가지고 인증을 관리
          */
-        String refreshToken = this.provider.extractRefreshTokenFromCookies(request)
-                .filter(this.provider::isTokenValidate)
-                .orElseThrow(() -> new JwtErrorException(JwtErrorStatus.EXPIRED_REFRESH));
+
+        /**
+         * 프론트에서 엑세스 토큰을 넘기고 있는지.
+         * response에 엑세스 토큰이 제대로 담기는지.
+         *
+         * 자동로그인 -> 엑세스 토큰 x -> 쿠키에 저장된 리프레시 토큰 검증 -> 엑세스 토큰 재발급 -> 로그인 유지
+         */
+        // 헤더에 Authorization이라는 이름이 있는지를 확인
 
         String accessToken = this.provider.extractAccessToken(request)
                 .filter(this.provider::isTokenValidate)
                 .orElse(null);
+        log.info("access Token 만료 기간 검증 : {}", accessToken);
 
         // access token이 만료되었을 때 재발급해주는 로직
         if(accessToken == null) {
-            this.memberRepository.findByRefreshToken(refreshToken)
-                    .ifPresent(member -> {
-                        this.provider.sendAccessToken(response, this.provider.createAccessToken(member.getEmail()));
-                    });
-            return;
+            String refreshToken = this.provider.extractRefreshTokenFromCookies(request)
+                    .filter(this.provider::isTokenValidate)
+                    .orElse(null);
+
+            log.info("refreshToken 만료 기간 검증 : {}", refreshToken);
+
+            if(refreshToken == null) {
+                log.info("refresh token 만료됨.");
+//                Cookie accessCookie = new Cookie("accessToken", null);
+                Cookie refreshCookie = new Cookie("refreshToken", null);
+
+//                accessCookie.setMaxAge(0);
+                refreshCookie.setMaxAge(0);
+//                response.addCookie(accessCookie);
+                response.addCookie(refreshCookie);
+
+                throw new JwtErrorException(JwtErrorStatus.EXPIRED_REFRESH);
+            }else{
+                log.info("access token 만료됨.");
+                this.memberRepository.findByRefreshToken(refreshToken)
+                        .ifPresent(member -> {
+                            this.provider.sendAccessToken(response, this.provider.createAccessToken(member.getEmail()));
+                        });
+                return;
+            }
         }
+
 
         // access token이 만료되지 않았을 때 유효성 검사 후 인증 로직
         try {
+            log.info("access token 인증 로직");
             this.provider.extractAccessToken(request)
                     .filter(this.provider::isTokenValidate)
                     .flatMap(this.provider::extractEmail)
                     .flatMap(this.memberRepository::findByEmail)
                     .ifPresent(this::saveAuthentication);
-
+            
             chain.doFilter(request, response);
         } catch(SecurityException | MalformedJwtException e) {
             log.error("MalformedJwtException 에러남");
@@ -93,5 +125,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         PrincipalDetails principalDetails = new PrincipalDetails(member);
         UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(principalDetails, null, principalDetails.getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        log.info("인증 성공");
     }
 }

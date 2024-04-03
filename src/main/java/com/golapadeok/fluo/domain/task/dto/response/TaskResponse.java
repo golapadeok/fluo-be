@@ -15,7 +15,7 @@ public class TaskResponse {
     private final String taskId;
     private final String title;
     private final String description;
-    private final String creator;
+    private final Integer creator;
     private final Boolean isPrivate;
     private final Integer priority;
     private final LabelColor labelColor;
