@@ -52,7 +52,7 @@ public class RoleController {
     @Operation(summary = "워크스페이스의 역할 목록 조회", description = "워크스페이스ID에 해당하는 역할 목록을 조회")
     @GetMapping("/workspaces/{workspaceId}/role")
     public ResponseEntity<BaseResponse> getWorkspaceRoleList(@PathVariable("workspaceId") Integer workspaceId, HttpServletResponse response) {
-        ResponseCookie cookie = CookieUtils.createCookie("workspaceId", workspaceId, response);
+        ResponseCookie cookie = CookieUtils.createCookie("workspaceId", String.valueOf(workspaceId), response);
 
         return ResponseEntity
                 .status(HttpStatus.OK)
