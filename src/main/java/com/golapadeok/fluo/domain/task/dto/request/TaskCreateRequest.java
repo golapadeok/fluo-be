@@ -15,7 +15,6 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Getter
-@AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Schema(description = "업무 추가 요청 데이터")
 public class TaskCreateRequest {
