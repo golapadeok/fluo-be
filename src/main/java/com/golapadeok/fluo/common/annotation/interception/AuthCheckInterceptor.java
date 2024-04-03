@@ -43,7 +43,7 @@ public class AuthCheckInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 
-        log.debug("---- [ {} API interceptor ] ----", request.getRequestURI());
+        log.debug("---- [ {} API interceptor ] ----", request.getRequestURL());
         log.info("access token : {}", request.getHeader(HttpHeaders.AUTHORIZATION));
         Optional<String> s = provider.extractRefreshTokenFromCookies(request);
         if(s.isPresent()) {

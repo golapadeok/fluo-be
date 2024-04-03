@@ -33,7 +33,7 @@ public class RoleService {
     public BaseResponse getWorkspaceRoleList(Integer workspaceId) {
        List<Role> roles = this.roleRepository.findByWorkspaceId(workspaceId.longValue())
                 .orElseThrow(() -> new RoleException(RoleErrorStatus.NOT_FOUND_WORKSPACE));
-        log.info("role : {}", roles.toString());
+//        log.info("role : {}", roles.toString());
 
         List<WorkspaceRoleListResponse> response = roles.stream()
                 .map(role -> WorkspaceRoleListResponse.builder()

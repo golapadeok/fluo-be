@@ -50,7 +50,6 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
             return;
         }
 
-        log.info("여기 까지 옴1");
         /**
          * 쿠키에 저장된 refresh token을 꺼내와 만료되었는지를 확인
          * 만료되었다면 예외를 발생, 재로그인을 해야함. (만료된 토큰입니다.)
@@ -71,7 +70,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         String accessToken = this.provider.extractAccessToken(request)
                 .filter(this.provider::isTokenValidate)
                 .orElse(null);
-        log.info("access Token : {}", accessToken);
+        log.info("access Token 만료 기간 검증 : {}", accessToken);
 
         // access token이 만료되었을 때 재발급해주는 로직
         if(accessToken == null) {
@@ -79,17 +78,16 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
                     .filter(this.provider::isTokenValidate)
                     .orElse(null);
 
-            log.info("refreshToken : {}", refreshToken);
-            log.info("여기 까지 옴2");
+            log.info("refreshToken 만료 기간 검증 : {}", refreshToken);
 
             if(refreshToken == null) {
                 log.info("refresh token 만료됨.");
-                Cookie accessCookie = new Cookie("accessToken", null);
+//                Cookie accessCookie = new Cookie("accessToken", null);
                 Cookie refreshCookie = new Cookie("refreshToken", null);
 
-                accessCookie.setMaxAge(0);
+//                accessCookie.setMaxAge(0);
                 refreshCookie.setMaxAge(0);
-                response.addCookie(accessCookie);
+//                response.addCookie(accessCookie);
                 response.addCookie(refreshCookie);
 
                 throw new JwtErrorException(JwtErrorStatus.EXPIRED_REFRESH);
