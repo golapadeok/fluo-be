@@ -20,7 +20,7 @@ public class FileController {
 
     @PostMapping(value = "/images/{workspaceId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Object> updateImage(
-            @RequestPart("fileRequest") MultipartFile fileRequest,
+            @RequestPart("image") MultipartFile fileRequest,
             @PathVariable("workspaceId") Integer workspaceId
     ) {
         String url = imageService.updateImages(fileRequest, workspaceId);

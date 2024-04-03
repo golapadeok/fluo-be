@@ -47,7 +47,7 @@ public class TaskUpdateRequest {
     @Schema(description = "업무 중요도", example = "5")
     private Integer priority;
 
-    @NotEmpty(message = "라벨 색상은 필수 입력값 입니다.")
+    @NotNull(message = "라벨 색상은 필수 입력값 입니다.")
     @Schema(description = "라벨 색상", example = "RED")
     private LabelColor labelColor;
 
