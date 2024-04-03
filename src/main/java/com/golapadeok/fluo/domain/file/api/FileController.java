@@ -18,7 +18,7 @@ public class FileController {
 
     private final ImageService imageService;
 
-    @PostMapping(value = "/images/{workspaceId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = {MediaType.APPLICATION_JSON_VALUE})
+    @PostMapping(value = "/images/{workspaceId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Object> updateImage(
             @RequestPart("fileRequest") MultipartFile fileRequest,
             @PathVariable("workspaceId") Integer workspaceId
