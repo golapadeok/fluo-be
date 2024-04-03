@@ -32,7 +32,7 @@ public class MemberWorkspaceListService {
     @Transactional(readOnly = true)
     public MemberWorkspaceListResponse getWorkspaceList(PrincipalDetails principalDetails, CursorPageRequest cursorPageRequest) {
         if (principalDetails == null || principalDetails.getMember() == null) {
-            throw new IllegalArgumentException("로그인해야 합니다.");
+            throw new MemberException(MemberErrorStatus.NOT_MEMBER_LOGIN);
         }
 
         Pageable pageable = PageRequest.of(0, cursorPageRequest.getLimit());

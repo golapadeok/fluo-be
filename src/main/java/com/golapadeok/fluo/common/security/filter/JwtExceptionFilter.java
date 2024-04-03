@@ -22,12 +22,12 @@ public class JwtExceptionFilter extends OncePerRequestFilter {
         try {
             chain.doFilter(request, response);
         } catch (JwtErrorException e) {
-            setErrorResponse(HttpStatus.UNAUTHORIZED, response, e);
+            setErrorResponse(e.getJwtErrorStatus().getStatus(), response, e);
         }
     }
 
-    private void setErrorResponse(HttpStatus httpStatus, HttpServletResponse response, JwtErrorException e) throws IOException {
-        response.setStatus(httpStatus.value());
+    private void setErrorResponse(int httpStatus, HttpServletResponse response, JwtErrorException e) throws IOException {
+        response.setStatus(httpStatus);
         response.setContentType("application/json; charset=UTF-8");
 
         ObjectMapper objectMapper = new ObjectMapper();

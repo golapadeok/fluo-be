@@ -1,5 +1,6 @@
 package com.golapadeok.fluo.domain.role.dto.response;
 
+import com.golapadeok.fluo.domain.role.domain.Credential;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -16,6 +17,6 @@ public class WorkspaceRoleListResponse {
     private String roleId;
     private String name;
     private String description;
-    private List<CredentialResponse> credentials;
+    private List<String> credentials;
 
 }

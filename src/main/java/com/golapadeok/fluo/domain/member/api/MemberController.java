@@ -5,6 +5,8 @@ import com.golapadeok.fluo.domain.member.domain.Member;
 import com.golapadeok.fluo.domain.member.dto.request.CursorPageRequest;
 import com.golapadeok.fluo.domain.member.dto.response.MemberInfoResponse;
 import com.golapadeok.fluo.domain.member.dto.response.MemberWorkspaceListResponse;
+import com.golapadeok.fluo.domain.member.exception.MemberErrorStatus;
+import com.golapadeok.fluo.domain.member.exception.MemberException;
 import com.golapadeok.fluo.domain.member.service.MemberWorkspaceListService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -29,7 +31,7 @@ public class MemberController {
     @GetMapping("/members/self")
     public ResponseEntity<MemberInfoResponse> getMyInfo(@AuthenticationPrincipal PrincipalDetails principalDetails) {
         if (principalDetails == null || principalDetails.getMember() == null) {
-            throw new IllegalArgumentException("로그인해야 합니다.");
+            throw new MemberException(MemberErrorStatus.NOT_MEMBER_LOGIN);
         }
 
         Member member = principalDetails.getMember();

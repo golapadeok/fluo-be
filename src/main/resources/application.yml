@@ -7,7 +7,7 @@ spring:
   jpa:
     database-platform: ${SPRING_DATASOURCE_DIALECT:org.hibernate.dialect.H2Dialect}
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
       naming:
         implicit-strategy: org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy
     generate-ddl: false
