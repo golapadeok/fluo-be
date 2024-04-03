@@ -40,7 +40,7 @@ public class RoleService {
                         .roleId(String.valueOf(role.getId()))
                         .name(role.getName())
                         .credentials(role.getRoleList().stream()
-                                .map(r -> new CredentialResponse(Credential.valueOf(r.trim()).getName(), Credential.valueOf(r.trim()).getDescription()))
+                                //.map(r -> new CredentialResponse(Credential.valueOf(r.trim()).getName(), Credential.valueOf(r.trim()).getDescription()))
                                 .toList())
                         .build())
                 .toList();
@@ -103,11 +103,13 @@ public class RoleService {
         role.updateRole(request);
         
         // 해당 역할의 권한들의 이름과 설명을 리스트에 담아준다.
-        List<CredentialResponse> credentialResponses = role.getRoleList().stream()
-                .map(r -> CredentialResponse.builder()
-                        .name(Credential.valueOf(r.trim()).getName())
-                        .description(Credential.valueOf(r.trim()).getDescription())
-                        .build())
+//        List<CredentialResponse> credentialResponses = role.getRoleList().stream()
+//                .map(r -> CredentialResponse.builder()
+//                        .name(Credential.valueOf(r.trim()).getName())
+//                        .description(Credential.valueOf(r.trim()).getDescription())
+//                        .build())
+//                .toList();
+        List<String> credentialResponses = role.getRoleList().stream()
                 .toList();
 
         // 해당 워크스페이스의 역할과 해당하는 권한들의 이름과 설명을 출력한다.
