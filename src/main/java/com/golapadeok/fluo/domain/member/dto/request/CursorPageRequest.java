@@ -20,7 +20,7 @@ public class CursorPageRequest {
     private Integer limit;
 
     public CursorPageRequest(Integer cursorId, Integer limit) {
-        this.cursorId = cursorId;
+        this.cursorId = cursorId == null || cursorId < 0 ? 0 : cursorId;
         this.limit = limit;
     }
 }
