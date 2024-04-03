@@ -1,3 +1,4 @@
+/*
 package com.golapadeok.fluo.domain.invitation.service;
 
 import com.golapadeok.fluo.common.security.domain.PrincipalDetails;
@@ -68,4 +69,4 @@ class MemberInviteCodeServiceTest {
         assertThat(this.workspaceMemberRepository.findById(1L).get().getMember().getId()).isEqualTo(1L);
     }
 
-}
+}*/

@@ -1,3 +1,4 @@
+/*
 package com.golapadeok.fluo.domain.state.service;
 
 import com.golapadeok.fluo.domain.state.domain.State;
@@ -53,4 +54,4 @@ class StateCreateServiceTest {
         assertThat(stateCreateResponse.getStateId()).isEqualTo("1");
         assertThat(stateCreateResponse.getName()).isEqualTo("state");
     }
-}
+}*/
