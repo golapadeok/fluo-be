@@ -14,7 +14,7 @@ import java.util.Locale;
 public class TaskResponse {
     private final String taskId;
     private final String title;
-    private final String description;
+//    private final String description;
     private final Integer creator;
     private final Boolean isPrivate;
     private final Integer priority;
@@ -25,7 +25,7 @@ public class TaskResponse {
     public TaskResponse(Task task) {
         this.taskId = task.getId().toString();
         this.title = task.getTitle();
-        this.description = task.getDescription();
+//        this.description = task.getDescription();
         this.creator = task.getCreator();
         this.isPrivate = task.getConfiguration().getIsPrivate();
         this.priority = task.getConfiguration().getPriority();
