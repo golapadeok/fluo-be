@@ -26,6 +26,7 @@ public class MemberInviteWorkspaceService {
                 .workspaceId(String.valueOf(workspace.getId()))
                 .title(workspace.getTitle())
                 .intro(workspace.getDescription())
+                .imageUri(workspace.getImageUrl())
                 .build();
     }
 
