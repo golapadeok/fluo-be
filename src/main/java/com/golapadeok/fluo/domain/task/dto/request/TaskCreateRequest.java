@@ -33,10 +33,6 @@ public class TaskCreateRequest {
     @Schema(description = "업무 설명", example = "description")
     private String description;
 
-    @NotNull(message = "업무 작성자 아이디는 필수값 입니다.")
-    @Schema(description = "업무 작성자 아이디", example = "1")
-    private Integer creator;
-
     @NotNull(message = "관리자는 최소 한명 이상입니다.")
     @Schema(description = "업무 관리자 아이디 리스트", example = "[1, 2, 3]")
     private List<Integer> managers;
@@ -66,12 +62,11 @@ public class TaskCreateRequest {
     @Schema(description = "업무 종료 날짜", example = "2030-01-01")
     private LocalDate endDate;
 
-    public TaskCreateRequest(Integer workspaceId, Integer stateId, String title, String description, Integer creator, List<Integer> managers, Integer tag, Boolean isPrivate, Integer priority, LabelColor labelColor, LocalDate startDate, LocalDate endDate) {
+    public TaskCreateRequest(Integer workspaceId, Integer stateId, String title, String description, List<Integer> managers, Integer tag, Boolean isPrivate, Integer priority, LabelColor labelColor, LocalDate startDate, LocalDate endDate) {
         this.workspaceId = workspaceId;
         this.stateId = stateId;
         this.title = title;
         this.description = description;
-        this.creator = creator;
         this.managers = managers;
         this.tag = tag;
         this.isPrivate = isPrivate;
