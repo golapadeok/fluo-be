@@ -37,7 +37,7 @@ public class TaskCreateService {
 
 
     @Transactional
-    public TaskDetailResponse createTask(TaskCreateRequest request) {
+    public TaskDetailResponse createTask(int memberId, TaskCreateRequest request) {
         Workspace workspace = workspaceRepository.findById(request.getWorkspaceId().longValue())
                 .orElseThrow(NotFoundWorkspaceException::new);
 
@@ -52,7 +52,7 @@ public class TaskCreateService {
         Task task = Task.builder()
                 .title(request.getTitle())
                 .description(request.getDescription())
-                .creator(request.getCreator())
+                .creator(memberId)
                 .labelColor(request.getLabelColor())
                 .configuration(extractTaskConfigure(request))
                 .scheduleRange(extractScheduleRange(request))
