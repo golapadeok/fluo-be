@@ -44,7 +44,7 @@ public class Task extends BaseTimeEntity {
     @JoinColumn(name = "WORKSPACE_ID")
     private Workspace workspace;
 
-    @OneToMany(mappedBy = "task", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "task", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private List<ManagerTask> managers = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
