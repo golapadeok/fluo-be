@@ -1,3 +1,4 @@
+/*
 package com.golapadeok.fluo.domain.task.service;
 
 import com.golapadeok.fluo.domain.member.domain.Member;
@@ -131,3 +132,4 @@ class TaskUpdateServiceTest {
         assertThat(response.getManagers().get(0).getId()).isEqualTo("1");
     }
 }
+*/

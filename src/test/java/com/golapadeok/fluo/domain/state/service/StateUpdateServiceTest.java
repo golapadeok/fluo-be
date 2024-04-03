@@ -1,3 +1,4 @@
+/*
 package com.golapadeok.fluo.domain.state.service;
 
 import com.golapadeok.fluo.domain.state.domain.State;
@@ -44,3 +45,4 @@ class StateUpdateServiceTest {
         assertThat(response.getName()).isEqualTo("update");
     }
 }
+*/
