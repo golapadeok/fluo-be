@@ -12,11 +12,13 @@ public class InvitationWithWorkspaceInfoResponse {
     private String workspaceId;
     private String title;
     private String intro;
+    private String imageUri;
 
     @Builder
-    public InvitationWithWorkspaceInfoResponse(String workspaceId, String title, String intro) {
+    public InvitationWithWorkspaceInfoResponse(String workspaceId, String title, String intro, String imageUri) {
         this.workspaceId = workspaceId;
         this.title = title;
         this.intro = intro;
+        this.imageUri = imageUri;
     }
 }
