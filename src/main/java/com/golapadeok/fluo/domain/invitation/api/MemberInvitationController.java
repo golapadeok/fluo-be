@@ -44,7 +44,7 @@ public class MemberInvitationController {
     }
 
     @Operation(summary = "초대코드로 워크스페이스 가입", description = "워크스페이스 정보를 조회 후 가입을 희망하면 워크스페이스에 가입")
-    @PostMapping("/members/invitations/{invitationCode}")
+    @PostMapping("/invitations/{invitationCode}")
     public ResponseEntity<InvitationAnswerResponse> inviteWorkspaceWithMemberInviteCode(
             @AuthenticationPrincipal PrincipalDetails principalDetails,
             @PathVariable("invitationCode") String invitationCode) {
