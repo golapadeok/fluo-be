@@ -2,6 +2,7 @@ package com.golapadeok.fluo.domain.tag.service;
 
 import com.golapadeok.fluo.domain.tag.domain.Tag;
 import com.golapadeok.fluo.domain.tag.dto.request.TagCreateRequest;
+import com.golapadeok.fluo.domain.tag.dto.request.TagUpdateRequest;
 import com.golapadeok.fluo.domain.tag.dto.response.TagCreateResponse;
 import com.golapadeok.fluo.domain.tag.dto.response.TagDeleteResponse;
 import com.golapadeok.fluo.domain.tag.dto.response.TagSearchResponse;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -43,6 +45,18 @@ public class TagService {
         tag.changeWorkspace(workspace);
         tag = tagRepository.save(tag);
 
+        return TagCreateResponse.of(tag);
+    }
+
+    public TagCreateResponse updateTags(long tagId, TagUpdateRequest request) {
+        Tag tag = tagRepository.findById(tagId)
+                .orElseThrow(() -> new NotFoundTagException());
+        tag.changeTag(tag.toBuilder()
+                .tagName(request.getName())
+                .colorCode(request.getColorCode())
+                .build());
+        
+        tagRepository.flush();
         return TagCreateResponse.of(tag);
     }
 
