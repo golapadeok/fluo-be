@@ -99,6 +99,12 @@ public class RoleService {
             throw new RoleException(RoleErrorStatus.NOT_UPDATE_ADMIN_ROLE);
         }
 
+        // 해당 워크스페이스에 같은 역할이름이 있는지를 검증
+        roleRepository.findByNameAndWorkspaceId(request.getName(), workspaceId.longValue())
+                .ifPresent(r -> {
+                    throw new RoleException(RoleErrorStatus.DUPLICATION_NAME);
+                });
+
         // 역할 업데이트
         role.updateRole(request);
         
