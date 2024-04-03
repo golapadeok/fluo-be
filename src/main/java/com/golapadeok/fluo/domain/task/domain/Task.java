@@ -76,6 +76,10 @@ public class Task extends BaseTimeEntity {
 
     public void changeWorkspace(Workspace workspace) {
         this.workspace = workspace;
+        if (workspace != null)
+            this.workspace.getTasks().add(this);
+        else
+            this.workspace.getTasks().remove(this);
     }
 
     public void changeTag(Tag tag) {
