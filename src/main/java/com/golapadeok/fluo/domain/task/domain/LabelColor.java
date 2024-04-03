@@ -1,5 +1,6 @@
 package com.golapadeok.fluo.domain.task.domain;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import lombok.Getter;
 
 @Getter
@@ -17,6 +18,11 @@ public enum LabelColor {
 
     LabelColor(String label) {
         this.label = label;
+    }
+
+    @JsonCreator
+    public static LabelColor from(String s) {
+        return LabelColor.valueOf(s.toUpperCase());
     }
 }
 
