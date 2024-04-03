@@ -1,5 +1,6 @@
 package com.golapadeok.fluo.domain.tag.dto;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import lombok.Getter;
 
 @Getter
@@ -17,5 +18,10 @@ public enum ColorCode {
 
     ColorCode(String color) {
         this.color = color;
+    }
+
+    @JsonCreator
+    public static ColorCode from(String s) {
+        return ColorCode.valueOf(s.toUpperCase());
     }
 }

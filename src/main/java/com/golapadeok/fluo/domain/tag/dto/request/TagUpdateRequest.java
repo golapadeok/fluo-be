@@ -19,12 +19,13 @@ public class TagUpdateRequest {
     @Schema(description = "태그 이름", example = "tagName")
     private String name;
 
-    @NotEmpty(message = "색상 코드는 필수값 입니다.")
+    @NotNull(message = "색상 코드는 필수값 입니다.")
     @Schema(description = "색상 코드", example = "######")
-    private String colorCode;
+    private ColorCode colorCode;
 
-    public ColorCode getColorCode() {
-        return ColorCode.valueOf(colorCode.toUpperCase());
+    public TagUpdateRequest(String name, ColorCode colorCode) {
+        this.name = name;
+        this.colorCode = ColorCode.from(colorCode.toString());
     }
 
 }
