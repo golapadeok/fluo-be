@@ -44,11 +44,11 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
 
         String header = request.getHeader(this.authorization);
-//        if(header == null || !header.startsWith(this.tokenPrefix)) {
-//            log.info("access token 이 없음");
-//            chain.doFilter(request, response);
-//            return;
-//        }
+        if(header == null || !header.startsWith(this.tokenPrefix)) {
+            log.info("access token 이 없음");
+            chain.doFilter(request, response);
+            return;
+        }
 
         /**
          * 쿠키에 저장된 refresh token을 꺼내와 만료되었는지를 확인
@@ -66,43 +66,23 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
          * 자동로그인 -> 엑세스 토큰 x -> 쿠키에 저장된 리프레시 토큰 검증 -> 엑세스 토큰 재발급 -> 로그인 유지
          */
         // 헤더에 Authorization이라는 이름이 있는지를 확인
-        if(header == null || !header.startsWith(this.tokenPrefix)) {
-            log.info("헤더 없다.");
+        String accessToken = this.provider.extractAccessToken(request)
+                .filter(this.provider::isTokenValidate)
+                .orElse(null);
+
+        if(accessToken != null) {
             String refreshToken = this.provider.extractRefreshTokenFromCookies(request)
                     .filter(this.provider::isTokenValidate)
-                    .orElse(null);
-//                    .orElseThrow(() -> new JwtErrorException(JwtErrorStatus.EXPIRED_REFRESH));
+                    .orElseThrow(() -> new JwtErrorException(JwtErrorStatus.EXPIRED_REFRESH));
 
-            if(refreshToken != null) {
-                this.memberRepository.findByRefreshToken(refreshToken)
-                        .ifPresent(member -> {
-                            this.provider.sendAccessToken(response, this.provider.createAccessToken(member.getEmail()));
-                            saveAuthentication(member);
-                        });
-            }else{
-                throw new JwtErrorException(JwtErrorStatus.EXPIRED_REFRESH);
-            }
-            chain.doFilter(request, response);
+            this.memberRepository.findByRefreshToken(refreshToken)
+                    .ifPresent(member -> {
+                        this.provider.sendAccessToken(response, this.provider.createAccessToken(member.getEmail()));
+                        saveAuthentication(member);
+                    });
             return;
-        }else {
-            log.info("헤더 있다.");
-            // access token이 만료되었을 때 재발급해주는 로직
-            String accessToken = this.provider.extractAccessToken(request)
-                    .filter(this.provider::isTokenValidate)
-                    .orElse(null);
-
-            if(accessToken == null) {
-                log.info("access token 이 만료");
-                String refreshToken = this.provider.extractRefreshTokenFromCookies(request)
-                        .filter(this.provider::isTokenValidate)
-                        .orElseThrow(() -> new JwtErrorException(JwtErrorStatus.EXPIRED_REFRESH));
-
-                this.memberRepository.findByRefreshToken(refreshToken)
-                        .ifPresent(member -> {
-                            this.provider.sendAccessToken(response, this.provider.createAccessToken(member.getEmail()));
-                        });
-            }
         }
+
 
         // access token이 만료되지 않았을 때 유효성 검사 후 인증 로직
         try {

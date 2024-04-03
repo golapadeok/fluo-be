@@ -4,6 +4,7 @@ import com.golapadeok.fluo.common.annotation.AuthCheck;
 import com.golapadeok.fluo.common.annotation.interception.exception.AuthException;
 import com.golapadeok.fluo.common.annotation.interception.exception.AuthStatus;
 import com.golapadeok.fluo.common.jwt.JwtTokenProvider;
+import com.golapadeok.fluo.common.security.domain.PrincipalDetails;
 import com.golapadeok.fluo.domain.member.domain.Member;
 import com.golapadeok.fluo.domain.member.repository.MemberRepository;
 import com.golapadeok.fluo.domain.role.domain.Credential;
@@ -46,6 +47,11 @@ public class AuthCheckInterceptor implements HandlerInterceptor {
 
         AuthCheck authCheck = annotationExtracted(handler);
         if(authCheck != null) {
+            String header = request.getHeader(HttpHeaders.AUTHORIZATION);
+            if(header != null) {
+                return false;
+            }
+            
             // 어노테이션에 설정된 권한 가져오기
             Credential[] credentials = authCheck.credential();
 
@@ -93,19 +99,25 @@ public class AuthCheckInterceptor implements HandlerInterceptor {
     }
 
     private Member getAuthentication(HttpServletRequest request, HttpServletResponse response) {
-        String requestHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
-//        String responseHeader = response.getHeader(HttpHeaders.AUTHORIZATION);
-        if(requestHeader != null || !requestHeader.startsWith("Bearer ")){
-            String accessToken = provider.extractAccessToken(request).get();
-            String email = provider.extractEmail(accessToken).get();
-            log.info("getAuthentication email : {}", email);
-            return this.memberRepository.findByEmail(email).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
-        }else{
-            String accessToken = provider.extractAccessToken(response).get();
-            String email = provider.extractEmail(accessToken).get();
-            log.info("getAuthentication email : {}", email);
+//        String requestHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
+////        String responseHeader = response.getHeader(HttpHeaders.AUTHORIZATION);
+//        if(requestHeader != null || !requestHeader.startsWith("Bearer ")){
+//            String accessToken = provider.extractAccessToken(request).get();
+//            String email = provider.extractEmail(accessToken).get();
+//            log.info("getAuthentication email : {}", email);
+//            return this.memberRepository.findByEmail(email).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
+//        }else{
+//            String accessToken = provider.extractAccessToken(response).get();
+//            String email = provider.extractEmail(accessToken).get();
+//            log.info("getAuthentication email : {}", email);
+//            return this.memberRepository.findByEmail(email).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
+//        }
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if(authentication != null) {
+            String email = authentication.getName();
             return this.memberRepository.findByEmail(email).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
         }
+        return null;
     }
 
     private AuthCheck annotationExtracted(Object handler) {
