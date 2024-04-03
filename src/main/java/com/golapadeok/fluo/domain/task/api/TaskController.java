@@ -15,10 +15,12 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @Tag(name = "업무 API", description = "업무 관련 API 목록")
@@ -54,6 +56,7 @@ public class TaskController {
     public ResponseEntity<TaskDetailResponse> updateTask(
             @PathVariable("taskId") Integer taskId,
             @Valid @RequestBody TaskUpdateRequest request) {
+        log.info("updateTask({}, {})", taskId, request.toString());
         return ResponseEntity.ok(taskUpdateService.update(taskId, request));
     }
 
@@ -61,6 +64,8 @@ public class TaskController {
     @DeleteMapping("/{taskId}")
     public ResponseEntity<TaskDeleteResponse> deleteTask(
             @PathVariable("taskId") Integer taskId) {
+        log.info("deleteTask({}) invoked.", taskId);
+
         return ResponseEntity.ok(taskDeleteService.delete(taskId));
     }
 }

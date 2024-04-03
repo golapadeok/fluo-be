@@ -4,16 +4,14 @@ import com.golapadeok.fluo.domain.task.domain.LabelColor;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.validator.constraints.Range;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
 import java.util.List;
 
+@ToString
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class TaskUpdateRequest {
