@@ -28,7 +28,7 @@ public class TaskUpdateRequest {
     @Schema(description = "업무 설명", example = "description")
     private String description;
 
-    @NotEmpty(message = "업무 작성자 이름은 필수값 입니다.")
+    @NotNull(message = "업무 작성자 이름은 필수값 입니다.")
     @Schema(description = "업무 작성자 이름", example = "creator")
     private Integer creator;
 
