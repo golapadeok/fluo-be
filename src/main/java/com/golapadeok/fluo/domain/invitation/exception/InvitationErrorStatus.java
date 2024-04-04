@@ -9,7 +9,8 @@ public enum InvitationErrorStatus {
     INVALID_INVITATION_CODE(400, "잘못된 초대코드입니다. 다시 입력해주세요. "),
     NOT_FOUND_MEMBER(400, "존재하지 않는 회원 입니다."),
     NOT_FOUND_WORKSPACE(400, "존재하지 않는 워크스페이스 입니다."),
-    ALREADY_JOIN_WORKSPACE(400, "이미 가입된 워크스페이스 입니다.");
+    ALREADY_JOIN_WORKSPACE(400, "이미 가입된 워크스페이스 입니다."),
+    ALREADY_REGISTERED_MEMBER(400, "이미 가입한 회원입니다.");
 
     private final int status;
     private final String message;
