@@ -8,7 +8,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.ToString;
 
-@ToString
 @Getter
 public class WorkspaceGrantRoleResponse {
 
