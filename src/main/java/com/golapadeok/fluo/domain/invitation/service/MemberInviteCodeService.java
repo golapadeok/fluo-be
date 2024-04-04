@@ -30,12 +30,6 @@ public class MemberInviteCodeService {
     private final RoleRepository roleRepository;
     private final MemberRoleRepository memberRoleRepository;
 
-    private static final List<String> DEFAULT_CREDENTIAL = List.of(
-            "CREATE_TASK",
-            "MODIFY_TASK",
-            "DELETE_TASK"
-    );
-
     @Transactional
     public InvitationAnswerResponse saveMemberInviteCode(PrincipalDetails principalDetails, String invitationsCode) {
         if (principalDetails == null || principalDetails.getMember() == null) {
@@ -58,8 +52,8 @@ public class MemberInviteCodeService {
                 .workspace(workspace)
                 .build();
 
-        // 역할 생성
-        Role generateRole = createGenerateRole(workspace);
+        Role generateRole = this.roleRepository.findByNameAndWorkspaceId(workspace.getId())
+                .orElseThrow(() -> new InvitationException(InvitationErrorStatus.NOT_FOUND_ROLE));
 
         // 역할 부여
         giveGenerateRole(member, generateRole);
@@ -74,19 +68,6 @@ public class MemberInviteCodeService {
                 .role(generateRole)
                 .build();
         this.memberRoleRepository.save(memberRole);
-    }
-
-    private Role createGenerateRole(Workspace workspace) {
-        String credential = String.join(",", DEFAULT_CREDENTIAL);
-        Role generateRole = Role.builder()
-                .name("일반")
-                .description("일반 역할입니다.")
-                .roles(credential)
-                .workspace(workspace)
-                .isDefault(true)
-                .build();
-        this.roleRepository.save(generateRole);
-        return generateRole;
     }
 
 }

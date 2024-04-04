@@ -20,6 +20,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Arrays;
 import java.util.List;
 
 @Slf4j
@@ -41,6 +42,12 @@ public class WorkspaceCreateService {
             "MODIFY_ROLE",
             "DELETE_ROLE",
             "ASSIGN_ROLE",
+            "CREATE_TASK",
+            "MODIFY_TASK",
+            "DELETE_TASK"
+    );
+
+    private static final List<String> GENERAL_CREDENTIAL = List.of(
             "CREATE_TASK",
             "MODIFY_TASK",
             "DELETE_TASK"
@@ -74,13 +81,17 @@ public class WorkspaceCreateService {
 
         log.debug("Role Save");
         String credential = String.join(",", DEFAULT_CREDENTIAL);
+        String generalCredential = String.join(",", GENERAL_CREDENTIAL);
 
-        Role defaultRole = new Role("관리자", "관리자 역할입니다.", credential, workspace, true);
-        roleRepository.save(defaultRole);
+        List<Role> defaultRoles = Arrays.asList(
+                new Role("관리자", "관리자 역할입니다.", credential, workspace, true),
+                new Role("일반", "일반 역할입니다.", generalCredential, workspace, true)
+                );
+        roleRepository.saveAll(defaultRoles);
 
         log.debug("Member Role Save");
         Member member = principal.getMember();
-        memberRoleRepository.save(new MemberRole(member, defaultRole));
+        memberRoleRepository.save(new MemberRole(member, defaultRoles.get(0)));
 
         return new WorkspaceResponse(workspace);
     }
