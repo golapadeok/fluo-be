@@ -47,6 +47,12 @@ public class MemberInviteCodeService {
         Workspace workspace = this.workspaceRepository.findByInvitationCode(invitationsCode)
                 .orElseThrow(() -> new InvitationException(InvitationErrorStatus.INVALID_INVITATION_CODE));
 
+        // 이미 있는 회원인지 검증 로직
+        this.workspaceMemberRepository.findByMemberIdAndWorkspaceId(member.getId(), workspace.getId())
+                .ifPresent(wm -> {
+                    throw new InvitationException(InvitationErrorStatus.ALREADY_JOIN_WORKSPACE);
+                });
+        
         WorkspaceMember workspaceMember = WorkspaceMember.builder()
                 .member(member)
                 .workspace(workspace)
