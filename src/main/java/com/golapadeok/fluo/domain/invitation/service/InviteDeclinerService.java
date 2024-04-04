@@ -9,6 +9,7 @@ import com.golapadeok.fluo.domain.invitation.repository.InvitationRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -17,6 +18,7 @@ public class InviteDeclinerService {
 
     private final InvitationRepository invitationRepository;
 
+    @Transactional
     public InvitationAnswerResponse declinerInvitation(String invitationId) {
         Invitation invitation = this.invitationRepository.findById(Long.valueOf(invitationId))
                 .orElseThrow(() -> new InvitationException(InvitationErrorStatus.NOT_FOUND_INVITATION));
