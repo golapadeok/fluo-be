@@ -34,14 +34,13 @@ public class StateDeleteService {
         workspace.getTasks().stream()
                 .filter(task -> task.getState().getId() == stateId)
                 .forEach(task -> {
-                    List<ManagerTask> managers = managerTaskRepository.findAllByTaskId(task.getId());
-                    managers.stream()
-                            .forEach(managerTask -> {
-                                managerTask.changeTask(null);
-                                managerTask.changeMember(null);
-                            });
-                    managerTaskRepository.deleteAll(managers);
-
+//                    List<ManagerTask> managers = managerTaskRepository.findAllByTaskId(task.getId());
+//                    managers.stream()
+//                            .forEach(managerTask -> {
+//                                managerTask.changeTask(null);
+//                                managerTask.changeMember(null);
+//                            });
+//                    managerTaskRepository.deleteAll(managers);
                     task.changeState(null);
                     task.changeTag(null);
                     task.changeWorkspace(null);
