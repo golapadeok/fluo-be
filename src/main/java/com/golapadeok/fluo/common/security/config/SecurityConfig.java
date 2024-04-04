@@ -12,6 +12,7 @@ import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
+import org.springframework.http.HttpHeaders;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
@@ -113,7 +114,7 @@ public class SecurityConfig {
 //        config.setAllowCredentials(true);
         config.setAllowedMethods(List.of("GET", "POST", "DELETE", "PATCH", "PUT"));
         config.setAllowedHeaders(List.of("*"));
-        config.setExposedHeaders(Collections.singletonList("Set-Cookies"));
+        config.setExposedHeaders(List.of(HttpHeaders.SET_COOKIE, HttpHeaders.AUTHORIZATION));
         config.setMaxAge(3600L);
 
         source.registerCorsConfiguration("/**", config);
