@@ -88,7 +88,7 @@ public class SecurityConfig {
                                 "/webjars/**").permitAll()
                         .anyRequest().permitAll()); // 테스트 종료시 authentication()으로 변경
 
-        http.cors(cors -> cors.configurationSource(corsConfiguration()));
+//        http.cors(cors -> cors.configurationSource(corsConfiguration()));
 
         http.sessionManagement(sessionManagement -> sessionManagement
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
@@ -102,7 +102,7 @@ public class SecurityConfig {
         return http.build();
     }
 
-    @Bean
+ /*   @Bean
     public CorsConfigurationSource corsConfiguration() {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
 
@@ -120,6 +120,6 @@ public class SecurityConfig {
         source.registerCorsConfiguration("/**", config);
 
         return source;
-    }
+    }*/
 
 }
