@@ -60,7 +60,14 @@ public class WorkspaceRepositoryImpl {
 
         List<Long> totals = queryFactory.select(task.count())
                 .from(task)
-                .where(eqTaskWithWorkspaceId(workspaceId))
+                .where(eqTaskWithWorkspaceId(workspaceId),
+                        eqTaskWithWorkspaceId(workspaceId),
+                        eqPriority(filterRequest.getPriority()),
+                        eqStateId(filterRequest.getStateId()),
+                        eqEndDate(filterRequest.getEndDate()),
+                        eqTagId(filterRequest.getTagId()),
+                        eqProjectName(filterRequest.getProjectName()),
+                        eqManagerName(filterRequest.getManager()))
                 .fetch();
 
         return new PageImpl<>(content, PageRequest.of(request.getCursorId() + request.getLimit(), request.getLimit()), totals.isEmpty() ? 0 : totals.get(0));

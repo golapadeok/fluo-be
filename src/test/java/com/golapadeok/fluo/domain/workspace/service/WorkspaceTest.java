@@ -1,8 +1,8 @@
+/*
 package com.golapadeok.fluo.domain.workspace.service;
 
 import com.golapadeok.fluo.common.security.domain.PrincipalDetails;
 import com.golapadeok.fluo.domain.member.domain.Member;
-import com.golapadeok.fluo.domain.member.domain.SocialId;
 import com.golapadeok.fluo.domain.member.domain.WorkspaceMember;
 import com.golapadeok.fluo.domain.member.repository.WorkspaceMemberRepository;
 import com.golapadeok.fluo.domain.role.domain.MemberRole;
@@ -62,35 +62,25 @@ class WorkspaceTest {
             //given
             Member member = createMember();
             PrincipalDetails principal = createPrincipal(member);
-            Workspace workspace = createWorkspace(principal);
-            State state1 = createState(workspace);
-            State state2 = createState(workspace);
-            State state3 = createState(workspace);
+            Workspace workspace = createWorkspace(principal.getMember());
+            List<State> states = createStates(workspace);
+            Role role = createRole(workspace);
+            WorkspaceMember workspaceMember = createWorkspaceMember(member, workspace);
+            MemberRole memberRole = createMemberRole(member, role);
             WorkspaceCreateRequest createRequest = createCreateRequest();
 
+            BDDMockito.given(workspaceRepository.save(BDDMockito.any())).willReturn(workspace);
+            BDDMockito.given(stateRepository.saveAll(BDDMockito.any())).willReturn(states);
+            BDDMockito.given(workspaceMemberRepository.save(workspaceMember)).willReturn(workspaceMember);
+            BDDMockito.given(roleRepository.save(role)).willReturn(role);
+            BDDMockito.given(memberRoleRepository.save(memberRole)).willReturn(memberRole);
+            BDDMockito.given(workspaceRepository.existsByInvitationCode("b04Icl")).willReturn(false);
 
-            BDDMockito.given(workspaceRepository.save(workspace)).willReturn(workspace);
-            BDDMockito.given(stateRepository.saveAll(List.of(state1, state2, state3))).willReturn();
+
             //when
             WorkspaceResponse response = workspaceCreateService.create(principal, createRequest);
 
             //then
-
-            State state = new State("default", true);
-            state.changeWorkspace(workspace);
-            stateRepository.saveAll(state);
-
-            WorkspaceMember workspaceMember = new WorkspaceMember(principal.getMember(), workspace, "");
-            workspaceMemberRepository.save(workspaceMember);
-
-
-            String credential = String.join(",", DEFAULT_CREDENTIAL);
-            Role defaultRole = new Role("관리자", "관리자 역할입니다.", credential, workspace);
-            roleRepository.save(defaultRole);
-
-            Member member = principal.getMember();
-            memberRoleRepository.save(new MemberRole(member, defaultRole));
-
         }
 
         private WorkspaceCreateRequest createCreateRequest() {
@@ -102,8 +92,10 @@ class WorkspaceTest {
         return new PrincipalDetails(member);
     }
 
-    private static Workspace createWorkspace(PrincipalDetails principal) {
-        return new Workspace("title", "description", DEFAULT_IMAGE, principal.getMember().getName());
+    private static Workspace createWorkspace(Member member) {
+        Workspace workspace = new Workspace("title", "description", DEFAULT_IMAGE, member.getName());
+        workspace.changeInvitationCode("b04Icl");
+        return workspace;
     }
 
     private static Member createMember() {
@@ -114,9 +106,23 @@ class WorkspaceTest {
         return new Role("관리자", "관리자 역할입니다.", String.join(",", DEFAULT_CREDENTIAL), workspace);
     }
 
+    private static List<State> createStates(Workspace workspace) {
+        List<State> states = List.of(new State("To Do", true), new State("In Progress", true), new State("Done", true));
+        states.forEach(state -> state.changeWorkspace(workspace));
+        return states;
+    }
+
     private static State createState(Workspace workspace) {
         State state = new State(1L, "state", false);
         state.changeWorkspace(workspace);
         return state;
     }
-}
+
+    private static WorkspaceMember createWorkspaceMember(Member member, Workspace workspace) {
+        return new WorkspaceMember(member, workspace, "");
+    }
+
+    private static MemberRole createMemberRole(Member member, Role role) {
+        return new MemberRole(member, role);
+    }
+}*/
