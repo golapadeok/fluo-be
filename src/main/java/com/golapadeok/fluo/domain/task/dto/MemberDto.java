@@ -12,16 +12,18 @@ import java.util.List;
 public class MemberDto {
     private final String id;
     private final String name;
+    private final String email;
     private final String profileUrl;
 
-    private MemberDto(String id, String name, String profileUrl) {
+    private MemberDto(String id, String name, String email, String profileUrl) {
         this.id = id;
         this.name = name;
+        this.email = email;
         this.profileUrl = profileUrl;
     }
 
     public static MemberDto of(Member member) {
-        return new MemberDto(member.getId().toString(), member.getName(), member.getProfile());
+        return new MemberDto(member.getId().toString(), member.getName(), member.getEmail(), member.getProfile());
     }
 
     public static List<MemberDto> of(List<Member> members) {
@@ -29,7 +31,7 @@ public class MemberDto {
         List<MemberDto> results = new ArrayList<>();
         while (iterator.hasNext()) {
             Member member = iterator.next();
-            results.add(new MemberDto(member.getId().toString(), member.getName(), member.getProfile()));
+            results.add(new MemberDto(member.getId().toString(), member.getName(), member.getEmail(), member.getProfile()));
         }
 
         return Collections.unmodifiableList(results);
