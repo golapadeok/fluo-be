@@ -65,7 +65,7 @@ public class WorkspaceSearchService {
                                 .toList()))
                 .toList();
 
-        return new WorkspaceSearchWithMembersResponse(members);
+        return new WorkspaceSearchWithMembersResponse(workspace.getTitle(),members);
     }
 
     public WorkspaceSearchWithTagsResponse searchWithTags(long workspaceId) {
