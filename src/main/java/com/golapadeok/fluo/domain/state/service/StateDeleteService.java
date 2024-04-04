@@ -20,7 +20,6 @@ import java.util.stream.Stream;
 public class StateDeleteService {
     private final StateRepository stateRepository;
     private final TaskRepository taskRepository;
-    private final ManagerTaskRepository managerTaskRepository;
 
 
     //기본값 삭제
@@ -30,23 +29,8 @@ public class StateDeleteService {
         State deleteState = stateRepository.findById(stateId)
                 .orElseThrow(NotFoundStateException::new);
 
-        Workspace workspace = deleteState.getWorkspace();
-        workspace.getTasks().stream()
-                .filter(task -> task.getState().getId() == stateId)
-                .forEach(task -> {
-//                    List<ManagerTask> managers = managerTaskRepository.findAllByTaskId(task.getId());
-//                    managers.stream()
-//                            .forEach(managerTask -> {
-//                                managerTask.changeTask(null);
-//                                managerTask.changeMember(null);
-//                            });
-//                    managerTaskRepository.deleteAll(managers);
-                    task.changeState(null);
-                    task.changeTag(null);
-                    task.changeWorkspace(null);
-                    taskRepository.delete(task);
-                });
-
+        List<Task> tasks = taskRepository.findByStateId(deleteState.getId());
+        taskRepository.deleteAll(tasks);
         stateRepository.delete(deleteState);
     }
 }
