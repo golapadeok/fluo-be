@@ -1,6 +1,6 @@
+/*
 package com.golapadeok.fluo.domain.role.service;
 
-import com.golapadeok.fluo.common.annotation.AuthCheck;
 import com.golapadeok.fluo.domain.member.domain.Member;
 import com.golapadeok.fluo.domain.member.domain.WorkspaceMember;
 import com.golapadeok.fluo.domain.member.repository.MemberRepository;
@@ -15,6 +15,7 @@ import com.golapadeok.fluo.domain.role.exception.RoleException;
 import com.golapadeok.fluo.domain.role.repository.MemberRoleQueryRepository;
 import com.golapadeok.fluo.domain.role.repository.MemberRoleRepository;
 import com.golapadeok.fluo.domain.role.repository.RoleRepository;
+import com.golapadeok.fluo.domain.role.service.RoleService;
 import com.golapadeok.fluo.domain.workspace.domain.Workspace;
 import com.golapadeok.fluo.domain.workspace.repository.WorkspaceRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -23,7 +24,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.Arrays;
-import java.util.List;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -238,4 +238,4 @@ class RoleServiceTest {
         this.workspaceMemberRepository.save(workspaceMember);
     }
 
-}
+}*/

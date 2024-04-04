@@ -1,15 +1,16 @@
 /*
+
 package com.golapadeok.fluo.domain.invitation.service;
 
-import com.golapadeok.fluo.common.security.domain.PrincipalDetails;
 import com.golapadeok.fluo.domain.invitation.domain.Invitation;
 import com.golapadeok.fluo.domain.invitation.dto.request.CursorPageRequest;
 import com.golapadeok.fluo.domain.invitation.dto.request.InviteEmailRequest;
 import com.golapadeok.fluo.domain.invitation.dto.response.InvitationEmailResponse;
-import com.golapadeok.fluo.domain.invitation.dto.response.MemberInvitationListResponse;
+import com.golapadeok.fluo.domain.invitation.exception.InvitationException;
 import com.golapadeok.fluo.domain.invitation.repository.InvitationQueryRepository;
 import com.golapadeok.fluo.domain.invitation.repository.InvitationRepository;
 import com.golapadeok.fluo.domain.member.domain.Member;
+import com.golapadeok.fluo.domain.member.domain.WorkspaceMember;
 import com.golapadeok.fluo.domain.member.repository.MemberRepository;
 import com.golapadeok.fluo.domain.member.repository.WorkspaceMemberRepository;
 import com.golapadeok.fluo.domain.workspace.domain.Workspace;
@@ -50,7 +51,7 @@ class WorkspaceInviteMemberEmailServiceTest {
 
     @BeforeEach
     public void init() {
-        Workspace workspace = new Workspace("title", "description", "url");
+        Workspace workspace = new Workspace("title", "description", "url", "11");
         this.workspaceRepository.save(workspace);
 
         Member member = Member.builder().name("name").email("email@test.com").profile("profile").build();
@@ -62,9 +63,9 @@ class WorkspaceInviteMemberEmailServiceTest {
     @DisplayName("회원의 이메일을 입력시 초대목록에 생기는지 테스트")
     public void testTransferEmailWithList() {
         // given
-        String email = "email@test.com";
+        Member member = this.memberRepository.findById(1L).get();
         String workspaceId = "1";
-        InviteEmailRequest inviteEmailRequest = new InviteEmailRequest(email);
+        InviteEmailRequest inviteEmailRequest = new InviteEmailRequest(member.getEmail());
 
         // when
         InvitationEmailResponse invitationEmailResponse = this.workspaceInviteMemberEmailService.InviteMemberEmail(workspaceId, inviteEmailRequest);
@@ -95,4 +96,25 @@ class WorkspaceInviteMemberEmailServiceTest {
 
     }
 
-}*/
+    @Test
+    @Order(3)
+    @DisplayName("이미 있는 회원을 초대하려 했을때 에러 발생하는지 테스트")
+    public void testAlreadyRegisterMemberInviteThrowException() {
+        // given
+        Member member = Member.builder().name("name").email("email1@test.com").profile("profile").build();
+        memberRepository.save(member);
+        Workspace workspace = this.workspaceRepository.findById(3L).get();
+        InviteEmailRequest inviteEmailRequest = new InviteEmailRequest(member.getEmail());
+
+        // when
+        WorkspaceMember workspaceMember = WorkspaceMember.builder().member(member).workspace(workspace).build();
+        this.workspaceMemberRepository.save(workspaceMember);
+
+        // then
+        Assertions.assertThrows(InvitationException.class,
+                () -> this.workspaceInviteMemberEmailService.InviteMemberEmail(String.valueOf(workspace.getId()), inviteEmailRequest));
+    }
+
+
+}
+*/
