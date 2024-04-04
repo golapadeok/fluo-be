@@ -6,13 +6,13 @@ import com.golapadeok.fluo.common.jwt.exception.JwtErrorException;
 import com.golapadeok.fluo.common.security.domain.PrincipalDetails;
 import com.golapadeok.fluo.domain.member.domain.Member;
 import com.golapadeok.fluo.domain.member.repository.MemberRepository;
-import com.golapadeok.fluo.domain.social.domain.BlackList;
+import com.golapadeok.fluo.domain.social.exception.SocialErrorException;
+import com.golapadeok.fluo.domain.social.exception.SocialErrorStatus;
 import com.golapadeok.fluo.domain.social.repository.BlackListRepository;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -24,8 +24,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.Optional;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -33,6 +31,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
     private final JwtTokenProvider provider;
     private final MemberRepository memberRepository;
+    private final BlackListRepository blackListRepository;
 
     private final String authorization = "Authorization";
     private final String tokenPrefix = "Bearer ";
@@ -49,6 +48,11 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
             chain.doFilter(request, response);
             return;
         }
+
+        this.blackListRepository.findByAccessToken(header)
+                .ifPresent(existingBlackList -> {
+                    throw new JwtErrorException(JwtErrorStatus.USER_ALREADY_LOGGED_OUT);
+                });
 
         /**
          * 쿠키에 저장된 refresh token을 꺼내와 만료되었는지를 확인
