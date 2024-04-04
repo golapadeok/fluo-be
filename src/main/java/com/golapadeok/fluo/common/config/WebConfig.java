@@ -14,22 +14,25 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
 
-    private final AuthCheckInterceptor authCheckInterceptor;
-
-    @Override
-    public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/**")
-//                .allowedOriginPatterns("*")
-                .allowedOrigins("https://fluo-fe.pages.dev",
-                        "http://localhost:5173",
-                        "http://localhost:5173/",
-                        "https://project-application.shop:443")
-                .allowCredentials(true)
-                .allowedMethods("GET", "POST", "DELETE", "PATCH", "PUT")
-                .allowedHeaders("*")
-                .exposedHeaders(HttpHeaders.SET_COOKIE, HttpHeaders.AUTHORIZATION)
-                .maxAge(3600L);
-    }
+//    private final AuthCheckInterceptor authCheckInterceptor;
+//
+//    @Override
+//    public void addCorsMappings(CorsRegistry registry) {
+//        registry.addMapping("/**")
+//                .allowedOriginPatterns("https://fluo-fe.pages.dev",
+//                        "http://localhost:5173",
+//                        "http://localhost:5173/",
+//                        "https://project-application.shop:443")
+//                .allowedOrigins("https://fluo-fe.pages.dev",
+//                        "http://localhost:5173",
+//                        "http://localhost:5173/",
+//                        "https://project-application.shop:443")
+////                .allowCredentials(true)
+//                .allowedMethods("GET", "POST", "DELETE", "PATCH", "PUT")
+//                .allowedHeaders("*")
+//                .exposedHeaders(HttpHeaders.SET_COOKIE, HttpHeaders.AUTHORIZATION)
+//                .maxAge(3600L);
+//    }
 
     @Override
     public void addFormatters(FormatterRegistry registry) {
