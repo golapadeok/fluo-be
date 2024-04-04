@@ -88,7 +88,7 @@ public class SecurityConfig {
                         .anyRequest().permitAll()); // 테스트 종료시 authentication()으로 변경
 
 //        http.cors(cors -> cors.configurationSource(corsConfiguration()));
-//        http.cors(cors -> cors.disable());
+        http.cors(cors -> cors.disable());
 
         http.sessionManagement(sessionManagement -> sessionManagement
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
