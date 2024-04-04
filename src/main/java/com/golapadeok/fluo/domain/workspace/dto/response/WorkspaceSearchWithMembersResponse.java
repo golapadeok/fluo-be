@@ -7,9 +7,11 @@ import java.util.List;
 
 @Getter
 public class WorkspaceSearchWithMembersResponse {
+    private final String title;
     private final List<MemberWithRoleDto> members;
 
-    public WorkspaceSearchWithMembersResponse(List<MemberWithRoleDto> members) {
+    public WorkspaceSearchWithMembersResponse(String title, List<MemberWithRoleDto> members) {
+        this.title = title;
         this.members = members;
     }
 }
