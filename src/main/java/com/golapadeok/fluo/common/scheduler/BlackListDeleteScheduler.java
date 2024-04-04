@@ -10,18 +10,17 @@ import org.springframework.stereotype.Component;
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Slf4j
 @RequiredArgsConstructor
 @Component
 public class BlackListDeleteScheduler {
 
     private final BlackListRepository blackListRepository;
 
-    @Scheduled(fixedRate = 1000 * 60 * 60 * 24, initialDelay = 1L) // 서버 실행 1초 후에 한번 실행하며, 하루마다 재실행
+    @Scheduled(cron = "0 0 0 * * *") // 자정마다 스케줄러가 돌도록 설정
     public void deleteBlackListByAccessToken() {
 
         // 현재시간 가져오기
-        LocalDateTime currentDateTime = LocalDateTime.now();
+        LocalDateTime now = LocalDateTime.now();
 
         // 블랙리스트 전체 가져오기
         List<BlackList> blackLists = this.blackListRepository.findAll();
@@ -30,7 +29,7 @@ public class BlackListDeleteScheduler {
         blackLists.forEach(blackList -> {
             LocalDateTime createDate = blackList.getCreateDate();
 
-            if(createDate != null && createDate.isBefore(currentDateTime)){
+            if(createDate != null && createDate.isBefore(now)){
                 this.blackListRepository.delete(blackList);
             }
         });
