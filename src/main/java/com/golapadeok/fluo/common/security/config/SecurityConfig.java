@@ -109,7 +109,7 @@ public class SecurityConfig {
 
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowedOrigins(
-                List.of("https://fluo-fe.pages.dev:443", "http://localhost:5173", "https://project-application.shop:443"));
+                List.of("https://fluo-fe.pages.dev:443", "http://localhost:5173", "http://localhost:5173/", "https://project-application.shop:443"));
 //        config.setAllowCredentials(true);
         config.setAllowedMethods(List.of("GET", "POST", "DELETE", "PATCH", "PUT"));
         config.setAllowedHeaders(List.of("*"));
