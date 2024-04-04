@@ -121,7 +121,6 @@ class TaskTest {
                     updateTask.getState().getId().intValue(),
                     updateTask.getTitle(),
                     updateTask.getDescription(),
-                    updateTask.getCreator(),
                     updateTask.getTag().getId().intValue(),
                     List.of(1, 2, 3),
                     updateTask.getConfiguration().getIsPrivate(),

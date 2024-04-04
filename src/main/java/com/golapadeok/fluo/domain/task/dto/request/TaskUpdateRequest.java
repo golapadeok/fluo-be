@@ -26,10 +26,6 @@ public class TaskUpdateRequest {
     @Schema(description = "업무 설명", example = "description")
     private String description;
 
-    @NotNull(message = "업무 작성자 아이는은 필수값 입니다.")
-    @Schema(description = "업무 작성자 아이디", example = "1")
-    private Integer creator;
-
     @NotNull(message = "태그 아이디는 필수 입력입니다.")
     @Schema(description = "업무에 설정할 태그 아이디", example = "1")
     private Integer tag;
@@ -61,11 +57,10 @@ public class TaskUpdateRequest {
     @Schema(description = "업무 종료 날짜", example = "2030-01-01")
     private LocalDate endDate;
 
-    public TaskUpdateRequest(Integer stateId, String title, String description, Integer creator, Integer tag, List<Integer> managers, Boolean isPrivate, Integer priority, LabelColor labelColor, LocalDate startDate, LocalDate endDate) {
+    public TaskUpdateRequest(Integer stateId, String title, String description, Integer tag, List<Integer> managers, Boolean isPrivate, Integer priority, LabelColor labelColor, LocalDate startDate, LocalDate endDate) {
         this.stateId = stateId;
         this.title = title;
         this.description = description;
-        this.creator = creator;
         this.tag = tag;
         this.managers = managers;
         this.isPrivate = isPrivate;
