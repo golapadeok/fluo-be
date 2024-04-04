@@ -129,6 +129,9 @@ oauth2:
     scope: name email profile_image
 jwt:
   secretKey: ${SPRING_JWT_SECRET_KEY}
+logging:
+  level:
+    org.hibernate.orm.jdbc.bind: info
 ---
 spring:
   config:
@@ -162,3 +165,6 @@ oauth2:
     scope: name email profile_image
 jwt:
   secretKey: ${SPRING_JWT_SECRET_KEY}
+logging:
+  level:
+    org.hibernate.orm.jdbc.bind: info
