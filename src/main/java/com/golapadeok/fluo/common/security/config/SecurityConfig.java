@@ -36,8 +36,8 @@ import java.util.List;
 public class SecurityConfig {
 
     private final JwtTokenProvider provider;
-    private final PrincipalDetailsService principalDetailsService;
     private final MemberRepository memberRepository;
+    private final BlackListRepository blackListRepository;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -64,7 +64,7 @@ public class SecurityConfig {
                 .httpBasic(AbstractHttpConfigurer::disable);
 
         // UsernamePasswordAuthenticationFilter 이전에 JwtAuthorizationFilter를 실행하겠다는 뜻
-        http.addFilterBefore(new JwtAuthorizationFilter(this.provider, this.memberRepository), UsernamePasswordAuthenticationFilter.class)
+        http.addFilterBefore(new JwtAuthorizationFilter(this.provider, this.memberRepository, this.blackListRepository), UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(new JwtExceptionFilter(), JwtAuthorizationFilter.class);
 
         return http.build();
@@ -87,7 +87,7 @@ public class SecurityConfig {
                 .httpBasic(httpBasic -> httpBasic.disable());
 
         // UsernamePasswordAuthenticationFilter 이전에 JwtAuthorizationFilter를 실행하겠다는 뜻
-        http.addFilterBefore(new JwtAuthorizationFilter(this.provider, this.memberRepository), UsernamePasswordAuthenticationFilter.class)
+        http.addFilterBefore(new JwtAuthorizationFilter(this.provider, this.memberRepository, this.blackListRepository), UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(new JwtExceptionFilter(), JwtAuthorizationFilter.class);
 
         return http.build();
