@@ -48,6 +48,12 @@ public class AcceptInviteService {
         Invitation invitation = this.invitationRepository.findById(Long.valueOf(invitationsId))
                 .orElseThrow(() -> new InvitationException(InvitationErrorStatus.NOT_FOUND_INVITATION));
 
+        // 이미 있는 회원인지 검증 로직
+        this.workspaceMemberRepository.findByMemberIdAndWorkspaceId(member.getId(), invitation.getWorkspace().getId())
+                .ifPresent(wm -> {
+                    throw new InvitationException(InvitationErrorStatus.ALREADY_JOIN_WORKSPACE);
+                });
+
         WorkspaceMember workspaceMember = WorkspaceMember.builder()
                 .member(member)
                 .workspace(invitation.getWorkspace())
