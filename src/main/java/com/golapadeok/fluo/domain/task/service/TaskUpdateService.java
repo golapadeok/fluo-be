@@ -40,7 +40,7 @@ public class TaskUpdateService {
                 .orElseThrow(NotFoundTaskException::new);
 
         //Manager 수정
-//        updateManagers(task, request.getManagers());
+        updateManagers(task, request.getManagers());
 
         //Tag 수정
         Tag tag = tagRepository.findById(request.getTag().longValue())
