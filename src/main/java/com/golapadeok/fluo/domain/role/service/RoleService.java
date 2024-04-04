@@ -40,6 +40,7 @@ public class RoleService {
                 .map(role -> WorkspaceRoleListResponse.builder()
                         .roleId(String.valueOf(role.getId()))
                         .name(role.getName())
+                        .description(role.getDescription())
                         .credentials(role.getRoleList().stream()
                                 //.map(r -> new CredentialResponse(Credential.valueOf(r.trim()).getName(), Credential.valueOf(r.trim()).getDescription()))
                                 .toList())
