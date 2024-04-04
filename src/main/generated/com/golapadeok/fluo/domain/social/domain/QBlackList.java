@@ -21,6 +21,8 @@ public class QBlackList extends EntityPathBase<BlackList> {
 
     public final StringPath accessToken = createString("accessToken");
 
+    public final DateTimePath<java.time.LocalDateTime> createDate = createDateTime("createDate", java.time.LocalDateTime.class);
+
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
     public QBlackList(String variable) {
