@@ -125,13 +125,14 @@ public class WorkspaceController {
         return ResponseEntity.ok(workspaceDeleteService.delete(workspaceId));
     }
 
-    @DeleteMapping("/{workspaceId}/members")
+    @DeleteMapping("/{workspaceId}/members/{memberId}")
     @Operation(summary = "워크스페이스의 해당 멤버 삭제 API", description = "해당 멤버를 삭제합니다.")
     public ResponseEntity<WorkspaceDeleteResponse> deleteMember(
             @PathVariable("workspaceId") Integer workspaceId,
-            @Valid @RequestBody MemberDeleteRequest request
+//            @Valid @RequestBody MemberDeleteRequest request
+            @PathVariable("memberId") Integer memberId
     ) {
-        return ResponseEntity.ok(workspaceDeleteService.deleteMember(workspaceId, request.getMemberId()));
+        return ResponseEntity.ok(workspaceDeleteService.deleteMember(workspaceId, memberId));
     }
 
     @PostMapping("/members/roles")
