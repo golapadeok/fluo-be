@@ -3,9 +3,11 @@ package com.golapadeok.fluo.common.config;
 import com.golapadeok.fluo.domain.social.converter.SocialConverter;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.format.FormatterRegistry;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+@EnableScheduling
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
 
