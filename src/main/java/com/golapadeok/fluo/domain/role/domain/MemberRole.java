@@ -32,4 +32,9 @@ public class MemberRole extends BaseTimeEntity { // 회원그룹권한
         this.member = member;
         this.role = role;
     }
+
+    public void updateRole(Member member, Role role) {
+        this.member = member;
+        this.role = role;
+    }
 }
