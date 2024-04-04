@@ -80,9 +80,8 @@ public class SocialController {
     }
 
     @Operation(summary = "로그아웃 진행", description = "엑세스 토큰을 받아 해당 엑세스 토큰을 DB에 저장시켜 다시 엑세스 토큰으로 인증 하지 못하도록 함.")
-    @PostMapping("/logout")
+    @PostMapping("/auth/logout")
     public ResponseEntity<Map<String, String>> logout(@AuthenticationPrincipal PrincipalDetails principalDetails,
-                                        @Parameter(description = "엑세스 토큰", required = true)
                                         HttpServletRequest request) {
 //        log.info("memberId : {}", principalDetails.toString());
         String accessToken = request.getHeader(HttpHeaders.AUTHORIZATION);
