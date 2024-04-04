@@ -1,4 +1,3 @@
-/*
 package com.golapadeok.fluo.domain.role.service;
 
 import com.golapadeok.fluo.common.annotation.AuthCheck;
@@ -6,8 +5,11 @@ import com.golapadeok.fluo.domain.member.domain.Member;
 import com.golapadeok.fluo.domain.member.domain.WorkspaceMember;
 import com.golapadeok.fluo.domain.member.repository.MemberRepository;
 import com.golapadeok.fluo.domain.member.repository.WorkspaceMemberRepository;
+import com.golapadeok.fluo.domain.role.domain.Credential;
 import com.golapadeok.fluo.domain.role.domain.MemberRole;
 import com.golapadeok.fluo.domain.role.domain.Role;
+import com.golapadeok.fluo.domain.role.dto.request.RoleUpdateRequest;
+import com.golapadeok.fluo.domain.role.dto.response.UpdateRoleResponse;
 import com.golapadeok.fluo.domain.role.exception.RoleErrorStatus;
 import com.golapadeok.fluo.domain.role.exception.RoleException;
 import com.golapadeok.fluo.domain.role.repository.MemberRoleQueryRepository;
@@ -20,6 +22,7 @@ import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.util.Arrays;
 import java.util.List;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -54,7 +57,7 @@ class RoleServiceTest {
     @BeforeEach
     public void init() {
         // 워크스페이스 생성
-        Workspace workspace = new Workspace("title", "description", "url");
+        Workspace workspace = new Workspace("title", "description", "url", "11");
         this.workspaceRepository.save(workspace);
 
         // 멤버 생성
@@ -91,7 +94,7 @@ class RoleServiceTest {
         // given
         Long memberId = 2L;
         Long workspaceId = 2L;
-        giveGeneralRole(memberId, workspaceId);
+//        giveGeneralRole(memberId, workspaceId);
 
         // when
         Role role = this.roleRepository.findByNameAndWorkspaceId("일반", workspaceId).get();
@@ -131,21 +134,68 @@ class RoleServiceTest {
         assertThat(this.memberRoleRepository.findById(memberRole.getId()).orElse(null)).isNull();
     }
 
-    private void giveGeneralRole(Long memberId, Long workspaceId) {
+    @Test
+    @Order(4)
+    @DisplayName("역할 수정시 중복 예외 발생 테스트")
+    public void testDuplicateNameThrowException() {
+        // given
+        Member member = createMember();
+        Workspace workspace = createWorkspace();
+        joinWorkspaceMember(member, workspace);
+        Role role = giveGeneralRole(member.getId(), workspace.getId()); // -- 1
+        Role role2 = giveGeneralRole(member.getId(), workspace.getId()); // -- 2
+        log.info("before role : {}", role);
+        RoleUpdateRequest request = new RoleUpdateRequest("일반", null, Arrays.asList(Credential.DELETE_WORKSPACE));
+
+        // when
+        assertThrows(RoleException.class, () -> {
+            roleService.updateWorkspaceRole(workspace.getId().intValue(), role.getId().intValue(), request);
+        });
+
+        // then
+
+    }
+
+    @Test
+    @Order(5)
+    @DisplayName("역할 수정시 이름은 변경하지 않고 권한만 변경할 때 통과 테스트")
+    public void testDuplicateNameAndRoleUpdate() {
+        // given
+        Member member = createMember();
+        Workspace workspace = createWorkspace();
+        joinWorkspaceMember(member, workspace);
+        Role role = giveGeneralRole(member.getId(), workspace.getId()); // -- 1
+//        Role role2 = giveGeneralRole(member.getId(), workspace.getId()); // -- 2
+        log.info("before role : {}", role);
+        RoleUpdateRequest request = new RoleUpdateRequest("일반", null, Arrays.asList(Credential.DELETE_ROLE));
+
+        // when
+        UpdateRoleResponse updateRoleResponse = roleService.updateWorkspaceRole(workspace.getId().intValue(), role.getId().intValue(), request);
+        log.info("before role : {}", role);
+        log.info("after role : {}", updateRoleResponse.getItems());
+        // then
+        org.assertj.core.api.Assertions.assertThat(Integer.parseInt(updateRoleResponse.getItems().getRoleId())).isEqualTo(role.getId().intValue());
+
+    }
+
+    private Role giveGeneralRole(Long memberId, Long workspaceId) {
         // 워크스페이스 역할 생성
         Workspace workspace = workspaceRepository.findById(workspaceId).get();
         Member member = memberRepository.findById(memberId).get();
         Role role = Role.builder().name("일반").roles(
                         "DELETE_WORKSPACE")
                 .workspace(workspace)
+                .isDefault(false)
                 .build();
         roleRepository.save(role);
         // 멤버에게 역할 부여
         MemberRole memberRole = MemberRole.builder().member(member).role(role).build();
         memberRoleRepository.save(memberRole);
+
+        return role;
     }
 
-    private void giveAdminRole(Long memberId, Long workspaceId) {
+    private Role giveAdminRole(Long memberId, Long workspaceId) {
         // 워크스페이스 역할 생성
         Workspace workspace = workspaceRepository.findById(workspaceId).get();
         Member member = memberRepository.findById(memberId).get();
@@ -161,11 +211,31 @@ class RoleServiceTest {
                                 "MODIFY_TASK," +
                                 "DELETE_TASK")
                 .workspace(workspace)
+                .isDefault(true)
                 .build();
         roleRepository.save(role);
         // 멤버에게 역할 부여
         MemberRole memberRole = MemberRole.builder().member(member).role(role).build();
         memberRoleRepository.save(memberRole);
+
+        return role;
     }
 
-}*/
+    private Workspace createWorkspace() {
+        Workspace workspace = new Workspace("title", "description", "url", "11");
+        this.workspaceRepository.save(workspace);
+        return workspace;
+    }
+
+    private Member createMember() {
+        Member member = Member.builder().name("name").email("email").profile("profile").build();
+        this.memberRepository.save(member);
+        return member;
+    }
+
+    private void joinWorkspaceMember(Member member, Workspace workspace) {
+        WorkspaceMember workspaceMember = WorkspaceMember.builder().member(member).workspace(workspace).build();
+        this.workspaceMemberRepository.save(workspaceMember);
+    }
+
+}

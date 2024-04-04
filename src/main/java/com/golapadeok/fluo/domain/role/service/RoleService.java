@@ -101,7 +101,7 @@ public class RoleService {
         }
 
         // 해당 워크스페이스에 같은 역할이름이 있는지를 검증
-        roleRepository.findByNameAndWorkspaceId(request.getName(), workspaceId.longValue())
+        roleRepository.findByNameAndWorkspaceIdAndIdIsNot(request.getName(), workspaceId.longValue(), role.getId())
                 .ifPresent(r -> {
                     throw new RoleException(RoleErrorStatus.DUPLICATION_NAME);
                 });
