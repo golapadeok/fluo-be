@@ -58,7 +58,6 @@ public class TaskUpdateService {
         task.changeTask(task.toBuilder()
                 .title(request.getTitle())
                 .description(request.getDescription())
-                .creator(request.getCreator())
                 .labelColor(request.getLabelColor())
                 .configuration(configuration)
                 .scheduleRange(scheduleRange)

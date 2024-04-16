@@ -1,8 +1,10 @@
 package com.golapadeok.fluo.domain.workspace.api;
 
+import com.golapadeok.fluo.common.annotation.AuthCheck;
 import com.golapadeok.fluo.common.security.domain.PrincipalDetails;
 import com.golapadeok.fluo.common.util.CookieUtils;
 import com.golapadeok.fluo.domain.invitation.dto.InvitationCodeDto;
+import com.golapadeok.fluo.domain.role.domain.Credential;
 import com.golapadeok.fluo.domain.workspace.dto.request.*;
 import com.golapadeok.fluo.domain.workspace.dto.response.*;
 import com.golapadeok.fluo.domain.workspace.service.*;
@@ -105,7 +107,7 @@ public class WorkspaceController {
                 .header(HttpHeaders.SET_COOKIE, cookie.toString())
                 .body(result);
     }
-
+    
     @PutMapping("/{workspaceId}")
     @Operation(summary = "워크스페이스 수정 API", description = "워크스페이스 이름을 수정합니다.")
     public ResponseEntity<WorkspaceResponse> updateWorkspace(
@@ -117,6 +119,7 @@ public class WorkspaceController {
                 .body(workspaceUpdateService.update(workspaceId, request));
     }
 
+    @AuthCheck(credential = Credential.DELETE_WORKSPACE)
     @DeleteMapping("/{workspaceId}")
     @Operation(summary = "워크스페이스 삭제 API", description = "해당 워크스페이스를 삭제합니다.")
     public ResponseEntity<WorkspaceDeleteResponse> deleteWorkspace(
@@ -125,6 +128,7 @@ public class WorkspaceController {
         return ResponseEntity.ok(workspaceDeleteService.delete(workspaceId));
     }
 
+    @AuthCheck(credential = Credential.REMOVE_MEMBER)
     @DeleteMapping("/{workspaceId}/members/{memberId}")
     @Operation(summary = "워크스페이스의 해당 멤버 삭제 API", description = "해당 멤버를 삭제합니다.")
     public ResponseEntity<WorkspaceDeleteResponse> deleteMember(
@@ -135,6 +139,7 @@ public class WorkspaceController {
         return ResponseEntity.ok(workspaceDeleteService.deleteMember(workspaceId, memberId));
     }
 
+    @AuthCheck(credential = Credential.ASSIGN_ROLE)
     @PostMapping("/members/roles")
     @Operation(summary = "워크스페이스 멤버 역할 부여 API", description = "워크스페이스에서 멤버에게 역할을 부여합니다.")
     public ResponseEntity<WorkspaceGrantRoleResponse> grantWorkspaceRole(
