@@ -43,7 +43,7 @@ public class TaskController {
         return ResponseEntity.ok(taskSearchService.search(taskId));
     }
 
-    //    @AuthCheck(credential = Credential.CREATE_TASK)
+    @AuthCheck(credential = Credential.CREATE_TASK)
     @PostMapping
     @Operation(summary = "업무 생성 API", description = "새로운 업무를 생성합니다.")
     public ResponseEntity<TaskDetailResponse> createTask(
@@ -55,7 +55,7 @@ public class TaskController {
                 .ok(taskCreateService.createTask(principal.getMember().getId().intValue(), request));
     }
 
-    //    @AuthCheck(credential = Credential.MODIFY_TASK)
+    @AuthCheck(credential = Credential.MODIFY_TASK)
     @PutMapping("/{taskId}")
     @Operation(summary = "업무 수정 API", description = "해당 업무를 수정합니다.")
     public ResponseEntity<TaskDetailResponse> updateTask(
@@ -65,7 +65,7 @@ public class TaskController {
         return ResponseEntity.ok(taskUpdateService.update(taskId, request));
     }
 
-    //    @AuthCheck(credential = Credential.DELETE_TASK)
+    @AuthCheck(credential = Credential.DELETE_TASK)
     @DeleteMapping("/{taskId}")
     public ResponseEntity<TaskDeleteResponse> deleteTask(
             @PathVariable("taskId") Integer taskId) {

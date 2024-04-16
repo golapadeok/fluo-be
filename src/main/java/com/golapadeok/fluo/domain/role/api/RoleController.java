@@ -38,6 +38,7 @@ public class RoleController {
         return ResponseEntity.ok(this.roleService.getAllCredential());
     }
 
+    @AuthCheck(credential = Credential.CREATE_ROLE)
     @Operation(summary = "워크스페이스 역할 추가", description = "워크스페이스ID에 해당하는 워크스페이스에 역할을 추가")
     @PostMapping("/workspaces/{workspaceId}/role")
     public ResponseEntity<CreateRoleResponse> includeWorkspaceRole(@PathVariable("workspaceId") Integer workspaceId,
